@@ -1,0 +1,45 @@
+<frame "Main"> 1280x1024 @0,0 | flex-row gap0 pad(0, 0, 0, 0)
+  <frame "Section - Left Panel: Editorial Image"> 640x1024 @0,0 | flex-col gap0 pad(48, 48, 48, 48) SPACE_BETWEEN | bg #faeaeb
+    <frame "Container"> 640x1024 @0,0 | flex-col gap0 pad(0, 0, 0, 0) CENTER
+      <frame "AP1WRLu_uGZQyIfl78DsJJ9sfVik7_8S-IJxHsOl_sIWR67FiE1X6yH1v…"> 640x1024 @0,0 | bg image:6f912640
+      <rectangle "Gradient"> 640x1024 @0,0 | bg linear(rgba(0,0,0,0.20) → rgba(0,0,0,0.00) → rgba(0,0,0,0.40))
+    <frame "Container"> 544x48 @48,48 | flex-col gap0 pad(0, 0, 0, 0)
+      <text "SERENE"> 544x48 @48,48 | bg #ffffff | Montserrat 600 40px/48px
+        TEXT: SERENE
+    <frame "Margin"> 544x880 @48,96 | flex-col gap0 pad(822, 0, 0, 0) MAX
+      <frame "Container"> 544x59 @48,917 | flex-col gap0 pad(0, 0, 0, 0)
+        <frame "Container"> 448x59 @48,917 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Text"> 422x59 @48,917 | bg #ffffff | Montserrat 500 18px/29.25px
+            TEXT: Elevating your natural beauty through science ⏎ and serenity.
+  <frame "Section - Right Panel: OTP Form"> 640x1024 @640,0 | flex-col gap0 pad(96, 96, 96, 96) CENTER | align:CENTER | bg #fff8f7
+    <frame "Container"> 448x16 @736,245 | flex-col gap32 pad(0, 0, 0, 0)
+    <frame "Overlay+Border+Shadow+OverlayBlur"> 448x518 @736,261 | flex-col gap0 pad(48, 48, 48, 48) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.40) | r24.0 | shadow 0 24 48 rgba(183,110,121,0.08)
+      <frame "Step 1: Request Reset (Active by default)"> 350x420 @785,310 | flex-col gap8 pad(0, 0, 0, 0)
+        <frame "Link"> 350x16 @785,310 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Container"> 12x12 @785,312 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 12x12 @785,312 | bg #524345
+          <text "Text"> 175x16 @805,310 | bg #524345 | Montserrat 500 12px/16px
+            TEXT: Нэвтрэх хуудас руу буцах
+        <frame "Heading 2"> 350x60 @785,334 | flex-col gap0 pad(24, 0, 0, 0)
+          <text "Нууц үгээ мартсан уу?"> 350x36 @785,358 | bg #211a1b | Montserrat 600 28px/36px
+            TEXT: Нууц үгээ мартсан уу?
+        <frame "Container"> 350x104 @785,402 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Санаа зоволтгүй! Бүртгэлтэй утасны дугаар эсвэл и-мэйл ха…"> 350x104 @785,402 | bg #524345 | Montserrat 400 16px/26px
+            TEXT: Санаа зоволтгүй! Бүртгэлтэй утасны ⏎ дугаар эсвэл и-мэйл хаягаа оруулна уу, ⏎ бид танд баталгаажуулах код илгээх ⏎ болно.
+        <frame "Form"> 350x176 @785,514 | flex-col gap24 pad(24, 0, 0, 0)
+          <frame "Container"> 350x80 @785,538 | flex-col gap11.5 pad(4, 0, 0, 0)
+            <text "Label → Утас/И-мэйл"> 86x16 @785,542 | bg #211a1b | Montserrat 500 12px/16px
+              TEXT: Утас/И-мэйл
+            <frame "Container"> 350x48 @785,570 | flex-col gap0 pad(0, 0, 0, 0)
+              <frame "Input"> 350x48 @785,570 | flex-row gap0 pad(14, 16, 14, 48) CENTER | bg #fff0f1 | border 1px rgba(0,0,0,0.00) | r12.0
+                <frame "Container"> 284x20 @834,584 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Утас эсвэл и-мэйл хаяг"> 284x20 @834,584 | bg rgba(82,67,69,0.40) | Montserrat 400 16px/19.504px
+                    TEXT: Утас эсвэл и-мэйл хаяг
+              <frame "Container"> 20x24 @801,582 | flex-col gap0 pad(0, 0, 0, 0)
+                <vector "Icon"> 20x16 @801,582 | bg rgba(82,67,69,0.40)
+          <frame "Button"> 350x48 @785,642 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg linear(#b76e79 → #d4a5ab) | r12.0
+            <text "Text"> 103x24 @908,654 | bg #ffffff | Montserrat 500 18px/24px | center
+              TEXT: Код илгээх
+        <frame "Container"> 350x32 @785,698 | flex-col gap0 pad(16, 0, 0, 0) | align:CENTER
+          <text "Text"> 297x16 @812,714 | bg #524345 | Montserrat 500 12px/16px | center
+            TEXT: Тусламж хэрэгтэй юу? Бидэнтэй холбогдох

@@ -1,0 +1,202 @@
+<frame "Тохиргоо (Settings) - Super Admin"> 1280x1024 @0,0 | bg #ffffff,#fff8f7
+  <frame "Main Content Area"> 1116x1024 @288,0 | flex-col gap0 pad(0, 0, 0, 0) CENTER | bg #fff8f7
+    <frame "Main - Scrollable Content"> 1116x1024 @288,0 | flex-col gap0 pad(112, 48, 128, 48)
+      <frame "Container"> 1020x663 @336,112 | flex-col gap32 pad(0, 0, 0, 0)
+        <frame "Container"> 1020x68 @336,112 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Heading 2"> 1020x36 @336,112 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Тохиргоо (Settings)"> 1020x36 @336,112 | bg #211a1b | Montserrat 600 28px/36px
+              TEXT: Тохиргоо (Settings)
+          <frame "Container"> 1020x24 @336,156 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Manage system-wide configurations, security, and administ…"> 1020x24 @336,156 | bg #524345 | Montserrat 400 16px/24px
+              TEXT: Manage system-wide configurations, security, and administrative access.
+        <frame "Tabs Navigation"> 1020x39 @336,212 | flex-row gap0 pad(0, 0, 4, 0) | border 1px #eedfe0
+          <frame "Button"> 83x34 @336,212 | flex-col gap0 pad(0, 0, 8, 0) CENTER | align:CENTER | border 1px #8a4853
+            <text "Text"> 83x24 @336,212 | bg #8a4853 | Montserrat 500 18px/24px | center
+              TEXT: Ерөнхий
+          <frame "Button:margin"> 194x34 @419,212 | flex-col gap0 pad(0, 0, 0, 32)
+            <frame "Button"> 162x34 @451,212 | flex-col gap0 pad(1, 0, 9, 0) CENTER | align:CENTER
+              <text "Text"> 162x24 @451,213 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Комисс тохиргоо
+          <frame "Button:margin"> 194x34 @613,212 | flex-col gap0 pad(0, 0, 0, 32)
+            <frame "Button"> 162x34 @645,212 | flex-col gap0 pad(1, 0, 9, 0) CENTER | align:CENTER
+              <text "Text"> 162x24 @645,213 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Баталгаажуулалт
+          <frame "Button:margin"> 134x34 @807,212 | flex-col gap0 pad(0, 0, 0, 32)
+            <frame "Button"> 102x34 @839,212 | flex-col gap0 pad(1, 0, 9, 0) CENTER | align:CENTER
+              <text "Text"> 102x24 @839,213 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Админ эрх
+          <frame "Button:margin"> 124x34 @940,212 | flex-col gap0 pad(0, 0, 0, 32)
+            <frame "Button"> 92x34 @972,212 | flex-col gap0 pad(1, 0, 9, 0) CENTER | align:CENTER
+              <text "Text"> 92x24 @972,213 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Мэдэгдэл
+          <frame "Button:margin"> 291x34 @1064,212 | flex-col gap0 pad(0, 0, 0, 32)
+            <frame "Button"> 259x34 @1096,212 | flex-col gap0 pad(1, 0, 9, 0) CENTER | align:CENTER
+              <text "Text"> 259x24 @1096,213 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Нууцлал & Аюулгүй байдал
+        <frame "General Tab Content (Active)"> 1020x492 @336,283 | flex-col gap0 pad(32, 32, 32, 32) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0
+          <rectangle "General Tab Content (Active):shadow"> 1020x492 @336,283 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 10 30 rgba(140,75,85,0.08)
+          <frame "Container"> 954x426 @369,316 | flex-col gap0 pad(0, 0, 0, 0)
+            <frame "Logo Upload"> 954x182 @369,316 | flex-col gap0 pad(0, 0, 0, 0)
+              <frame "Label"> 954x24 @369,316 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Platform Logo"> 954x24 @369,316 | bg #211a1b | Montserrat 500 18px/24px
+                  TEXT: Platform Logo
+              <frame "Margin"> 954x158 @369,340 | flex-col gap0 pad(16, 0, 0, 0)
+                <frame "Background+Border"> 954x142 @369,356 | flex-col gap0 pad(32, 32, 32, 32) CENTER | align:CENTER | bg #fff0f1 | border 2px #d7c1c3 | r12.0
+                  <frame "Margin"> 31x30 @830,390 | flex-col gap0 pad(0, 0, 8, 0)
+                    <vector "Icon"> 31x22 @830,390 | bg #8a4853
+                  <frame "Container"> 344x24 @674,420 | flex-col gap0 pad(0, 0, 0, 0)
+                    <text "Text"> 344x24 @674,420 | bg #524345 | Montserrat 400 16px/24px
+                      TEXT: Drag and drop logo here, or click to browse
+                  <frame "Margin"> 277x20 @707,444 | flex-col gap0 pad(4, 0, 0, 0)
+                    <text "Text"> 277x16 @707,448 | bg #5a5c5c | Montserrat 500 12px/16px
+                      TEXT: Recommended size: 512x512px (PNG, SVG)
+            <frame "Platform Name"> 461x81 @369,548 | flex-col gap9 pad(0, 0, 0, 0)
+              <text "Label → Platform Name"> 140x24 @369,548 | bg #211a1b | Montserrat 500 18px/24px
+                TEXT: Platform Name
+              <frame "Input"> 461x48 @369,581 | flex-row gap0 pad(12, 12, 12, 12) CENTER | bg #fff0f1 | r8.0
+                <frame "Container"> 437x24 @381,593 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Goo Saikhan"> 437x24 @381,593 | bg #211a1b | Montserrat 400 16px/24px
+                    TEXT: Goo Saikhan
+            <frame "Language"> 461x81 @862,548 | flex-col gap9 pad(0, 0, 0, 0)
+              <text "Label → Default Language"> 165x24 @862,548 | bg #211a1b | Montserrat 500 18px/24px
+                TEXT: Default Language
+              <frame "Options"> 461x48 @862,581 | flex-row gap0 pad(12, 12, 12, 12) CENTER | align:CENTER | bg #fff0f1 | r8.0
+                <frame "image clip"> 461x48 @862,581 | flex-col gap0 pad(12, 8, 12, 429) CENTER
+                  <frame "image"> 24x24 @1291,593
+                    <vector "Vector"> 10x5 @1298,603 | border 1.8px #6b7280
+                <frame "Container"> 437x24 @874,593 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Mongolian (MN)"> 437x24 @874,593 | bg #211a1b | Montserrat 400 16px/24px
+                    TEXT: Mongolian (MN)
+            <frame "Support Email"> 461x81 @369,661 | flex-col gap9 pad(0, 0, 0, 0)
+              <text "Label → Support Email"> 131x24 @369,661 | bg #211a1b | Montserrat 500 18px/24px
+                TEXT: Support Email
+              <frame "Input"> 461x48 @369,694 | flex-row gap0 pad(12, 12, 12, 12) CENTER | bg #fff0f1 | r8.0
+                <frame "Container"> 437x24 @381,706 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "support@goosaikhan.mn"> 437x24 @381,706 | bg #211a1b | Montserrat 400 16px/24px
+                    TEXT: support@goosaikhan.mn
+            <frame "Support Phone"> 461x81 @862,661 | flex-col gap9 pad(0, 0, 0, 0)
+              <text "Label → Support Phone"> 139x24 @862,661 | bg #211a1b | Montserrat 500 18px/24px
+                TEXT: Support Phone
+              <frame "Input"> 461x48 @862,694 | flex-row gap0 pad(12, 12, 12, 12) CENTER | bg #fff0f1 | r8.0
+                <frame "Container"> 437x24 @874,706 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "+976 7700 0000"> 437x24 @874,706 | bg #211a1b | Montserrat 400 16px/24px
+                    TEXT: +976 7700 0000
+    <frame "Sticky Bottom Action Bar"> 1116x100 @288,924 | flex-row gap0 pad(24, 24, 24, 24) MAX | align:CENTER | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.20) | shadow 0 -10 30 rgba(140,75,85,0.05)
+      <frame "Container"> 1066x50 @313,949 | flex-row gap8.52651e-14 pad(0, 32, 0, 32) MAX
+        <frame "Button"> 112x50 @992,949 | flex-col gap0 pad(12, 24, 12, 24) CENTER | align:CENTER | bg #fff0f1 | border 1px #d7c1c3 | r12.0
+          <text "Text"> 62x24 @1017,962 | bg #524345 | Montserrat 500 18px/24px | center
+            TEXT: Cancel
+        <frame "Button:margin"> 243x50 @1104,949 | flex-col gap0 pad(0, 0, 0, 16)
+          <frame "Button"> 227x50 @1120,949 | flex-row gap-0.01 pad(13, 32, 13, 32) | align:CENTER | bg #8a4853 | r12.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+            <frame "Container"> 10x10 @1152,969 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <vector "Icon"> 10x10 @1152,969 | bg #ffffff
+            <frame "Margin"> 153x24 @1161,962 | flex-col gap0 pad(0, 0, 0, 8)
+              <frame "Container"> 145x24 @1169,962 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                <text "Text"> 145x24 @1169,962 | bg #ffffff | Montserrat 500 18px/24px | center
+                  TEXT: Хадгалах (Save)
+    <frame "Header - TopAppBar"> 992x80 @288,0 | flex-row gap0 pad(0, 32, 0, 32) SPACE_BETWEEN | align:CENTER | bg rgba(255,248,247,0.60) | border 1px rgba(255,255,255,0.20)
+      <frame "Container"> 717x41 @320,19 | flex-row gap0 pad(0, 0, 0, 0) | align:CENTER
+        <frame "Container"> 384x41 @320,19 | flex-col gap0 pad(0, 0, 0, 0)
+          <frame "Input"> 384x41 @320,19 | flex-row gap0 pad(10, 16, 11, 40) CENTER | bg #f4e5e5 | r9999.0
+            <frame "Container"> 328x20 @360,29 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Search..."> 328x20 @360,29 | bg #5a5c5c | Montserrat 400 16px/19.504px
+                TEXT: Search...
+          <frame "Container"> 17x25 @332,27 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 17x17 @332,27 | bg #524345
+      <frame "Container"> 211x42 @1037,18 | flex-row gap0 pad(0, 0, 0, 0) | align:CENTER
+        <frame "Button"> 31x42 @1037,18 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+          <frame "Container"> 15x19 @1045,26 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+            <vector "Icon"> 15x19 @1045,26 | bg #524345
+        <frame "Button:margin"> 59x42 @1068,18 | flex-col gap0 pad(0, 0, 0, 24)
+          <frame "Button"> 35x42 @1092,18 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+            <frame "Container"> 19x19 @1100,26 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+              <vector "Icon"> 19x19 @1100,26 | bg #524345
+        <frame "Button:margin"> 57x40 @1127,20 | flex-col gap0 pad(0, 0, 0, 24)
+          <frame "Button"> 33x40 @1151,20 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+            <frame "Container"> 17x17 @1159,28 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+              <vector "Icon"> 17x17 @1159,28 | bg #524345
+        <frame "Margin"> 64x40 @1184,20 | flex-col gap0 pad(0, 0, 0, 24)
+          <frame "Background+Border"> 40x40 @1208,20 | flex-col gap0 pad(0, 0, 0, 0) CENTER | bg #eedfe0 | border 1px #d7c1c3 | r9999.0
+            <frame "Super Admin Avatar"> 38x38 @1209,20 | bg image:6c2cb6f2
+  <frame "SideNavBar"> 288x1024 @0,0 | flex-col gap0 pad(32, 24, 32, 24) | bg rgba(255,248,247,0.80) | border 1px rgba(255,255,255,0.20)
+    <rectangle "SideNavBar:shadow"> 288x1024 @0,0 | bg rgba(255,255,255,0.00) | shadow 24 0 48 rgba(140,75,85,0.08)
+    <frame "Margin"> 239x108 @24,32 | flex-col gap0 pad(0, 0, 40, 0)
+      <frame "Container"> 239x68 @24,32 | flex-col gap4 pad(0, 0, 0, 0)
+        <frame "Heading 1"> 239x48 @24,32 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "LuxeAdmin"> 239x48 @24,32 | bg #8a4853 | Montserrat 600 40px/48px
+            TEXT: LuxeAdmin
+        <frame "Container"> 239x16 @24,84 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Super Admin Console"> 239x16 @24,84 | bg #524345 | Montserrat 500 12px/16px
+            TEXT: Super Admin Console
+    <frame "Container"> 239x747 @24,140 | flex-col gap8 pad(0, 0, 0, 0)
+      <frame "Link"> 239x48 @24,140 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 17x17 @36,156 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 17x17 @36,156 | bg #645d5d
+        <frame "Margin"> 113x24 @53,152 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 101x24 @65,152 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Dashboard
+      <frame "Link"> 239x48 @24,196 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 20x15 @36,213 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x15 @36,213 | bg #645d5d
+        <frame "Margin"> 63x24 @56,208 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 51x24 @68,208 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Users
+      <frame "Link"> 239x48 @24,252 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 20x17 @36,267 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x17 @36,267 | bg #645d5d
+        <frame "Margin"> 72x24 @56,264 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 60x24 @68,264 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Salons
+      <frame "Link"> 239x48 @24,308 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 17x17 @36,324 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 17x17 @36,324 | bg #645d5d
+        <frame "Margin"> 71x24 @53,320 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 59x24 @65,320 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Artists
+      <frame "Link"> 239x48 @24,364 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 17x19 @36,378 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 17x19 @36,378 | bg #645d5d
+        <frame "Margin"> 98x24 @53,376 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 86x24 @65,376 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Bookings
+      <frame "Link"> 239x48 @24,420 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 20x15 @36,437 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x15 @36,437 | bg #645d5d
+        <frame "Margin"> 127x24 @56,432 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 115x24 @68,432 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Transactions
+      <frame "Link"> 239x48 @24,476 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 18x17 @36,492 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 18x17 @36,492 | bg #645d5d
+        <frame "Margin"> 85x24 @54,488 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 73x24 @66,488 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Payouts
+      <frame "Link"> 239x48 @24,532 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 20x17 @36,547 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x17 @36,547 | bg #645d5d
+        <frame "Margin"> 117x24 @56,544 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 105x24 @68,544 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Complaints
+      <frame "Link"> 239x48 @24,588 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 18x17 @36,604 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 18x17 @36,604 | bg #645d5d
+        <frame "Margin"> 87x24 @54,600 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 75x24 @66,600 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: Reviews
+      <frame "Link"> 239x48 @24,644 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | r8.0
+        <frame "Container"> 20x20 @36,658 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x20 @36,658 | bg #645d5d
+        <frame "Margin"> 82x24 @56,656 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 70x24 @68,656 | bg #645d5d | Montserrat 500 18px/24px
+            TEXT: AI Tools
+      <frame "Link"> 239x48 @24,700 | flex-row gap-3.55271e-15 pad(12, 12, 12, 12) | align:CENTER | bg rgba(255,217,221,0.30) | border 1px #8a4853 | r8.0
+        <frame "Container"> 19x19 @36,714 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 19x19 @36,714 | bg #8a4853
+        <frame "Margin"> 88x24 @55,712 | flex-col gap0 pad(0, 0, 0, 12)
+          <text "Text"> 76x24 @67,712 | bg #8a4853 | Montserrat 500 18px/24px
+            TEXT: Settings
+    <frame "Margin"> 239x105 @24,887 | flex-col gap0 pad(32, 0, 0, 0)
+      <frame "HorizontalBorder"> 239x73 @24,919 | flex-col gap0 pad(24, 0, 0, 0) | border 1px #eedfe0
+        <frame "Button"> 239x48 @24,944 | flex-row gap0 pad(12, 16, 12, 16) CENTER | align:CENTER | bg #8a4853 | r12.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+          <text "Text"> 163x24 @62,956 | bg #ffffff | Montserrat 500 18px/24px | center
+            TEXT: New System Alert

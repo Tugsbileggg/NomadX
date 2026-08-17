@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Figma-аас spec гаргах бие даасан Node скриптүүд — Next-ийн код биш.
+    "design/**",
+    // server/src/db/types.ts-ээс автоматаар хуулагддаг.
+    "src/lib/db-types.ts",
   ]),
 ]);
 

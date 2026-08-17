@@ -1,12 +1,24 @@
 {
-  "name": "hono",
+  "name": "lumina-server",
   "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "sync:types": "node scripts/sync-db-types.mjs",
+    "db:link": "supabase link --project-ref neeosuuhhbcaillrptpa",
+    "db:push": "supabase db push",
+    "db:types": "supabase gen types typescript --project-id neeosuuhhbcaillrptpa > src/db/types.generated.ts",
+    "rt:check": "node scripts/rt-check.mjs",
+    "rt:walk": "node scripts/fake-walk.mjs"
+  },
   "dependencies": {
+    "@supabase/supabase-js": "^2.109.0",
     "hono": "^4.13.1"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
+    "supabase": "^2.114.0",
     "tsx": "^4.23.0",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "ws": "^8.21.3"
   }
 }

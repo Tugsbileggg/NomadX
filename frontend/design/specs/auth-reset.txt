@@ -1,0 +1,93 @@
+<frame "Main"> 1280x1024 @0,0 | flex-row gap0 pad(0, 0, 0, 0)
+  <frame "Section - Left Panel: Editorial Image"> 640x1024 @0,0 | flex-col gap0 pad(48, 48, 48, 48) SPACE_BETWEEN | bg #faeaeb
+    <frame "Container"> 640x1024 @0,0 | flex-col gap0 pad(0, 0, 0, 0) CENTER
+      <frame "AP1WRLu_uGZQyIfl78DsJJ9sfVik7_8S-IJxHsOl_sIWR67FiE1X6yH1v…"> 640x1024 @0,0 | bg image:6f912640
+      <rectangle "Gradient"> 640x1024 @0,0 | bg linear(rgba(0,0,0,0.20) → rgba(0,0,0,0.00) → rgba(0,0,0,0.40))
+    <frame "Container"> 544x48 @48,48 | flex-col gap0 pad(0, 0, 0, 0)
+      <text "SERENE"> 544x48 @48,48 | bg #ffffff | Montserrat 600 40px/48px
+        TEXT: SERENE
+    <frame "Margin"> 544x880 @48,96 | flex-col gap0 pad(822, 0, 0, 0) MAX
+      <frame "Container"> 544x59 @48,917 | flex-col gap0 pad(0, 0, 0, 0)
+        <frame "Container"> 448x59 @48,917 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Text"> 422x59 @48,917 | bg #ffffff | Montserrat 500 18px/29.25px
+            TEXT: Elevating your natural beauty through science ⏎ and serenity.
+  <frame "Section - Right Panel: OTP Form"> 640x1024 @640,0 | flex-col gap0 pad(96, 96, 96, 96) CENTER | align:CENTER | bg #fff8f7
+    <frame "Overlay+Border+OverlayBlur"> 480x700 @720,162 | flex-col gap24 pad(40, 40, 40, 40) | bg rgba(255,255,255,0.85) | border 1px rgba(255,255,255,0.40) | r24.0
+      <rectangle "Overlay+Shadow"> 480x700 @720,162 | bg rgba(255,255,255,0.00) | r24.0 | shadow 0 24 48 rgba(140,75,85,0.08)
+      <frame "Header:margin"> 398x104 @761,203 | flex-col gap0 pad(0, 0, 8, 0)
+        <frame "Header"> 398x96 @761,203 | flex-col gap12 pad(0, 0, 0, 0)
+          <frame "Heading 1"> 398x36 @761,203 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <text "Text"> 306x36 @807,203 | bg #8a4853 | Montserrat 600 28px/36px | center
+              TEXT: Шинэ нууц үг үүсгэх
+          <frame "Container"> 398x48 @761,251 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <text "Text"> 352x48 @784,251 | bg #524345 | Montserrat 400 16px/24px | center
+              TEXT: Өмнөх нууц үгээс ялгаатай, хүчтэй нууц үг ⏎ сонгоно уу
+      <frame "Form"> 398x490 @761,331 | flex-col gap20 pad(0, 0, 0, 0)
+        <frame "Password Input 1"> 398x230 @761,331 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Label"> 398x16 @761,331 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Шинэ нууц үг"> 398x16 @761,331 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Шинэ нууц үг
+          <frame "Container"> 398x56 @761,355 | flex-col gap0 pad(0, 0, 0, 0)
+            <frame "Input"> 398x56 @761,355 | flex-row gap0 pad(18, 16, 18, 16) CENTER | bg #fff0f1 | r12.0
+              <frame "Container"> 366x20 @777,374 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Шинэ нууц үгээ оруулна уу"> 366x20 @777,374 | bg rgba(133,115,116,0.50) | Montserrat 500 16px/19.504px
+                  TEXT: Шинэ нууц үгээ оруулна уу
+            <frame "Button - Toggle password visibility"> 22x22 @1121,372 | flex-col gap0 pad(0, 0, 7, 0) CENTER | align:CENTER
+              <frame "Container"> 22x15 @1121,372 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+                <vector "Icon"> 22x15 @1121,372 | bg #857374
+          <frame "Password Strength Indicator:margin"> 398x46 @761,419 | flex-col gap0 pad(8, 0, 0, 0)
+            <frame "Password Strength Indicator"> 398x38 @761,427 | flex-col gap4 pad(0, 0, 0, 0)
+              <frame "Background"> 398x6 @761,427 | flex-row gap0 pad(0, 0, 0, 0) | bg #eedfe0 | r9999.0
+                <rectangle "Background"> 133x6 @761,427 | bg #c6c6c7
+              <frame "Margin"> 398x28 @761,437 | flex-col gap0 pad(4, 0, 0, 0)
+                <frame "Container"> 398x24 @761,441 | flex-row gap158.6 pad(0, 0, 0, 0) SPACE_BETWEEN
+                  <frame "Container"> 19x24 @761,441 | flex-col gap0 pad(0, 0, 0, 0)
+                    <text "Text"> 19x24 @761,441 | bg #524345 | Montserrat 400 10px/24px
+                      TEXT: Сул
+                  <frame "Container"> 26x24 @938,441 | flex-col gap0 pad(0, 0, 0, 0)
+                    <text "Text"> 26x24 @938,441 | bg #857374 | Montserrat 400 10px/24px
+                      TEXT: Дунд
+                  <frame "Container"> 35x24 @1124,441 | flex-col gap0 pad(0, 0, 0, 0)
+                    <text "Text"> 35x24 @1124,441 | bg #857374 | Montserrat 400 10px/24px
+                      TEXT: Хүчтэй
+          <frame "List - Requirements Checklist:margin"> 398x88 @761,473 | flex-col gap0 pad(12, 0, 0, 0)
+            <frame "List - Requirements Checklist"> 398x76 @761,485 | flex-col gap8 pad(0, 0, 0, 0)
+              <frame "Item"> 398x20 @761,485 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Container"> 13x13 @761,488 | flex-col gap0 pad(0, 0, 0, 0)
+                  <vector "Icon"> 13x13 @761,488 | bg #857374
+                <frame "Container"> 71x20 @782,485 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 71x20 @782,485 | bg #524345 | Montserrat 400 13px/20px
+                    TEXT: 8+ тэмдэгт
+              <frame "Item"> 398x20 @761,513 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Container"> 13x13 @761,516 | flex-col gap0 pad(0, 0, 0, 0)
+                  <vector "Icon"> 13x13 @761,516 | bg #857374
+                <frame "Container"> 120x20 @782,513 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 120x20 @782,513 | bg #524345 | Montserrat 400 13px/20px
+                    TEXT: Том үсэг агуулсан
+              <frame "Item"> 398x20 @761,541 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Container"> 13x13 @761,544 | flex-col gap0 pad(0, 0, 0, 0)
+                  <vector "Icon"> 13x13 @761,544 | bg #857374
+                <frame "Container"> 87x20 @782,541 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 87x20 @782,541 | bg #524345 | Montserrat 400 13px/20px
+                    TEXT: Тоо агуулсан
+        <frame "Password Input 2:margin"> 398x88 @761,581 | flex-col gap0 pad(8, 0, 0, 0)
+          <frame "Password Input 2"> 398x80 @761,589 | flex-col gap8 pad(0, 0, 0, 0)
+            <frame "Label"> 398x16 @761,589 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Нууц үг баталгаажуулах"> 398x16 @761,589 | bg #524345 | Montserrat 500 12px/16px
+                TEXT: Нууц үг баталгаажуулах
+            <frame "Container"> 398x56 @761,613 | flex-col gap0 pad(0, 0, 0, 0)
+              <frame "Input"> 398x56 @761,613 | flex-row gap0 pad(18, 16, 18, 16) CENTER | bg #fff0f1 | r12.0
+                <frame "Container"> 366x20 @777,632 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Нууц үгээ дахин оруулна уу"> 366x20 @777,632 | bg rgba(133,115,116,0.50) | Montserrat 500 16px/19.504px
+                    TEXT: Нууц үгээ дахин оруулна уу
+              <frame "Button - Toggle password visibility"> 22x27 @1121,628 | flex-col gap0 pad(0, 0, 7, 0) CENTER | align:CENTER
+                <frame "Container"> 22x20 @1121,628 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+                  <vector "Icon"> 22x20 @1121,628 | bg #857374
+        <frame "Submit Button:margin"> 398x80 @761,689 | flex-col gap0 pad(24, 0, 0, 0)
+          <frame "Submit Button"> 398x56 @761,713 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg #8a4853 | r12.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+            <text "Text"> 86x24 @917,729 | bg #ffffff | Montserrat 500 18px/24px | center
+              TEXT: Хадгалах
+        <frame "Link:margin"> 398x32 @761,789 | flex-col gap0 pad(16, 0, 0, 0)
+          <frame "Link"> 398x16 @761,805 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <text "Text"> 175x16 @872,805 | bg #8a4853 | Montserrat 500 12px/16px | center
+              TEXT: Нэвтрэх хуудас руу буцах

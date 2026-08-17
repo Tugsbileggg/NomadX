@@ -1,0 +1,399 @@
+<frame "Мэдээлэл (Analytics) - Solo Artist"> 1280x1379 @0,0 | flex-row gap0 pad(0, 0, 0, 288) CENTER | bg #ffffff,#fff8f7
+  <frame "Main Content"> 992x1379 @288,0 | flex-col gap0 pad(0, 0, 0, 0) | bg #fff8f7
+    <frame "Header - TopNavBar"> 992x80 @288,0 | flex-col gap0 pad(0, 0, 0, 0) | bg rgba(255,248,247,0.70) | border 1px rgba(255,255,255,0.20) | shadow 0 1 2 rgba(0,0,0,0.05)
+      <frame "Container"> 992x79 @288,0 | flex-row gap583.97 pad(16, 32, 16, 32) SPACE_BETWEEN | align:CENTER
+        <frame "Container"> 256x41 @320,19 | flex-col gap0 pad(0, 0, 0, 0)
+          <frame "Input"> 256x41 @320,19 | flex-row gap0 pad(10, 16, 11, 40) CENTER | bg rgba(255,255,255,0.50) | r9999.0
+            <frame "Container"> 200x20 @360,29 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Хайх..."> 200x20 @360,29 | bg rgba(82,67,69,0.50) | Montserrat 400 16px/19.504px
+                TEXT: Хайх...
+          <frame "Container"> 18x25 @332,27 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 18x18 @332,27 | bg #524345
+        <frame "Container"> 77x47 @1171,16 | flex-row gap10 pad(0, 1, 0, 1) | align:CENTER
+          <frame "Button:css-transform"> 30x47 @1172,16 | flex-col gap0 pad(1, 0, 1, 0) CENTER
+            <frame "Button"> 30x41 @1172,19 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+              <frame "Container"> 15x19 @1180,27 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+                <vector "Icon"> 15x19 @1180,27 | bg #524345
+          <frame "Button:css-transform"> 34x47 @1213,16 | flex-col gap0 pad(1, 0, 1, 0) CENTER
+            <frame "Button"> 34x37 @1213,21 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+              <frame "Container"> 19x15 @1220,29 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+                <vector "Icon"> 19x15 @1220,29 | bg #524345
+    <frame "Container"> 992x1299 @288,80 | flex-col gap40 pad(40, 40, 128, 40)
+      <frame "Page Header & Filters"> 912x92 @328,120 | flex-row gap24 pad(0, 0, 0, 0) SPACE_BETWEEN | align:MAX
+        <frame "Container"> 325x92 @328,120 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Heading 2"> 325x36 @328,120 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 147x36 @328,120 | bg #211a1b | Montserrat 600 28px/36px
+              TEXT: Мэдээлэл
+          <frame "Container"> 325x48 @328,164 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 325x48 @328,164 | bg #524345 | Montserrat 400 16px/24px
+              TEXT: Бизнесийн өсөлт болон харилцагчийн ⏎ хандлага.
+        <frame "Container"> 527x74 @713,138 | flex-row gap16 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Overlay+Border+Shadow+OverlayBlur"> 360x74 @713,138 | flex-row gap0 pad(4, 4, 4, 4) | bg rgba(255,255,255,0.60) | border 1px rgba(255,255,255,0.40) | r12.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+            <frame "Button"> 92x64 @718,143 | flex-col gap0 pad(8, 16, 8, 16) CENTER | align:CENTER | r8.0
+              <text "Text"> 60x48 @734,151 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Долоо ⏎ хоног
+            <frame "Button"> 68x64 @810,143 | flex-col gap0 pad(20, 16, 20, 16) CENTER | align:CENTER | bg #ffffff | r8.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+              <text "Text"> 36x24 @826,163 | bg #8a4853 | Montserrat 600 18px/24px | center
+                TEXT: Сар
+            <frame "Button"> 74x64 @878,143 | flex-col gap0 pad(20, 16, 20, 16) CENTER | align:CENTER | r8.0
+              <text "Text"> 42x24 @894,163 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Жил
+            <frame "Button"> 115x64 @952,143 | flex-row gap4 pad(20, 16, 20, 16) | align:CENTER | r8.0
+              <text "Text"> 66x24 @968,163 | bg #524345 | Montserrat 500 18px/24px | center
+                TEXT: Сонгох
+              <frame "Container"> 14x15 @1038,168 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                <vector "Icon"> 14x15 @1038,168 | bg #524345
+          <frame "Button"> 151x68 @1089,141 | flex-row gap19.09 pad(10, 31, 10, 20) | align:CENTER | bg #8a4853 | r12.0 | shadow 0 1 2 rgba(138,72,83,0.20)
+            <frame "Container"> 13x13 @1109,168 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <vector "Icon"> 13x13 @1109,168 | bg #ffffff
+            <text "Text"> 68x48 @1141,151 | bg #ffffff | Montserrat 500 18px/24px | center
+              TEXT: Тайлан ⏎ татах
+      <frame "Top Stats Bento Grid"> 912x199 @328,252 | flex-row gap24 pad(0, 0, 0, 0) CENTER
+        <frame "Stat 1"> 210x199 @328,252 | flex-col gap8 pad(24, 24, 25, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <rectangle "Gradient"> 128x128 @409,253 | bg linear(rgba(255,217,221,0.30) → rgba(255,217,221,0.00)) | r[0, 0, 0, 9999]
+          <frame "Container"> 160x48 @353,277 | flex-row gap1.42109e-14 pad(0, 0, 0, 0) SPACE_BETWEEN
+            <frame "Container"> 120x48 @353,277 | flex-col gap0 pad(0, 53, 0, 0)
+              <text "Text"> 67x48 @353,277 | bg #524345 | Montserrat 500 18px/24px
+                TEXT: Нийт ⏎ орлого
+            <frame "Background+Shadow"> 38x39 @475,277 | flex-col gap0 pad(8, 8, 15, 8) | bg #ffffff | r8.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+              <vector "Icon"> 22x16 @483,285 | bg #8a4853
+          <frame "Heading 3"> 160x56 @353,333 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "₮12.4M"> 160x48 @353,341 | bg #211a1b | Montserrat 600 40px/48px
+              TEXT: ₮12.4M
+          <frame "Background"> 79x28 @353,397 | flex-row gap4 pad(4, 8, 4, 8) | align:CENTER | bg #ecfdf5 | r6.0
+            <frame "Container"> 13x8 @361,407 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 13x8 @361,407 | bg #059669
+            <text "Text"> 46x20 @378,401 | bg #059669 | Montserrat 500 14px/20px
+              TEXT: +14.5%
+        <frame "Stat 2"> 210x199 @562,252 | flex-col gap8 pad(24, 24, 25, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <rectangle "Gradient"> 128x128 @643,253 | bg linear(rgba(255,217,221,0.30) → rgba(255,217,221,0.00)) | r[0, 0, 0, 9999]
+          <frame "Container"> 160x48 @587,277 | flex-row gap1.42109e-14 pad(0, 0, 0, 0) SPACE_BETWEEN
+            <frame "Container"> 120x48 @587,277 | flex-col gap0 pad(0, 36, 0, 0)
+              <text "Text"> 84x48 @587,277 | bg #524345 | Montserrat 500 18px/24px
+                TEXT: Нийт ⏎ захиалга
+            <frame "Background+Shadow"> 34x43 @713,277 | flex-col gap0 pad(8, 8, 15, 8) | bg #ffffff | r8.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+              <vector "Icon"> 18x20 @721,285 | bg #8a4853
+          <frame "Heading 3"> 160x56 @587,333 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "184"> 160x48 @587,341 | bg #211a1b | Montserrat 600 40px/48px
+              TEXT: 184
+          <frame "Background"> 73x28 @587,397 | flex-row gap4 pad(4, 8, 4, 8) | align:CENTER | bg #ecfdf5 | r6.0
+            <frame "Container"> 13x8 @595,407 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 13x8 @595,407 | bg #059669
+            <text "Text"> 39x20 @612,401 | bg #059669 | Montserrat 500 14px/20px
+              TEXT: +5.2%
+        <frame "Stat 3"> 210x195 @796,252 | flex-col gap8 pad(24, 24, 35, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <rectangle "Gradient"> 128x128 @877,253 | bg linear(rgba(255,217,221,0.30) → rgba(255,217,221,0.00)) | r[0, 0, 0, 9999]
+          <frame "Container"> 160x48 @821,277 | flex-row gap1.42109e-14 pad(0, 0, 0, 0) SPACE_BETWEEN
+            <frame "Container"> 120x48 @821,277 | flex-col gap0 pad(0, 46, 0, 0)
+              <text "Text"> 74x48 @821,277 | bg #524345 | Montserrat 500 18px/24px
+                TEXT: Дундаж ⏎ үнэлгээ
+            <frame "Background+Shadow"> 36x42 @945,277 | flex-col gap0 pad(8, 8, 15, 8) | bg #ffffff | r8.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+              <vector "Icon"> 20x19 @953,285 | bg #8a4853
+          <frame "Heading 3"> 160x56 @821,333 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "4.9"> 160x48 @821,341 | bg #211a1b | Montserrat 600 40px/48px
+              TEXT: 4.9
+          <frame "Container"> 160x14 @821,397 | flex-row gap4 pad(0, 0, 0, 0) | align:CENTER
+            <frame "Container"> 15x14 @821,397 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 15x14 @821,397 | bg #8a4853
+            <frame "Container"> 15x14 @840,397 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 15x14 @840,397 | bg #8a4853
+            <frame "Container"> 15x14 @859,397 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 15x14 @859,397 | bg #8a4853
+            <frame "Container"> 15x14 @878,397 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 15x14 @878,397 | bg #8a4853
+            <frame "Container"> 15x14 @897,397 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 15x14 @897,397 | bg #8a4853
+        <frame "Stat 4"> 210x199 @1030,252 | flex-col gap8 pad(24, 24, 25, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <rectangle "Gradient"> 128x128 @1111,253 | bg linear(rgba(255,217,221,0.30) → rgba(255,217,221,0.00)) | r[0, 0, 0, 9999]
+          <frame "Container"> 160x48 @1055,277
+            <frame "Container"> 139x48 @1055,277 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 139x48 @1055,277 | bg #524345 | Montserrat 500 18px/24px
+                TEXT: Харилцагчийн ⏎ хадгалалт
+            <frame "Background+Shadow"> 36x41 @1194,277 | flex-col gap0 pad(8, 8, 15, 8) | bg #ffffff | r8.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+              <vector "Icon"> 20x18 @1202,285 | bg #8a4853
+          <frame "Heading 3"> 160x56 @1055,333 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "78%"> 160x48 @1055,341 | bg #211a1b | Montserrat 600 40px/48px
+              TEXT: 78%
+          <frame "Background"> 69x28 @1055,397 | flex-row gap4 pad(4, 8, 4, 8) | align:CENTER | bg #ecfdf5 | r6.0
+            <frame "Container"> 13x8 @1063,407 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 13x8 @1063,407 | bg #059669
+            <text "Text"> 36x20 @1080,401 | bg #059669 | Montserrat 500 14px/20px
+              TEXT: +2.1%
+      <frame "Main Charts Row"> 912x400 @328,491 | flex-col gap0 pad(0, 0, 0, 0)
+        <frame "Revenue Trend (Large)"> 600x400 @328,491 | flex-col gap0 pad(24, 24, 24, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0
+          <rectangle "Revenue Trend (Large):shadow"> 600x400 @328,491 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <frame "Margin"> 550x56 @353,516 | flex-col gap0 pad(0, 0, 24, 0)
+            <frame "Container"> 550x32 @353,516 | flex-row gap270.18 pad(0, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+              <frame "Heading 3"> 240x32 @353,516 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 240x32 @353,516 | bg #211a1b | Montserrat 600 24px/32px
+                  TEXT: Орлогын хандлага
+              <frame "Button"> 32x27 @871,518 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+                <frame "Container"> 16x4 @879,526 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+                  <vector "Icon"> 16x4 @879,526 | bg #524345
+          <frame "Simulated Chart Area"> 550x294 @353,572 | flex-row gap59.2 pad(16, 8, 24, 8) SPACE_BETWEEN | align:MAX | border 1px #e5d7d7
+            <frame "Y Axis Labels"> 20x269 @314,572 | flex-col gap43.5 pad(0, 0, 0, 0) SPACE_BETWEEN
+              <frame "Container"> 20x16 @314,572 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 20x16 @314,572 | bg rgba(82,67,69,0.60) | Montserrat 500 12px/16px
+                  TEXT: 4M
+              <frame "Container"> 20x16 @314,635 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 18x16 @314,635 | bg rgba(82,67,69,0.60) | Montserrat 500 12px/16px
+                  TEXT: 3M
+              <frame "Container"> 20x16 @314,698 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 18x16 @314,698 | bg rgba(82,67,69,0.60) | Montserrat 500 12px/16px
+                  TEXT: 2M
+              <frame "Container"> 20x16 @314,762 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 16x16 @314,762 | bg rgba(82,67,69,0.60) | Montserrat 500 12px/16px
+                  TEXT: 1M
+              <frame "Container"> 20x16 @314,825 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 8x16 @314,825 | bg rgba(82,67,69,0.60) | Montserrat 500 12px/16px
+                  TEXT: 0
+            <frame "X Axis Labels & Bars/Points"> 133x253 @362,588 | flex-col gap8 pad(0, 0, 0, 0) MAX | align:CENTER
+              <frame "Overlay"> 4x95 @427,714 | bg rgba(138,72,83,0.20) | r[9999, 9999, 0, 0]
+                <rectangle "Background"> 8x8 @425,702 | bg #8a4853 | r9999.0
+              <frame "Margin"> 59x24 @399,817 | flex-col gap0 pad(8, 0, 0, 0)
+                <text "Text"> 59x16 @399,825 | bg #524345 | Montserrat 400 12px/16px
+                  TEXT: 1-р долоо
+            <frame "Container"> 133x253 @495,588 | flex-col gap8 pad(0, 0, 0, 0) MAX | align:CENTER
+              <frame "Overlay"> 4x155 @560,654 | bg rgba(138,72,83,0.20) | r[9999, 9999, 0, 0]
+                <rectangle "Background"> 8x8 @558,642 | bg #8a4853 | r9999.0
+              <frame "Margin"> 61x24 @531,817 | flex-col gap0 pad(8, 0, 0, 0)
+                <text "Text"> 61x16 @531,825 | bg #524345 | Montserrat 400 12px/16px
+                  TEXT: 2-р долоо
+            <frame "Container"> 133x253 @628,588 | flex-col gap8 pad(0, 0, 0, 0) MAX | align:CENTER
+              <frame "Overlay"> 4x107 @693,702 | bg rgba(138,72,83,0.20) | r[9999, 9999, 0, 0]
+                <rectangle "Background"> 8x8 @691,690 | bg #8a4853 | r9999.0
+              <frame "Margin"> 61x24 @665,817 | flex-col gap0 pad(8, 0, 0, 0)
+                <text "Text"> 61x16 @665,825 | bg #524345 | Montserrat 400 12px/16px
+                  TEXT: 3-р долоо
+            <frame "Container"> 133x253 @762,588 | flex-col gap8 pad(0, 0, 0, 0) MAX | align:CENTER
+              <frame "Background+Shadow"> 4x202 @826,607 | bg #8a4853 | r[9999, 9999, 0, 0] | shadow 0 0 15 rgba(138,72,83,0.40)
+                <frame "Background+Border"> 16x16 @820,593 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER | bg #8a4853 | border 2px #ffffff | r9999.0
+                  <rectangle "Overlay+Shadow"> 12x12 @822,595 | bg rgba(255,255,255,0.00) | r9999.0 | shadow 0 2 4 rgba(0,0,0,0.10) | shadow 0 4 6 rgba(0,0,0,0.10)
+                <frame "Background+Border"> 56x26 @800,567 | flex-col gap0 pad(4, 8, 4, 8) | bg #fff8f7 | border 1px rgba(138,72,83,0.20) | r4.0
+                  <rectangle "Overlay+Shadow"> 56x26 @800,567 | bg rgba(255,255,255,0.00) | r4.0 | shadow 0 2 4 rgba(0,0,0,0.10) | shadow 0 4 6 rgba(0,0,0,0.10)
+                  <text "Text"> 38x16 @809,572 | bg #8a4853 | Montserrat 700 12px/16px
+                    TEXT: ₮3.4M
+              <frame "Margin"> 64x24 @797,817 | flex-col gap0 pad(8, 0, 0, 0)
+                <text "Text"> 64x16 @797,825 | bg #524345 | Montserrat 700 12px/16px
+                  TEXT: 4-р долоо
+            <frame "SVG Line connecting points (visual approximation)"> 549x246 @354,572
+              <vector "Vector"> 329x209 @409,609 | bg linear(#8a4853 → rgba(138,72,83,0.00))
+              <vector "Vector"> 329x126 @409,609 | border 7.95px #8a4853
+        <frame "Service Popularity"> 288x400 @952,491 | flex-col gap0 pad(24, 24, 24, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0
+          <rectangle "Service Popularity:shadow"> 288x400 @952,491 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <frame "Margin"> 238x88 @977,516 | flex-col gap0 pad(0, 0, 24, 0)
+            <frame "Container"> 238x64 @977,516 | flex-row gap2.84217e-14 pad(0, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+              <frame "Heading 3"> 214x64 @977,516 | flex-col gap0 pad(0, 27, 0, 0)
+                <text "Text"> 187x64 @977,516 | bg #211a1b | Montserrat 600 24px/32px
+                  TEXT: Үйлчилгээний ⏎ эрэлт
+              <frame "Container"> 16x16 @1199,540 | flex-col gap0 pad(0, 0, 0, 0)
+                <vector "Icon"> 16x16 @1199,540 | bg #524345
+          <frame "Container"> 238x262 @977,604 | flex-col gap20 pad(0, 0, 0, 0) CENTER
+            <frame "Bar 1"> 238x36 @977,633 | flex-col gap4 pad(0, 0, 0, 0)
+              <frame "Container"> 238x20 @977,633 | flex-row gap96.19 pad(0, 0, 0, 0) SPACE_BETWEEN
+                <frame "Container"> 113x20 @977,633 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 113x20 @977,633 | bg #211a1b | Montserrat 400 14px/20px
+                    TEXT: Signature Facial
+                <frame "Container"> 29x20 @1186,633 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 29x20 @1186,633 | bg #524345 | Montserrat 500 14px/20px
+                    TEXT: 45%
+              <frame "Background"> 238x12 @977,657 | bg #e5d7d7 | r9999.0
+                <rectangle "Background"> 107x12 @977,657 | bg #8a4853 | r9999.0
+            <frame "Bar 2"> 238x36 @977,689 | flex-col gap4 pad(0, 0, 0, 0)
+              <frame "Container"> 238x20 @977,689 | flex-row gap59.05 pad(0, 0, 0, 0) SPACE_BETWEEN
+                <frame "Container"> 150x20 @977,689 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 150x20 @977,689 | bg #211a1b | Montserrat 400 14px/20px
+                    TEXT: Deep Tissue Massage
+                <frame "Container"> 29x20 @1186,689 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 29x20 @1186,689 | bg #524345 | Montserrat 500 14px/20px
+                    TEXT: 28%
+              <frame "Background"> 238x12 @977,713 | bg #e5d7d7 | r9999.0
+                <rectangle "Background"> 67x12 @977,713 | bg #a6606b | r9999.0
+            <frame "Bar 3"> 238x36 @977,745 | flex-col gap4 pad(0, 0, 0, 0)
+              <frame "Container"> 238x20 @977,745 | flex-row gap81.97 pad(0, 0, 0, 0) SPACE_BETWEEN
+                <frame "Container"> 131x20 @977,745 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 131x20 @977,745 | bg #211a1b | Montserrat 400 14px/20px
+                    TEXT: Aromatherapy Spa
+                <frame "Container"> 25x20 @1190,745 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 25x20 @1190,745 | bg #524345 | Montserrat 500 14px/20px
+                    TEXT: 15%
+              <frame "Background"> 238x12 @977,769 | bg #e5d7d7 | r9999.0
+                <rectangle "Background"> 36x12 @977,769 | bg #ffb2bc | r9999.0
+            <frame "Bar 4"> 238x36 @977,801 | flex-col gap4 pad(0, 0, 0, 0)
+              <frame "Container"> 238x20 @977,801 | flex-row gap110.25 pad(0, 0, 0, 0) SPACE_BETWEEN
+                <frame "Container"> 103x20 @977,801 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 103x20 @977,801 | bg #211a1b | Montserrat 400 14px/20px
+                    TEXT: Lash Lift & Tint
+                <frame "Container"> 25x20 @1190,801 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 25x20 @1190,801 | bg #524345 | Montserrat 500 14px/20px
+                    TEXT: 12%
+              <frame "Background"> 238x12 @977,825 | bg #e5d7d7 | r9999.0
+                <rectangle "Background"> 29x12 @977,825 | bg #d7c1c3 | r9999.0
+      <frame "Bottom Charts Row"> 912x320 @328,931 | flex-row gap24 pad(0, 0, 0, 0) CENTER
+        <frame "Bookings Trend"> 288x320 @328,931 | flex-col gap0 pad(24, 24, 24, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0
+          <rectangle "Bookings Trend:shadow"> 288x320 @328,931 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <frame "Heading 3:margin"> 238x40 @353,956 | flex-col gap0 pad(0, 0, 16, 0)
+            <frame "Heading 3"> 238x24 @353,956 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Захиалгын хандлага"> 238x24 @353,956 | bg #211a1b | Montserrat 500 18px/24px
+                TEXT: Захиалгын хандлага
+          <frame "Border"> 238x230 @353,996 | border 1px #e5d7d7
+            <frame "SVG - Abstracted mini line chart"> 237x213 @354,1012
+              <vector "Vector"> 237x161 @354,1033 | border 6.63px #a6606b
+              <vector "Vector"> 9x17 @444,1089 | bg #a6606b
+              <vector "Vector"> 9x17 @515,1131 | bg #a6606b
+              <vector "Vector"> 9x17 @586,1025 | bg #8a4853 | border 3.315px #ffffff
+            <frame "Container"> 237x15 @354,1230 | flex-row gap36.9 pad(0, 0, 0, 0) SPACE_BETWEEN
+              <frame "Container"> 32x15 @354,1230 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 32x15 @354,1230 | bg rgba(82,67,69,0.70) | Montserrat 400 10px/15px
+                  TEXT: Даваа
+              <frame "Container"> 36x15 @422,1230 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 36x15 @422,1230 | bg rgba(82,67,69,0.70) | Montserrat 400 10px/15px
+                  TEXT: Лхагва
+              <frame "Container"> 37x15 @495,1230 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 37x15 @495,1230 | bg rgba(82,67,69,0.70) | Montserrat 400 10px/15px
+                  TEXT: Баасан
+              <frame "Container"> 22x15 @569,1230 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 22x15 @569,1230 | bg rgba(82,67,69,0.70) | Montserrat 400 10px/15px
+                  TEXT: Ням
+        <frame "Peak Hours Heatmap"> 288x320 @640,931 | flex-col gap0 pad(24, 24, 24, 24) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0
+          <rectangle "Peak Hours Heatmap:shadow"> 288x320 @640,931 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <frame "Margin"> 238x40 @665,956 | flex-col gap0 pad(0, 0, 16, 0)
+            <frame "Container"> 238x24 @665,956 | flex-row gap40.19 pad(0, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+              <frame "Heading 3"> 180x24 @665,956 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 180x24 @665,956 | bg #211a1b | Montserrat 500 18px/24px
+                  TEXT: Ачаалалтай цагууд
+              <frame "Container"> 15x15 @888,960 | flex-col gap0 pad(0, 0, 0, 0)
+                <vector "Icon"> 15x15 @888,960 | bg #524345
+          <frame "Container"> 238x203 @665,996 | flex-col gap0 pad(0, 0, 0, 0)
+            <rectangle "Row 1 (Morning)"> 44x48 @665,996 | bg rgba(255,217,221,0.20) | r2.0
+            <rectangle "Overlay"> 44x48 @713,996 | bg rgba(255,217,221,0.40) | r2.0
+            <rectangle "Overlay"> 44x48 @762,996 | bg rgba(166,96,107,0.60) | r2.0
+            <rectangle "Overlay"> 44x48 @810,996 | bg rgba(255,217,221,0.20) | r2.0
+            <rectangle "Overlay"> 44x48 @859,996 | bg rgba(229,215,215,0.30) | r2.0
+            <rectangle "Row 2 (Noon)"> 44x48 @665,1048 | bg rgba(255,217,221,0.30) | r2.0
+            <rectangle "Overlay+Shadow"> 44x48 @713,1048 | bg rgba(138,72,83,0.80) | r2.0 | shadow 0 0 8 rgba(138,72,83,0.30)
+            <rectangle "Overlay"> 44x48 @810,1048 | bg rgba(166,96,107,0.70) | r2.0
+            <rectangle "Overlay"> 44x48 @859,1048 | bg rgba(255,217,221,0.20) | r2.0
+            <rectangle "Row 3 (Afternoon)"> 44x48 @665,1100 | bg rgba(255,217,221,0.50) | r2.0
+            <rectangle "Overlay"> 44x48 @713,1100 | bg rgba(166,96,107,0.80) | r2.0
+            <rectangle "Overlay"> 44x48 @762,1100 | bg rgba(255,217,221,0.60) | r2.0
+            <rectangle "Overlay"> 44x48 @810,1100 | bg rgba(166,96,107,0.40) | r2.0
+            <rectangle "Overlay"> 44x48 @859,1100 | bg rgba(229,215,215,0.50) | r2.0
+            <rectangle "Row 4 (Evening)"> 44x48 @665,1151 | bg rgba(229,215,215,0.40) | r2.0
+            <rectangle "Overlay"> 44x48 @713,1151 | bg rgba(255,217,221,0.30) | r2.0
+            <rectangle "Overlay"> 44x48 @762,1151 | bg rgba(229,215,215,0.20) | r2.0
+            <rectangle "Overlay"> 44x48 @810,1151 | bg rgba(255,217,221,0.20) | r2.0
+            <rectangle "Overlay"> 44x48 @859,1151 | bg rgba(229,215,215,0.10) | r2.0
+            <frame "Background+Shadow"> 44x48 @762,1048 | bg #8a4853 | r2.0 | shadow 0 0 12 rgba(138,72,83,0.40)
+              <frame "Background+Border"> 80x25 @730,1024 | flex-col gap0 pad(4, 8, 4, 8) | bg #fff8f7 | border 1px rgba(255,255,255,0.50) | r4.0
+                <rectangle "Overlay+Shadow"> 80x25 @730,1024 | bg rgba(255,255,255,0.00) | r4.0 | shadow 0 2 4 rgba(0,0,0,0.10) | shadow 0 4 6 rgba(0,0,0,0.10)
+                <text "Text"> 62x15 @739,1029 | bg #211a1b | Montserrat 400 10px/15px
+                  TEXT: Пүрэв, 13:00
+          <frame "Margin"> 238x27 @665,1199 | flex-col gap0 pad(12, 0, 0, 0)
+            <frame "Container"> 238x15 @665,1211 | flex-row gap68.4 pad(0, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+              <frame "Container"> 24x15 @665,1211 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 24x15 @665,1211 | bg #524345 | Montserrat 400 10px/15px
+                  TEXT: Бага
+              <rectangle "Gradient"> 64x6 @757,1216 | bg linear(rgba(229,215,215,0.30) → #ffd9dd → #8a4853) | r9999.0
+              <frame "Container"> 14x15 @890,1211 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 14x15 @890,1211 | bg #524345 | Montserrat 400 10px/15px
+                  TEXT: Их
+        <frame "Client Demographics"> 288x320 @952,931 | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r16.0
+          <rectangle "Client Demographics:shadow"> 288x320 @952,931 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 8 32 rgba(138,72,83,0.06)
+          <frame "Heading 3:margin"> 238x40 @977,956 | flex-col gap0 pad(0, 0, 16, 0)
+            <frame "Heading 3"> 238x24 @977,956 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Харилцагчид"> 238x24 @977,956 | bg #211a1b | Montserrat 500 18px/24px
+                TEXT: Харилцагчид
+          <frame "Margin"> 238x64 @977,1162 | flex-col gap0 pad(16, 0, 0, 0)
+            <frame "Container"> 238x48 @977,1178 | flex-col gap8 pad(0, 0, 0, 0)
+              <frame "Container"> 238x20 @977,1178 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <rectangle "Background"> 12x12 @977,1182 | bg #8a4853 | r9999.0
+                <frame "Container"> 198x20 @997,1178 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 198x20 @997,1178 | bg #524345 | Montserrat 400 14px/20px
+                    TEXT: Тогтмол харилцагчид (65%)
+              <frame "Container"> 238x20 @977,1206 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <rectangle "Background"> 12x12 @977,1210 | bg #ffd9dd | r9999.0
+                <frame "Container"> 181x20 @997,1206 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 181x20 @997,1206 | bg #524345 | Montserrat 400 14px/20px
+                    TEXT: Шинэ харилцагчид (35%)
+          <frame "Container"> 238x166 @977,996 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER
+            <frame "Abstract CSS Donut Chart"> 128x128 @1032,1015 | border 12px #ffd9dd | r9999.0
+              <rectangle "Overlay arc for primary color"> 181x181 @1005,988 | border 12px rgba(0,0,0,0.00) | r9999.0
+              <frame "Container"> 104x104 @1044,1027 | flex-col gap0 pad(0, 0, 0, 0) CENTER | align:CENTER
+                <frame "Container"> 33x24 @1080,1060 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 33x24 @1080,1060 | bg #211a1b | Montserrat 700 16px/24px
+                    TEXT: 65%
+                <frame "Container"> 52x15 @1070,1084 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 52x15 @1070,1084 | bg #524345 | Montserrat 400 10px/15px
+                    TEXT: ТОГТМОЛ
+  <frame "SideNavBar"> 288x800 @0,0 | flex-col gap0 pad(0, 0, 0, 0) CENTER | bg rgba(255,248,247,0.80) | border 1px rgba(255,255,255,0.20)
+    <rectangle "SideNavBar:shadow"> 288x800 @0,0 | bg rgba(255,255,255,0.00) | shadow 24 0 48 rgba(138,72,83,0.08)
+    <frame "Container"> 287x800 @0,0 | flex-col gap0 pad(32, 16, 19, 16) SPACE_BETWEEN
+      <frame "Container"> 255x124 @16,32 | flex-col gap4 pad(0, 16, 0, 16)
+        <frame "Heading 1"> 223x96 @32,32 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Aura Wellness"> 223x96 @32,32 | bg #8a4853 | Montserrat 600 40px/48px
+            TEXT: Aura ⏎ Wellness
+        <frame "Container"> 223x24 @32,132 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "PREMIUM SUITE"> 223x24 @32,132 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: PREMIUM SUITE
+      <frame "Container"> 255x536 @16,156 | flex-col gap8 pad(40, 0, 0, 0)
+        <frame "Link"> 255x48 @16,196 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 18x18 @40,211 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 18x18 @40,211 | bg #645d5d
+          <frame "Container"> 101x24 @74,208 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 101x24 @74,208 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Dashboard
+        <frame "Link"> 255x48 @16,252 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 18x20 @40,266 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 18x20 @40,266 | bg #645d5d
+          <frame "Container"> 86x24 @74,264 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 86x24 @74,264 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Bookings
+        <frame "Link"> 255x48 @16,308 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 18x20 @40,322 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 18x20 @40,322 | bg #645d5d
+          <frame "Container"> 82x24 @74,320 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 82x24 @74,320 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Calendar
+        <frame "Link"> 255x48 @16,364 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 20x20 @40,378 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 20x20 @40,378 | bg #645d5d
+          <frame "Container"> 75x24 @76,376 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 75x24 @76,376 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Services
+        <frame "Link"> 255x48 @16,420 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 22x16 @40,436 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 22x16 @40,436 | bg #645d5d
+          <frame "Container"> 63x24 @78,432 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 63x24 @78,432 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Clients
+        <frame "Link"> 255x48 @16,476 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | bg rgba(255,255,255,0.50) | r12.0
+          <frame "Container"> 18x18 @40,491 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 18x18 @40,491 | bg #8a4853
+          <frame "Container"> 83x24 @74,488 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 83x24 @74,488 | bg #8a4853 | Montserrat 500 18px/24px
+              TEXT: Analytics
+        <frame "Link"> 255x48 @16,532 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 20x19 @40,546 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 20x19 @40,546 | bg #645d5d
+          <frame "Container"> 75x24 @76,544 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 75x24 @76,544 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Reviews
+        <frame "Link"> 255x48 @16,588 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 20x20 @40,602 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 20x20 @40,602 | bg #645d5d
+          <frame "Container"> 89x24 @76,600 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 89x24 @76,600 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Messages
+        <frame "Link"> 255x48 @16,644 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Container"> 20x20 @40,658 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 20x20 @40,658 | bg #645d5d
+          <frame "Container"> 76x24 @76,656 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 76x24 @76,656 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: Settings
+      <frame "HorizontalBorder"> 255x89 @16,692 | flex-col gap0 pad(24, 0, 0, 0) | border 1px rgba(255,255,255,0.20)
+        <frame "Link"> 255x64 @16,717 | flex-row gap16 pad(12, 24, 12, 24) | align:CENTER | r12.0
+          <frame "Solo Artist Profile"> 40x40 @40,729 | bg image:2864e3c8 | border 2px #ffffff | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+          <frame "Container"> 91x24 @96,737 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 91x24 @96,737 | bg #645d5d | Montserrat 500 18px/24px
+              TEXT: My Profile

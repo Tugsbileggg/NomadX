@@ -1,0 +1,51 @@
+<frame "Main"> 1280x1024 @0,0 | flex-row gap0 pad(0, 0, 0, 0)
+  <frame "Section - Left Panel: Editorial Image"> 640x1024 @0,0 | flex-col gap0 pad(48, 48, 48, 48) SPACE_BETWEEN | bg #faeaeb
+    <frame "Container"> 640x1024 @0,0 | flex-col gap0 pad(0, 0, 0, 0) CENTER
+      <frame "AP1WRLu_uGZQyIfl78DsJJ9sfVik7_8S-IJxHsOl_sIWR67FiE1X6yH1v…"> 640x1024 @0,0 | bg image:6f912640
+      <rectangle "Gradient"> 640x1024 @0,0 | bg linear(rgba(0,0,0,0.20) → rgba(0,0,0,0.00) → rgba(0,0,0,0.40))
+    <frame "Container"> 544x48 @48,48 | flex-col gap0 pad(0, 0, 0, 0)
+      <text "SERENE"> 544x48 @48,48 | bg #ffffff | Montserrat 600 40px/48px
+        TEXT: SERENE
+    <frame "Margin"> 544x880 @48,96 | flex-col gap0 pad(822, 0, 0, 0) MAX
+      <frame "Container"> 544x59 @48,917 | flex-col gap0 pad(0, 0, 0, 0)
+        <frame "Container"> 448x59 @48,917 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Text"> 422x59 @48,917 | bg #ffffff | Montserrat 500 18px/29.25px
+            TEXT: Elevating your natural beauty through science ⏎ and serenity.
+  <frame "Section - Right Panel: OTP Form"> 640x1024 @640,0 | flex-col gap0 pad(96, 96, 96, 96) CENTER | align:CENTER | bg #fff8f7
+    <frame "Container"> 448x556 @736,234 | flex-col gap32 pad(0, 0, 0, 0)
+      <frame "Overlay+Border+Shadow+OverlayBlur"> 448x508 @736,234 | flex-col gap32 pad(40, 40, 40, 40) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r12.0 | shadow 0 8 32 rgba(183,110,121,0.08)
+        <frame "Back Link"> 366x26 @777,275 | flex-col gap0 pad(0, 0, 6, 0)
+          <frame "Link"> 64x20 @777,275 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+            <frame "Container"> 12x12 @777,279 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 12x12 @777,279 | bg #524345
+            <text "Text"> 44x20 @797,275 | bg #524345 | Montserrat 500 14px/20px
+              TEXT: Буцах
+        <frame "Heading & Context"> 366x136 @777,333 | flex-col gap12 pad(0, 0, 0, 0)
+          <frame "Heading 1"> 366x72 @777,333 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Баталгаажуулах код оруулна уу"> 366x72 @777,333 | bg #8a4853 | Montserrat 600 28px/36px
+              TEXT: Баталгаажуулах код ⏎ оруулна уу
+          <frame "Container"> 366x52 @777,417 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Бид 99XX-XXXX дугаарт / u***@email.com хаягт 6 оронтой ко…"> 366x52 @777,417 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: Бид 99XX-XXXX дугаарт / u***@email.com ⏎ хаягт 6 оронтой кодыг илгээлээ.
+        <frame "Form"> 366x200 @777,501 | flex-col gap32 pad(0, 0, 0, 0)
+          <frame "OTP Inputs"> 366x56 @777,501 | flex-row gap15.6 pad(0, 0, 0, 0) SPACE_BETWEEN
+            <frame "Input"> 48x56 @777,501 | bg #ffffff | border 1px #2563eb | shadow 0 0 0 #2563eb
+            <frame "Input"> 48x56 @841,501 | bg #ffffff | border 1px #6b7280
+            <frame "Input"> 48x56 @904,501 | bg #ffffff | border 1px #6b7280
+            <frame "Input"> 48x56 @968,501 | bg #ffffff | border 1px #6b7280
+            <frame "Input"> 48x56 @1031,501 | bg #ffffff | border 1px #6b7280
+            <frame "Input"> 48x56 @1095,501 | bg #ffffff | border 1px #6b7280
+          <frame "Resend Action"> 366x24 @777,589 | flex-col gap0 pad(0, 0, 7, 0) | align:CENTER
+            <frame "Button"> 188x16 @866,590 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+              <frame "Container"> 11x11 @866,592 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                <vector "Icon"> 11x11 @866,592 | bg rgba(82,67,69,0.50)
+              <text "Text"> 170x16 @885,590 | bg rgba(82,67,69,0.50) | Montserrat 500 12px/16px | center
+                TEXT: Код дахин илгээх (00:45)
+          <frame "Submit Button"> 366x56 @777,645 | flex-row gap8 pad(16, 24, 16, 24) CENTER | align:CENTER | bg linear(#b76e79 → #8a4853) | r12.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+            <text "Text"> 152x24 @874,661 | bg #ffffff | Montserrat 500 18px/24px | center
+              TEXT: Баталгаажуулах
+            <frame "Container"> 13x13 @1033,666 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <vector "Icon"> 13x13 @1033,666 | bg #ffffff
+      <frame "Bottom Helper Link"> 448x16 @736,774 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+        <text "Text"> 262x16 @829,774 | bg #524345 | Montserrat 500 12px/16px | center
+          TEXT: Код хүлээж аваагүй юу? Тусламж авах

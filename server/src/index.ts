@@ -1,14 +1,23 @@
 import { Hono } from 'hono'
 
+import { serviceClient } from './db/client.js'
+
 const app = new Hono()
 
-const welcomeStrings = [
-  'Hello Hono!',
-  'To learn more about Hono on Vercel, visit https://vercel.com/docs/frameworks/backend/hono'
-]
+app.get('/', (c) => c.json({ name: 'lumina-server', ok: true }))
 
-app.get('/', (c) => {
-  return c.text(welcomeStrings.join('\n\n'))
+/** DB холбогдож байгаа эсэх — deploy шалгахад. */
+app.get('/health/db', async (c) => {
+  try {
+    const { error } = await serviceClient()
+      .from('businesses')
+      .select('id', { count: 'exact', head: true })
+
+    if (error) return c.json({ ok: false, error: error.message }, 500)
+    return c.json({ ok: true })
+  } catch (error) {
+    return c.json({ ok: false, error: (error as Error).message }, 500)
+  }
 })
 
 export default app

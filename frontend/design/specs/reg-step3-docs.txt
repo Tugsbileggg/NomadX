@@ -1,0 +1,156 @@
+<frame "Бизнес бүртгэл - Алхам 3 (Баримт бичиг)"> 1280x1754 @0,0 | flex-col gap0 pad(128, 24, 40, 24) | align:CENTER | bg #ffffff,#fff8f7
+  <frame "Main"> 800x1586 @240,128 | flex-col gap16 pad(0, 0, 0, 0)
+    <frame "Progress Indicator"> 800x156 @240,128 | flex-col gap8 pad(0, 0, 0, 0)
+      <frame "Heading 1"> 800x36 @240,128 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+        <text "Text"> 165x36 @558,128 | bg #211a1b | Montserrat 600 28px/36px | center
+          TEXT: Verification
+      <frame "Container"> 800x24 @240,172 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+        <text "Text"> 318x24 @481,172 | bg #524345 | Montserrat 400 16px/24px | center
+          TEXT: Step 3 of 5: Secure your business profile.
+      <frame "Container"> 800x80 @240,204 | flex-row gap130 pad(24, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+        <rectangle "Background"> 800x4 @240,254 | bg #eedfe0 | r9999.0
+        <rectangle "Background"> 400x4 @240,254 | bg #8a4853 | r9999.0
+        <frame "Steps"> 42x56 @240,228 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Background+Shadow"> 32x32 @245,228 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg #8a4853 | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+            <frame "Container"> 11x8 @256,240 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 11x8 @256,240 | bg #ffffff
+          <frame "Margin"> 42x24 @240,260 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "Text"> 42x16 @240,268 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Basics
+        <frame "Container"> 58x56 @412,228 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Background+Shadow"> 32x32 @425,228 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg #8a4853 | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+            <frame "Container"> 11x8 @435,240 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 11x8 @435,240 | bg #ffffff
+          <frame "Margin"> 58x24 @412,260 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "Text"> 58x16 @412,268 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Location
+        <frame "Container"> 78x56 @600,228 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Background"> 32x32 @623,228 | flex-row gap0 pad(8, 0, 8, 0) CENTER | align:CENTER | bg #8a4853 | r9999.0
+            <rectangle "Overlay+Shadow"> 32x32 @623,228 | bg rgba(255,255,255,0.00) | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05) | shadow 0 0 0 #ffd9dd
+            <text "Text"> 7x16 @635,236 | bg #ffffff | Montserrat 500 12px/16px | center
+              TEXT: 3
+          <frame "Margin"> 78x24 @600,260 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "Text"> 78x16 @600,268 | bg #8a4853 | Montserrat 700 12px/16px
+              TEXT: Verification
+        <frame "Container"> 55x56 @808,228 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Background+Border"> 32x32 @819,228 | flex-row gap0 pad(6, 0, 8, 0) CENTER | align:CENTER | bg #f4e5e5 | border 1px #d7c1c3 | r9999.0
+            <text "Text"> 9x16 @831,236 | bg #524345 | Montserrat 500 12px/16px | center
+              TEXT: 4
+          <frame "Margin"> 55x24 @808,260 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "Text"> 55x16 @808,268 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Services
+        <frame "Container"> 48x56 @992,228 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <frame "Background+Border"> 32x32 @1000,228 | flex-row gap0 pad(6, 0, 8, 0) CENTER | align:CENTER | bg #f4e5e5 | border 1px #d7c1c3 | r9999.0
+            <text "Text"> 8x16 @1012,236 | bg #524345 | Montserrat 500 12px/16px | center
+              TEXT: 5
+          <frame "Margin"> 48x24 @992,260 | flex-col gap0 pad(8, 0, 0, 0)
+            <text "Text"> 48x16 @992,268 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Review
+    <frame "Overlay+Border+Shadow+OverlayBlur"> 800x795 @240,300 | flex-col gap24 pad(72, 40, 40, 40) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r24.0 | shadow 0 10 30 rgba(138,72,83,0.08)
+      <frame "Heading 2"> 718x24 @281,373 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+        <frame "Container"> 20x20 @281,375 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x20 @281,375 | bg #8a4853
+        <text "Text"> 179x24 @309,373 | bg #8a4853 | Montserrat 500 18px/24px
+          TEXT: Identity Verification
+      <frame "Container"> 718x200 @281,421 | flex-row gap16 pad(0, 0, 16, 0) CENTER
+        <frame "ID Front"> 351x184 @281,421 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Label"> 351x16 @281,421 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "ID Card (Front)"> 351x16 @281,421 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: ID Card (Front)
+          <frame "Background+Border"> 351x160 @281,445 | flex-col gap0 pad(24, 24, 24, 24) CENTER | align:CENTER | bg #fff8f7 | border 2px #d7c1c3 | r12.0
+            <frame "Margin"> 22x30 @445,492 | flex-col gap0 pad(0, 0, 8, 0)
+              <vector "Icon"> 22x22 @445,492 | bg #8a4853
+            <frame "Container"> 199x16 @357,523 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <text "Text"> 199x16 @357,523 | bg #8a4853 | Montserrat 500 12px/16px | center
+                TEXT: Click to upload or drag & drop
+            <frame "Margin"> 102x19 @406,539 | flex-col gap0 pad(4, 0, 0, 0)
+              <frame "Container"> 102x15 @406,543 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                <text "Text"> 102x15 @406,543 | bg #524345 | Montserrat 400 10px/15px | center
+                  TEXT: PNG, JPG up to 5MB
+        <frame "ID Back"> 351x184 @648,421 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Label"> 351x16 @648,421 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "ID Card (Back)"> 351x16 @648,421 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: ID Card (Back)
+          <frame "Background+Border"> 351x160 @648,445 | flex-col gap0 pad(24, 24, 24, 24) CENTER | align:CENTER | bg #fff8f7 | border 2px #d7c1c3 | r12.0
+            <frame "Margin"> 22x30 @812,492 | flex-col gap0 pad(0, 0, 8, 0)
+              <vector "Icon"> 22x22 @812,492 | bg #8a4853
+            <frame "Container"> 199x16 @724,523 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <text "Text"> 199x16 @724,523 | bg #8a4853 | Montserrat 500 12px/16px | center
+                TEXT: Click to upload or drag & drop
+            <frame "Margin"> 102x19 @773,539 | flex-col gap0 pad(4, 0, 0, 0)
+              <frame "Container"> 102x15 @773,543 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                <text "Text"> 102x15 @773,543 | bg #524345 | Montserrat 400 10px/15px | center
+                  TEXT: PNG, JPG up to 5MB
+      <frame "Heading 2"> 718x57 @281,645 | flex-row gap8 pad(32, 0, 0, 0) | align:CENTER | border 1px #d7c1c3
+        <frame "Container"> 18x20 @281,680 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 18x20 @281,680 | bg #8a4853
+        <text "Text"> 194x24 @307,678 | bg #8a4853 | Montserrat 500 18px/24px
+          TEXT: Business Documents
+      <frame "Container"> 718x328 @281,726 | flex-col gap24 pad(0, 0, 0, 0)
+        <frame "Business License"> 718x152 @281,726 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Label"> 718x16 @281,726 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Business License / Registration"> 718x16 @281,726 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Business License / Registration
+          <frame "Background+Border"> 718x128 @281,750 | flex-col gap0 pad(24, 24, 24, 24) CENTER | align:CENTER | bg #fff8f7 | border 2px #d7c1c3 | r12.0
+            <frame "Margin"> 20x33 @630,790 | flex-col gap0 pad(0, 0, 8, 0)
+              <vector "Icon"> 20x25 @630,790 | bg #8a4853
+            <frame "Container"> 143x16 @569,822 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <text "Text"> 143x16 @569,822 | bg #8a4853 | Montserrat 500 12px/16px | center
+                TEXT: Upload PDF or Image
+        <frame "Certificates"> 718x152 @281,902 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Label"> 718x16 @281,902 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Professional Certificates (Optional)"> 718x16 @281,902 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Professional Certificates (Optional)
+          <frame "Background+Border"> 718x128 @281,926 | flex-col gap0 pad(24, 24, 24, 24) CENTER | align:CENTER | bg #fff8f7 | border 2px #d7c1c3 | r12.0
+            <frame "Margin"> 20x34 @630,965 | flex-col gap0 pad(0, 0, 8, 0)
+              <vector "Icon"> 20x26 @630,965 | bg #8a4853
+            <frame "Container"> 177x16 @552,999 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+              <text "Text"> 177x16 @552,999 | bg #8a4853 | Montserrat 500 12px/16px | center
+                TEXT: Add Certificates or Awards
+    <frame "Bank Details Section"> 800x465 @240,1111 | flex-col gap24 pad(40, 40, 40, 40) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.50) | r24.0 | shadow 0 10 30 rgba(138,72,83,0.08)
+      <frame "Heading 2"> 718x24 @281,1152 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+        <frame "Container"> 20x20 @281,1154 | flex-col gap0 pad(0, 0, 0, 0)
+          <vector "Icon"> 20x20 @281,1154 | bg #8a4853
+        <text "Text"> 132x24 @309,1152 | bg #8a4853 | Montserrat 500 18px/24px
+          TEXT: Payout Details
+      <frame "Container"> 718x20 @281,1200 | flex-col gap0 pad(0, 0, 0, 0)
+        <text "Where should we send your earnings?"> 718x20 @281,1200 | bg #524345 | Montserrat 400 14px/20px
+          TEXT: Where should we send your earnings?
+      <frame "Form"> 718x291 @281,1244 | flex-col gap24 pad(0, 0, 0, 0)
+        <frame "Container"> 718x81 @281,1244 | flex-col gap8 pad(0, 0, 0, 0) | align:MAX
+          <frame "Label"> 702x16 @297,1244 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 77x16 @297,1244 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Bank Name
+          <frame "Input"> 718x57 @281,1268 | flex-row gap0 pad(18, 24, 19, 24) CENTER | bg #fff0f1 | r9999.0
+            <frame "Container"> 670x20 @305,1286 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "e.g. Chase Bank"> 670x20 @305,1286 | bg #524345 | Montserrat 400 16px/19.504px
+                TEXT: e.g. Chase Bank
+        <frame "Container"> 718x81 @281,1349 | flex-col gap8 pad(0, 0, 0, 0) | align:MAX
+          <frame "Label"> 702x16 @297,1349 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 147x16 @297,1349 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Account Holder Name
+          <frame "Input"> 718x57 @281,1373 | flex-row gap0 pad(18, 24, 19, 24) CENTER | bg #fff0f1 | r9999.0
+            <frame "Container"> 670x20 @305,1391 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Exactly as it appears on account"> 670x20 @305,1391 | bg #524345 | Montserrat 400 16px/19.504px
+                TEXT: Exactly as it appears on account
+        <frame "Container"> 718x81 @281,1454 | flex-col gap8 pad(0, 0, 0, 0) | align:MAX
+          <frame "Label"> 702x16 @297,1454 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 114x16 @297,1454 | bg #524345 | Montserrat 500 12px/16px
+              TEXT: Account Number
+          <frame "Input"> 718x57 @281,1478 | flex-row gap0 pad(18, 24, 19, 24) CENTER | bg #fff0f1 | r9999.0
+            <frame "Container"> 670x20 @305,1496 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Enter account number"> 670x20 @305,1496 | bg #524345 | Montserrat 400 16px/19.504px
+                TEXT: Enter account number
+    <frame "Action Buttons"> 800x122 @240,1592 | flex-row gap474.23 pad(32, 0, 48, 0) SPACE_BETWEEN | align:CENTER
+      <frame "Button"> 99x42 @240,1624 | flex-col gap0 pad(12, 32, 12, 32) CENTER | align:CENTER | bg #fff8f7 | border 1px #d7c1c3 | r9999.0
+        <text "Text"> 33x16 @273,1637 | bg #524345 | Montserrat 500 12px/16px | center
+          TEXT: Back
+      <frame "Button"> 221x40 @819,1625 | flex-row gap8 pad(12, 32, 12, 32) | align:CENTER | bg #8a4853 | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+        <text "Text"> 137x16 @851,1637 | bg #ffffff | Montserrat 500 12px/16px | center
+          TEXT: Continue to Services
+        <frame "Container"> 12x12 @996,1639 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <vector "Icon"> 12x12 @996,1639 | bg #ffffff
+  <frame "Header - Top Navigation (Suppressed for transactional flo…"> 1280x80 @0,0 | flex-row gap0 pad(0, 24, 0, 24) CENTER | align:CENTER | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.20) | shadow 0 1 2 rgba(0,0,0,0.05)
+    <frame "Link"> 113x36 @584,22 | flex-col gap0 pad(0, 0, 0, 0)
+      <text "Text"> 113x36 @584,22 | bg #8a4853 | Montserrat 600 28px/36px
+        TEXT: SERENE

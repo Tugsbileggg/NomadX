@@ -1,3 +1,5 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # dependencies
 /node_modules
 /.pnp
@@ -26,11 +28,20 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.local.example
+
+# vercel
+.vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# figma secrets
+.env.figma
+design/raw/
+# design/shots — дизайны лавлагаа screenshot-ууд (48 файл, ~21MB) git-д хадгална

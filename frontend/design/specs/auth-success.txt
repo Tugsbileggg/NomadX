@@ -1,0 +1,30 @@
+<frame "Main"> 1280x1024 @0,0 | flex-row gap0 pad(0, 0, 0, 0)
+  <frame "Section - Left Editorial Image (Split Screen)"> 640x1024 @0,0
+    <frame "Serene beauty and wellness aesthetic, a woman receiving a…"> 640x1024 @0,0 | bg image:6f912640
+    <rectangle "Overlay"> 640x1024 @0,0 | bg rgba(138,72,83,0.10)
+  <frame "Section - Right Content Area (Mobile Full, Desktop Half)"> 640x1024 @640,0 | flex-col gap0 pad(24, 24, 24, 24) CENTER | align:CENTER
+    <frame "Glassmorphism Card"> 480x422 @720,301 | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.80) | r24.0
+      <rectangle "Glassmorphism Card:shadow"> 480x422 @720,301 | bg rgba(255,255,255,0.00) | r24.0 | shadow 0 24 48 rgba(138,72,83,0.08)
+      <frame "Heading 1 - Text Content:margin"> 180x52 @870,478 | flex-col gap0 pad(0, 0, 16, 0)
+        <frame "Heading 1 - Text Content"> 180x36 @870,478 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <text "Text"> 180x36 @870,478 | bg #211a1b | Montserrat 600 28px/36px | center
+            TEXT: Амжилттай!
+      <frame "Margin"> 382x88 @769,530 | flex-col gap0 pad(0, 0, 40, 0)
+        <frame "Container"> 382x48 @769,530 | flex-col gap0 pad(0, 2, 0, 2) | align:CENTER
+          <text "Text"> 379x48 @771,530 | bg #524345 | Montserrat 400 16px/24px | center
+            TEXT: Таны нууц үг амжилттай шинэчлэгдлээ. Одоо ⏎ шинэ нууц үгээрээ нэвтэрч болно.
+      <frame "Success Icon Placeholder:margin"> 96x128 @912,350 | flex-col gap0 pad(0, 0, 32, 0)
+        <frame "Success Icon Placeholder"> 96x96 @912,350 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg #fff0f1 | r9999.0 | shadow 0 12 32 rgba(138,72,83,0.10)
+          <frame "Fallback material icon hidden behind image if image loads"> 39x48 @940,374 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <text "Text"> 39x48 @940,374 | bg #8a4853 | Material Symbols Outlined 600 40px/48px | center
+              TEXT: check_circle
+          <frame "A beautiful, minimal rose gold checkmark icon indicating …"> 96x96 @912,350 | bg image:4d5e9946
+      <frame "Link - Primary Action Button"> 382x56 @769,618 | flex-col gap0 pad(0, 0, 0, 0)
+        <rectangle "Gradient+Blur"> 390x64 @765,614 | bg linear(#8a4853 → #a6606b) | r9999.0
+        <frame "Button"> 382x56 @769,618 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg linear(#8a4853 → #a85c6a) | r9999.0
+          <rectangle "Button:shadow"> 382x56 @769,618 | bg rgba(255,255,255,0.00) | r9999.0 | shadow 0 2 4 rgba(0,0,0,0.10) | shadow 0 4 6 rgba(0,0,0,0.10)
+          <text "Text"> 80x24 @920,634 | bg #ffffff | Montserrat 500 18px/24px | center
+            TEXT: Нэвтрэх
+    <frame "Minimal Footer/Brand reference"> 640x25 @640,967 | flex-col gap0 pad(0, 0, 1, 0) | align:CENTER
+      <text "Text"> 86x24 @917,967 | bg #8a4853 | Montserrat 500 18px/24px | center
+        TEXT: SERENE

@@ -1,0 +1,280 @@
+<frame "Хуваарь тохиргоо (Availability Settings)"> 1280x1024 @0,0 | flex-row gap0 pad(0, 0, 0, 256) CENTER | bg #ffffff,#fff8f7
+  <frame "Main Content Canvas"> 1024x1024 @256,0 | flex-col gap0 pad(0, 0, 0, 0) | bg #fff8f7
+    <frame "Header - TopNavBar"> 1024x80 @256,0 | flex-row gap0 pad(0, 24, 0, 848) | align:CENTER | bg rgba(255,248,247,0.80) | border 1px rgba(255,255,255,0.20) | shadow 0 1 2 rgba(0,0,0,0.05)
+      <frame "Trailing Actions & Profile"> 140x43 @1104,18 | flex-row gap16 pad(0, 0, 0, 0) | align:CENTER
+        <frame "Button"> 32x43 @1104,18 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+          <frame "Container"> 16x20 @1112,26 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+            <vector "Icon"> 16x20 @1112,26 | bg #524345
+        <frame "Button"> 36x43 @1152,18 | flex-col gap0 pad(8, 8, 15, 8) CENTER | align:CENTER | r9999.0
+          <frame "Container"> 20x20 @1160,26 | flex-row gap0 pad(0, 0, 0, 0) CENTER
+            <vector "Icon"> 20x20 @1160,26 | bg #524345
+        <frame "Background+Border+Shadow"> 40x40 @1204,20 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg #a6606b | border 2px #ffffff | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+          <frame "Business Owner Profile"> 36x36 @1206,22 | bg image:a77a13e8
+    <frame "Sticky Footer for Save Action"> 1024x95 @256,929 | flex-row gap16 pad(24, 24, 24, 24) MAX | bg rgba(255,255,255,0.90) | border 1px rgba(215,193,195,0.20) | shadow 0 -4 24 rgba(138,72,83,0.05)
+      <frame "Button"> 112x46 @963,954 | flex-col gap0 pad(10, 24, 10, 24) CENTER | align:CENTER | border 1px #d7c1c3 | r9999.0
+        <text "Text"> 62x24 @988,965 | bg #211a1b | Liberation Sans 500 18px/24px | center
+          TEXT: Цуцлах
+      <frame "Button"> 165x46 @1091,954 | flex-row gap8 pad(11, 32, 11, 32) | align:CENTER | bg #8a4853 | r9999.0
+        <rectangle "Button:shadow"> 165x46 @1091,954 | bg rgba(255,255,255,0.00) | r9999.0 | shadow 0 2 4 rgba(138,72,83,0.20) | shadow 0 4 6 rgba(138,72,83,0.20)
+        <frame "Container"> 15x15 @1123,970 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <vector "Icon"> 15x15 @1123,970 | bg #ffffff
+        <text "Text"> 78x24 @1146,965 | bg #ffffff | Liberation Sans 500 18px/24px | center
+          TEXT: Хадгалах
+    <frame "Main - Page Content Scroll Area"> 1024x944 @256,80 | flex-col gap0 pad(32, 64, 128, 64)
+      <frame "Container"> 896x689 @320,112 | flex-col gap40 pad(0, 0, 0, 0)
+        <frame "Page Header"> 896x68 @320,112 | flex-col gap8 pad(0, 0, 0, 0)
+          <frame "Heading 2"> 896x36 @320,112 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Хуваарь тохиргоо"> 896x36 @320,112 | bg #211a1b | Liberation Sans 600 28px/36px
+              TEXT: Хуваарь тохиргоо
+          <frame "Container"> 896x24 @320,156 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Таны бизнес нээлттэй байх цагийн хуваарийг энд тохируулна…"> 896x24 @320,156 | bg #524345 | Liberation Sans 400 16px/24px
+              TEXT: Таны бизнес нээлттэй байх цагийн хуваарийг энд тохируулна уу.
+        <frame "Section 1: Weekly Recurring Hours"> 896x459 @320,220 | flex-col gap16 pad(0, 0, 0, 0)
+          <frame "HorizontalBorder"> 896x41 @320,220 | flex-row gap0 pad(0, 0, 16, 0) | align:CENTER | border 1px rgba(215,193,195,0.30)
+            <frame "Heading 3"> 256x24 @320,220 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+              <frame "Container"> 20x20 @320,222 | flex-col gap0 pad(0, 0, 0, 0)
+                <vector "Icon"> 20x20 @320,222 | bg #8a4853
+              <text "Text"> 228x24 @348,220 | bg #8a4853 | Liberation Sans 500 18px/24px
+                TEXT: Долоо хоногийн үндсэн цаг
+          <frame "Container"> 896x402 @320,277 | flex-col gap12 pad(0, 0, 0, 0)
+            <frame "Day Card"> 896x92 @320,277 | flex-row gap119.6 pad(24, 24, 24, 24) SPACE_BETWEEN | align:CENTER | bg #ffffff | border 1px rgba(215,193,195,0.10) | r12.0 | shadow 0 1 2 rgba(138,72,83,0.05)
+              <frame "Day & Toggle"> 140x24 @345,311 | flex-row gap16 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Label"> 44x24 @345,311 | flex-row gap0 pad(0, 0, 0, 0) | align:CENTER
+                  <rectangle "Background"> 44x24 @345,311 | bg #8a4853 | r9999.0
+                  <rectangle "Background+Border"> 20x20 @367,313 | bg #ffffff | border 1px #ffffff | r9999.0
+                <frame "Container"> 80x24 @405,311 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 52x24 @405,311 | bg #211a1b | Liberation Sans 500 18px/24px
+                    TEXT: Даваа
+              <frame "Time Pickers"> 384x42 @608,302 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Background+Border"> 181x42 @608,302 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg #f4e5e5 | border 1px rgba(0,0,0,0.00) | r8.0
+                  <frame "Input"> 155x40 @621,303 | flex-col gap0 pad(8, 8, 8, 8)
+                    <frame "Container"> 139x24 @629,311 | flex-row gap-2.84217e-14 pad(0, 0, 0, 0) | align:CENTER
+                      <frame "Container"> 109x24 @629,311 | flex-row gap0 pad(0, 0, 0, 0)
+                        <frame "Paragraph"> 73x24 @629,311
+                          <text "Spinbutton - Hours → 09"> 18x24 @630,310 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 09
+                          <text "Text"> 4x24 @648,310 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: :
+                          <text "Spinbutton - Minutes → 00"> 18x24 @654,310 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 00
+                          <vector "Spinbutton - AM/PM → AM"> 23x11 @677,317 | bg #211a1b
+                      <frame "Button menu:margin"> 31x23 @737,312 | flex-col gap0 pad(0, 0, 0, 8)
+                        <frame "Button menu"> 23x23 @745,312 | flex-col gap0 pad(3, 3, 3, 3)
+                          <frame "image"> 17x17 @748,315
+                <frame "Container"> 5x24 @797,311 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 5x24 @797,311 | bg #d7c1c3 | Liberation Sans 400 16px/24px
+                    TEXT: -
+                <frame "Background+Border"> 181x42 @810,302 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg #f4e5e5 | border 1px rgba(0,0,0,0.00) | r8.0
+                  <frame "Input"> 155x40 @823,303 | flex-col gap0 pad(8, 8, 8, 8)
+                    <frame "Container"> 139x24 @831,311 | flex-row gap7.10543e-14 pad(0, 0, 0, 0) | align:CENTER
+                      <frame "Container"> 109x24 @831,311 | flex-row gap0 pad(0, 0, 0, 0)
+                        <frame "Paragraph"> 73x24 @831,311
+                          <text "Spinbutton - Hours → 06"> 18x24 @832,310 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 06
+                          <text "Text"> 4x24 @851,310 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: :
+                          <text "Spinbutton - Minutes → 00"> 18x24 @856,310 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 00
+                          <vector "Spinbutton - AM/PM → PM"> 21x11 @881,317 | bg #211a1b
+                      <frame "Button menu:margin"> 31x23 @940,312 | flex-col gap0 pad(0, 0, 0, 8)
+                        <frame "Button menu"> 23x23 @948,312 | flex-col gap0 pad(3, 3, 3, 3)
+                          <frame "image"> 17x17 @951,315
+              <frame "Action"> 77x33 @1114,307 | flex-row gap0 pad(0, 0, 0, 0) MAX
+                <frame "Button"> 77x33 @1114,307 | flex-row gap4 pad(8, 8, 8, 8) | align:CENTER | r9999.0
+                  <frame "Container"> 14x17 @1122,315 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                    <vector "Icon"> 14x17 @1122,315 | bg #8a4853
+                  <frame "Container"> 43x16 @1140,315 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                    <text "Text"> 43x16 @1140,315 | bg #8a4853 | Liberation Sans 500 12px/16px | center
+                      TEXT: Хуулах
+            <frame "Day Card"> 896x92 @320,381 | flex-row gap143 pad(24, 24, 24, 24) SPACE_BETWEEN | align:CENTER | bg #ffffff | border 1px rgba(215,193,195,0.10) | r12.0 | shadow 0 1 2 rgba(138,72,83,0.05)
+              <frame "Container"> 140x24 @345,415 | flex-row gap16 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Label"> 44x24 @345,415 | flex-row gap0 pad(0, 0, 0, 0) | align:CENTER
+                  <rectangle "Background"> 44x24 @345,415 | bg #8a4853 | r9999.0
+                  <rectangle "Background+Border"> 20x20 @367,417 | bg #ffffff | border 1px #ffffff | r9999.0
+                <frame "Container"> 80x24 @405,415 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 64x24 @405,415 | bg #211a1b | Liberation Sans 500 18px/24px
+                    TEXT: Мягмар
+              <frame "Container"> 384x42 @631,406 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Background+Border"> 181x42 @631,406 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg #f4e5e5 | border 1px rgba(0,0,0,0.00) | r8.0
+                  <frame "Input"> 155x40 @644,407 | flex-col gap0 pad(8, 8, 8, 8)
+                    <frame "Container"> 139x24 @652,415 | flex-row gap-2.84217e-14 pad(0, 0, 0, 0) | align:CENTER
+                      <frame "Container"> 109x24 @652,415 | flex-row gap0 pad(0, 0, 0, 0)
+                        <frame "Paragraph"> 73x24 @652,415
+                          <text "Spinbutton - Hours → 09"> 18x24 @653,414 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 09
+                          <text "Text"> 4x24 @672,414 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: :
+                          <text "Spinbutton - Minutes → 00"> 18x24 @677,414 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 00
+                          <vector "Spinbutton - AM/PM → AM"> 23x11 @700,421 | bg #211a1b
+                      <frame "Button menu:margin"> 31x23 @760,416 | flex-col gap0 pad(0, 0, 0, 8)
+                        <frame "Button menu"> 23x23 @768,416 | flex-col gap0 pad(3, 3, 3, 3)
+                          <frame "image"> 17x17 @771,419
+                <frame "Container"> 5x24 @820,415 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 5x24 @820,415 | bg #d7c1c3 | Liberation Sans 400 16px/24px
+                    TEXT: -
+                <frame "Background+Border"> 181x42 @834,406 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg #f4e5e5 | border 1px rgba(0,0,0,0.00) | r8.0
+                  <frame "Input"> 155x40 @847,407 | flex-col gap0 pad(8, 8, 8, 8)
+                    <frame "Container"> 139x24 @855,415 | flex-row gap-0.01 pad(0, 0, 0, 0) | align:CENTER
+                      <frame "Container"> 109x24 @855,415 | flex-row gap0 pad(0, 0, 0, 0)
+                        <frame "Paragraph"> 73x24 @855,415
+                          <text "Spinbutton - Hours → 06"> 18x24 @856,414 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 06
+                          <text "Text"> 4x24 @874,414 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: :
+                          <text "Spinbutton - Minutes → 00"> 18x24 @880,414 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 00
+                          <vector "Spinbutton - AM/PM → PM"> 21x11 @904,421 | bg #211a1b
+                      <frame "Button menu:margin"> 31x23 @963,416 | flex-col gap0 pad(0, 0, 0, 8)
+                        <frame "Button menu"> 23x23 @971,416 | flex-col gap0 pad(3, 3, 3, 3)
+                          <frame "image"> 17x17 @974,419
+              <frame "Container"> 30x33 @1161,411 | flex-row gap0 pad(0, 0, 0, 0) MAX
+                <frame "Button"> 30x33 @1161,411 | flex-row gap0 pad(8, 8, 8, 8) | align:CENTER | r9999.0
+                  <frame "Container"> 14x17 @1169,419 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                    <vector "Icon"> 14x17 @1169,419 | bg #8a4853
+            <frame "Day Card"> 896x92 @320,485 | flex-row gap143 pad(24, 24, 24, 24) SPACE_BETWEEN | align:CENTER | bg #ffffff | border 1px rgba(215,193,195,0.10) | r12.0 | shadow 0 1 2 rgba(138,72,83,0.05)
+              <frame "Container"> 140x24 @345,519 | flex-row gap16 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Label"> 44x24 @345,519 | flex-row gap0 pad(0, 0, 0, 0) | align:CENTER
+                  <rectangle "Background"> 44x24 @345,519 | bg #8a4853 | r9999.0
+                  <rectangle "Background+Border"> 20x20 @367,521 | bg #ffffff | border 1px #ffffff | r9999.0
+                <frame "Container"> 80x24 @405,519 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 57x24 @405,519 | bg #211a1b | Liberation Sans 500 18px/24px
+                    TEXT: Лхагва
+              <frame "Container"> 384x42 @631,510 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Background+Border"> 181x42 @631,510 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg #f4e5e5 | border 1px rgba(0,0,0,0.00) | r8.0
+                  <frame "Input"> 155x40 @644,511 | flex-col gap0 pad(8, 8, 8, 8)
+                    <frame "Container"> 139x24 @652,519 | flex-row gap-2.84217e-14 pad(0, 0, 0, 0) | align:CENTER
+                      <frame "Container"> 109x24 @652,519 | flex-row gap0 pad(0, 0, 0, 0)
+                        <frame "Paragraph"> 73x24 @652,519
+                          <text "Spinbutton - Hours → 09"> 18x24 @653,518 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 09
+                          <text "Text"> 4x24 @672,518 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: :
+                          <text "Spinbutton - Minutes → 00"> 18x24 @677,518 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 00
+                          <vector "Spinbutton - AM/PM → AM"> 23x11 @700,525 | bg #211a1b
+                      <frame "Button menu:margin"> 31x23 @760,520 | flex-col gap0 pad(0, 0, 0, 8)
+                        <frame "Button menu"> 23x23 @768,520 | flex-col gap0 pad(3, 3, 3, 3)
+                          <frame "image"> 17x17 @771,523
+                <frame "Container"> 5x24 @820,519 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 5x24 @820,519 | bg #d7c1c3 | Liberation Sans 400 16px/24px
+                    TEXT: -
+                <frame "Background+Border"> 181x42 @834,510 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg #f4e5e5 | border 1px rgba(0,0,0,0.00) | r8.0
+                  <frame "Input"> 155x40 @847,511 | flex-col gap0 pad(8, 8, 8, 8)
+                    <frame "Container"> 139x24 @855,519 | flex-row gap-0.01 pad(0, 0, 0, 0) | align:CENTER
+                      <frame "Container"> 109x24 @855,519 | flex-row gap0 pad(0, 0, 0, 0)
+                        <frame "Paragraph"> 73x24 @855,519
+                          <text "Spinbutton - Hours → 06"> 18x24 @856,518 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 06
+                          <text "Text"> 4x24 @874,518 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: :
+                          <text "Spinbutton - Minutes → 00"> 18x24 @880,518 | bg #211a1b | Liberation Sans 400 16px/24px | center
+                            TEXT: 00
+                          <vector "Spinbutton - AM/PM → PM"> 21x11 @904,525 | bg #211a1b
+                      <frame "Button menu:margin"> 31x23 @963,520 | flex-col gap0 pad(0, 0, 0, 8)
+                        <frame "Button menu"> 23x23 @971,520 | flex-col gap0 pad(3, 3, 3, 3)
+                          <frame "image"> 17x17 @974,523
+              <frame "Container"> 30x33 @1161,515 | flex-row gap0 pad(0, 0, 0, 0) MAX
+                <frame "Button"> 30x33 @1161,515 | flex-row gap0 pad(8, 8, 8, 8) | align:CENTER | r9999.0
+                  <frame "Container"> 14x17 @1169,523 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                    <vector "Icon"> 14x17 @1169,523 | bg #8a4853
+            <frame "Day Card: Пүрэв (Example of closed day initially)"> 896x90 @320,589 | flex-row gap143 pad(24, 24, 24, 24) SPACE_BETWEEN | align:CENTER | bg rgba(255,255,255,0.50) | border 1px rgba(215,193,195,0.10) | r12.0 | shadow 0 1 2 rgba(138,72,83,0.05)
+              <frame "Container"> 140x24 @345,622 | flex-row gap16 pad(0, 0, 0, 0) | align:CENTER
+                <frame "Label"> 44x24 @345,622 | flex-row gap0 pad(0, 0, 0, 0) | align:CENTER
+                  <rectangle "Background"> 44x24 @345,622 | bg #d7c1c3 | r9999.0
+                  <rectangle "Background+Border"> 20x20 @347,624 | bg #ffffff | border 1px #d1d5db | r9999.0
+                <frame "Container"> 80x24 @405,622 | flex-col gap0 pad(0, 0, 0, 0)
+                  <text "Text"> 51x24 @405,622 | bg #211a1b | Liberation Sans 500 18px/24px
+                    TEXT: Пүрэв
+              <frame "Overlay"> 676x40 @485,614 | flex-row gap0 pad(0, 12, 0, 12) CENTER | align:CENTER | bg rgba(238,223,224,0.50) | r8.0
+                <frame "Container"> 652x40 @497,614 | flex-col gap0 pad(8, 8, 8, 8) | align:CENTER
+                  <text "Text"> 57x24 @794,622 | bg #524345 | Liberation Sans 400 16px/24px | center
+                    TEXT: Амарна
+              <frame "Container"> 30x33 @1161,618 | flex-row gap0 pad(0, 0, 0, 0) MAX
+                <frame "Button"> 30x33 @1161,618 | flex-row gap0 pad(8, 8, 8, 8) | align:CENTER | r9999.0
+                  <frame "Container"> 14x17 @1169,626 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+                    <vector "Icon"> 14x17 @1169,626 | bg #8a4853
+        <frame "Section 2: Special Exceptions"> 896x82 @320,719 | flex-col gap0 pad(24, 24, 24, 24) | bg #fff0f1 | border 1px rgba(215,193,195,0.20) | r12.0 | shadow 0 1 2 rgba(138,72,83,0.05)
+          <frame "Button"> 846x32 @345,744 | flex-row gap453.65 pad(0, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+            <frame "Container"> 368x32 @345,744 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+              <frame "Overlay"> 32x32 @345,744 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER | bg rgba(138,72,83,0.10) | r9999.0
+                <frame "Container"> 15x17 @354,752 | flex-col gap0 pad(0, 0, 0, 0)
+                  <vector "Icon"> 15x17 @354,752 | bg #8a4853
+              <frame "Heading 3"> 328x24 @385,748 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Text"> 328x24 @385,748 | bg #211a1b | Liberation Sans 500 18px/24px
+                  TEXT: Онцгой өөрчлөлт (Амралт, Баяр ёслол)
+            <frame "Container"> 12x7 @1179,756 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 12x7 @1179,756 | bg #d7c1c3
+  <frame "SideNavBar (Hidden on Mobile, Visible on md+)"> 256x1024 @0,0 | flex-col gap16 pad(24, 0, 24, 0) | bg #fff0f1
+    <rectangle "SideNavBar (Hidden on Mobile, Visible on md+):shadow"> 256x1024 @0,0 | bg rgba(255,255,255,0.00) | shadow 0 25 50 rgba(138,72,83,0.05)
+    <frame "Brand Header"> 256x201 @0,24 | flex-col gap8 pad(0, 24, 16, 24) | align:CENTER | border 1px rgba(215,193,195,0.20)
+      <frame "Background"> 64x64 @96,24 | flex-row gap0 pad(16, 0, 16, 0) CENTER | align:CENTER | bg #a6606b | r9999.0
+        <text "Text"> 19x32 @119,40 | bg #fffbff | Liberation Sans 400 24px/32px | center
+          TEXT: G
+      <frame "Container"> 148x112 @54,96 | flex-col gap0 pad(0, 0, 0, 0)
+        <frame "Heading 1"> 148x96 @54,96 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <text "Text"> 148x96 @54,96 | bg #8a4853 | Liberation Sans 600 40px/48px | center
+            TEXT: Goo ⏎ Saikhan
+        <frame "Container"> 148x16 @54,192 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <text "Text"> 120x16 @68,192 | bg #524345 | Liberation Sans 500 12px/16px | center
+            TEXT: BUSINESS PORTAL
+    <frame "Main Navigation Tabs:margin"> 256x558 @0,241 | flex-col gap0 pad(16, 0, 0, 0) CENTER
+      <frame "Main Navigation Tabs"> 256x542 @0,257 | flex-col gap8 pad(0, 0, 0, 0)
+        <frame "Link:margin"> 256x48 @0,257 | flex-col gap0 pad(0, 8, 0, 8)
+          <frame "Link"> 240x48 @8,257 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | r12.0
+            <frame "Container"> 18x18 @24,272 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 18x18 @24,272 | bg #524345
+            <frame "Container"> 88x24 @54,269 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 88x24 @54,269 | bg #524345 | Liberation Sans 500 18px/24px
+                TEXT: Dashboard
+        <frame "Link:margin"> 256x48 @0,313 | flex-col gap0 pad(0, 8, 0, 8)
+          <frame "Link"> 240x48 @8,313 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | r12.0
+            <frame "Container"> 18x20 @24,327 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 18x20 @24,327 | bg #524345
+            <frame "Container"> 110x24 @54,325 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 110x24 @54,325 | bg #524345 | Liberation Sans 500 18px/24px
+                TEXT: Appointments
+        <frame "Link:margin"> 256x48 @0,369 | flex-col gap0 pad(0, 8, 0, 8)
+          <frame "Link"> 240x48 @8,369 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | r12.0
+            <frame "Container"> 20x20 @24,383 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 20x20 @24,383 | bg #524345
+            <frame "Container"> 69x24 @56,381 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 69x24 @56,381 | bg #524345 | Liberation Sans 500 18px/24px
+                TEXT: Services
+        <frame "Link:margin"> 256x48 @0,425 | flex-col gap0 pad(0, 8, 0, 8)
+          <frame "Link"> 240x48 @8,425 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | r12.0
+            <frame "Container"> 22x16 @24,441 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 22x16 @24,441 | bg #524345
+            <frame "Container"> 55x24 @58,437 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 55x24 @58,437 | bg #524345 | Liberation Sans 500 18px/24px
+                TEXT: Clients
+        <frame "Link:margin"> 256x48 @0,481 | flex-col gap0 pad(0, 8, 0, 8)
+          <frame "Link"> 240x48 @8,481 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | r12.0
+            <frame "Container"> 22x17 @24,496 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 22x17 @24,496 | bg #524345
+            <frame "Container"> 72x24 @58,493 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 72x24 @58,493 | bg #524345 | Liberation Sans 500 18px/24px
+                TEXT: Analytics
+    <frame "CTA Button"> 256x48 @0,815 | flex-col gap0 pad(0, 16, 0, 16)
+      <frame "Button"> 224x48 @16,815 | flex-row gap7.99 pad(12, 16, 12, 16) CENTER | align:CENTER | bg #8a4853 | r12.0
+        <rectangle "Button:shadow"> 224x48 @16,815 | bg rgba(255,255,255,0.00) | r12.0 | shadow 0 4 6 rgba(138,72,83,0.20) | shadow 0 10 15 rgba(138,72,83,0.20)
+        <frame "Container"> 14x14 @46,832 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <vector "Icon"> 14x14 @46,832 | bg #ffffff
+        <text "Text"> 141x24 @68,827 | bg #ffffff | Liberation Sans 500 18px/24px | center
+          TEXT: New Appointment
+    <frame "Footer Navigation Tabs"> 256x121 @0,879 | flex-col gap8 pad(16, 0, 0, 0) | border 1px rgba(215,193,195,0.20)
+      <frame "Link:margin"> 256x48 @0,896 | flex-col gap0 pad(0, 8, 0, 8)
+        <frame "Link"> 240x48 @8,896 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | r12.0
+          <frame "Container"> 20x20 @24,910 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 20x20 @24,910 | bg #524345
+          <frame "Container"> 63x24 @56,908 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 63x24 @56,908 | bg #524345 | Liberation Sans 500 18px/24px
+              TEXT: Support
+      <frame "Link - Active State: Settings:margin"> 256x48 @0,952 | flex-col gap0 pad(0, 8, 0, 8)
+        <frame "Link - Active State: Settings"> 240x48 @8,952 | flex-row gap12 pad(12, 16, 12, 16) | align:CENTER | bg #8a4853 | r12.0
+          <rectangle "Link - Active State: Settings:shadow"> 240x48 @8,952 | bg rgba(255,255,255,0.00) | r12.0 | shadow 0 2 4 rgba(138,72,83,0.10) | shadow 0 4 6 rgba(138,72,83,0.10)
+          <frame "Container"> 20x20 @24,966 | flex-col gap0 pad(0, 0, 0, 0)
+            <vector "Icon"> 20x20 @24,966 | bg #ffffff
+          <frame "Container"> 65x24 @56,964 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 65x24 @56,964 | bg #ffffff | Liberation Sans 500 18px/24px
+              TEXT: Settings

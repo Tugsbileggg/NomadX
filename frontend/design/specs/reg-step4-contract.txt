@@ -1,0 +1,176 @@
+<frame "Бизнес бүртгэл - Алхам 4 (Гэрээ)"> 1280x1237 @0,0 | flex-col gap0 pad(0, 0, 0, 0) SPACE_BETWEEN | bg #ffffff,#fff8f7
+  <frame "Main Content"> 1280x1056 @0,0 | flex-row gap0 pad(120, 24, 40, 24) CENTER
+    <frame "Container"> 768x896 @256,120 | flex-col gap32 pad(0, 0, 0, 0)
+      <frame "Progress Indicator"> 768x88 @256,120 | flex-col gap8 pad(0, 0, 0, 0) | align:CENTER
+        <frame "Container"> 768x16 @256,120 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <text "Text"> 89x16 @596,120 | bg #8a4853 | Montserrat 500 12px/16px | center
+            TEXT: АЛХАМ 4 / 5
+        <frame "Heading 1"> 768x36 @256,144 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+          <text "Text"> 308x36 @486,144 | bg #211a1b | Montserrat 600 28px/36px | center
+            TEXT: Үйлчилгээний гэрээ
+        <frame "Container"> 384x20 @448,188 | flex-row gap8 pad(16, 0, 0, 0) CENTER | align:CENTER
+          <rectangle "Background"> 70x4 @448,204 | bg #8a4853 | r9999.0
+          <rectangle "Background"> 70x4 @526,204 | bg #8a4853 | r9999.0
+          <rectangle "Background"> 70x4 @605,204 | bg #8a4853 | r9999.0
+          <frame "Background"> 70x4 @683,204 | bg #8a4853 | r9999.0
+            <frame "Background"> 16x16 @744,198 | flex-col gap0 pad(0, 0, 0, 0) | align:MAX | bg #8a4853 | r9999.0
+              <rectangle "Overlay+Shadow"> 16x16 @744,198 | bg rgba(255,255,255,0.00) | r9999.0 | shadow 0 0 0 #ffd9dd
+          <rectangle "Background"> 70x4 @762,204 | bg #eedfe0 | r9999.0
+      <frame "Agreement Container"> 768x694 @256,240 | flex-col gap24 pad(40, 32, 32, 32) | bg rgba(255,255,255,0.60) | border 1px rgba(255,255,255,0.40) | r16.0
+        <rectangle "Agreement Container:shadow"> 768x686 @256,248 | bg rgba(255,255,255,0.00) | r16.0 | shadow 0 10 30 rgba(138,72,83,0.08)
+        <frame "Toolbar"> 702x41 @289,281 | flex-row gap144.6 pad(0, 0, 16, 0) SPACE_BETWEEN | align:CENTER | border 1px #d7c1c3
+          <frame "Heading 2"> 401x24 @289,281 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 401x24 @289,281 | bg #211a1b | Montserrat 500 18px/24px
+              TEXT: Серэн платформын үйлчилгээний нөхцөл
+          <frame "Link"> 150x16 @841,285 | flex-row gap8 pad(0, 0, 0, 0) | align:CENTER
+            <frame "Container"> 129x16 @841,285 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Text"> 129x16 @841,285 | bg #8a4853 | Montserrat 500 12px/16px
+                TEXT: ГЭРЭЭГ PDF ТАТАХ
+            <frame "Container"> 13x13 @978,286 | flex-col gap0 pad(0, 0, 0, 0)
+              <vector "Icon"> 13x13 @978,286 | bg #8a4853
+        <frame "Scrollable Document Viewer"> 702x400 @289,346 | bg #ffffff | border 1px #eedfe0 | r12.0
+          <frame "Heading 3"> 652x26 @314,371 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <text "Text"> 205x26 @537,371 | bg #211a1b | Montserrat 700 16px/26px | center
+              TEXT: ҮЙЛЧИЛГЭЭНИЙ ГЭРЭЭ
+          <frame "Container"> 652x104 @314,413 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 634x104 @314,413 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: Энэхүү үйлчилгээний гэрээ нь нэг талаас Серэн платформ (цаашид ⏎ "Үйлчилгээ үзүүлэгч" гэх), нөгөө талаас системд бүртгүүлж буй байгууллага, ⏎ хувь хүн (цаашид "Хэрэглэгч" гэх) нарын хооронд үйлчилгээ үзүүлэх, ⏎ ашиглахтай холбоотой харилцааг зохицуулна.
+          <frame "Heading 4"> 652x26 @314,541 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 173x26 @314,541 | bg #211a1b | Montserrat 700 16px/26px
+              TEXT: 1. Нийтлэг үндэслэл
+          <frame "Container"> 652x52 @314,575 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 611x52 @314,575 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: 1.1. Энэхүү гэрээ нь хэрэглэгч Серэн платформд бүртгүүлж, үйлчилгээний ⏎ нөхцөлийг хүлээн зөвшөөрснөөр хүчин төгөлдөр болно.
+          <frame "Container"> 652x52 @314,643 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 543x52 @314,643 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: 1.2. Платформ нь эрүүл мэнд, гоо сайхны үйлчилгээ үзүүлэгчдийг ⏎ үйлчлүүлэгчтэй холбох цахим орчин байна.
+          <frame "Heading 4"> 652x26 @314,719 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 195x26 @314,719 | bg #211a1b | Montserrat 700 16px/26px
+              TEXT: 2. Талуудын эрх, үүрэг
+          <frame "Container"> 652x26 @314,753 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 231x26 @314,753 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: 2.1. Хэрэглэгчийн эрх, үүрэг:
+          <frame "List"> 652x96 @314,787 | flex-col gap8 pad(0, 0, 0, 24)
+            <frame "Item"> 628x26 @338,787 | flex-col gap-25.5 pad(0, 0, 0, 0)
+              <text "Text"> 439x26 @338,787 | bg #524345 | Montserrat 400 16px/26px
+                TEXT: Өөрийн байгууллагын мэдээллийг үнэн зөв оруулах
+              <text "Text"> 7x26 @338,788 | bg #524345 | Montserrat 400 16px/26px
+                TEXT:  
+            <frame "Item"> 628x26 @338,822 | flex-col gap-25.5 pad(0, 0, 0, 0)
+              <text "Text"> 555x26 @338,822 | bg #524345 | Montserrat 400 16px/26px
+                TEXT: Үйлчлүүлэгчдийн захиалгыг цаг тухайд нь баталгаажуулах, цуцлах
+              <text "Text"> 7x26 @338,822 | bg #524345 | Montserrat 400 16px/26px
+                TEXT:  
+            <frame "Item"> 628x26 @338,856 | flex-col gap-25.5 pad(0, 0, 0, 0)
+              <text "Text"> 386x26 @338,856 | bg #524345 | Montserrat 400 16px/26px
+                TEXT: Үйлчилгээний чанар, аюулгүй байдлыг хангах
+              <text "Text"> 7x26 @338,856 | bg #524345 | Montserrat 400 16px/26px
+                TEXT:  
+          <frame "Container"> 652x26 @314,897 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 315x26 @314,897 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: 2.2. Үйлчилгээ үзүүлэгчийн эрх, үүрэг:
+          <frame "List"> 652x96 @314,931 | flex-col gap8 pad(0, 0, 0, 24)
+            <frame "Item"> 628x26 @338,931 | flex-col gap-25.5 pad(0, 0, 0, 0)
+              <text "Text"> 351x26 @338,931 | bg #524345 | Montserrat 400 16px/26px
+                TEXT: Системийн хэвийн үйл ажиллагааг хангах
+              <text "Text"> 7x26 @338,932 | bg #524345 | Montserrat 400 16px/26px
+                TEXT:  
+            <frame "Item"> 628x26 @338,966 | flex-col gap-25.5 pad(0, 0, 0, 0)
+              <text "Text"> 394x26 @338,966 | bg #524345 | Montserrat 400 16px/26px
+                TEXT: Хэрэглэгчийн мэдээллийн нууцлалыг хадгалах
+              <text "Text"> 7x26 @338,966 | bg #524345 | Montserrat 400 16px/26px
+                TEXT:  
+            <frame "Item"> 628x26 @338,1000 | flex-col gap-25.5 pad(0, 0, 0, 0)
+              <text "Text"> 312x26 @338,1000 | bg #524345 | Montserrat 400 16px/26px
+                TEXT: Техникийн тусламж, дэмжлэг үзүүлэх
+              <text "Text"> 7x26 @338,1000 | bg #524345 | Montserrat 400 16px/26px
+                TEXT:  
+          <frame "Heading 4"> 652x26 @314,1049 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 148x26 @314,1049 | bg #211a1b | Montserrat 700 16px/26px
+              TEXT: 3. Төлбөр тооцоо
+          <frame "Container"> 652x26 @314,1083 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 596x26 @314,1083 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: 3.1. Платформ ашиглалтын шимтгэлийг тусдаа хавсралтаар зохицуулна.
+          <frame "Heading 4"> 652x26 @314,1133 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 140x26 @314,1133 | bg #211a1b | Montserrat 700 16px/26px
+              TEXT: 4. Бусад нөхцөл
+          <frame "Container"> 652x52 @314,1167 | flex-col gap0 pad(0, 0, 0, 0)
+            <text "Text"> 559x52 @314,1167 | bg #524345 | Montserrat 400 16px/26px
+              TEXT: 4.1. Гэрээнд нэмэлт өөрчлөлт оруулах тохиолдолд талууд харилцан ⏎ тохиролцоно.
+        <frame "Interaction Area"> 702x131 @289,770 | flex-col gap24 pad(8, 0, 0, 0)
+          <frame "Label - Checkbox"> 702x26 @289,778 | flex-row gap16 pad(0, 0, 0, 0)
+            <frame "Margin"> 24x26 @289,778 | flex-col gap0 pad(2, 0, 0, 0)
+              <frame "Container"> 24x24 @289,780 | flex-row gap0 pad(0, 0, 0, 0) CENTER | align:CENTER
+                <rectangle "Input"> 24x24 @289,780 | bg #ffffff | border 2px #857374 | r4.0
+                <vector "Icon"> 12x9 @295,787 | bg #ffffff
+            <text "Text"> 656x24 @329,778 | bg #211a1b | Montserrat 400 16px/24px
+              TEXT: Гэрээний нөхцөлийг уншиж танилцсан бөгөөд бүрэн хүлээн зөвшөөрч байна.
+          <frame "Signature Input"> 468x73 @289,828 | flex-col gap8 pad(0, 0, 0, 0)
+            <frame "Label"> 468x16 @289,828 | flex-col gap0 pad(0, 0, 0, 0)
+              <text "Цахим гарын үсэг (Овог нэр)"> 468x16 @289,828 | bg #524345 | Montserrat 500 12px/16px
+                TEXT: Цахим гарын үсэг (Овог нэр)
+            <frame "Input"> 468x49 @289,852 | flex-row gap0 pad(14, 16, 15, 16) CENTER | bg #fff0f1 | r12.0
+              <frame "Container"> 436x20 @305,866 | flex-col gap0 pad(0, 0, 0, 0)
+                <text "Жишээ: Бат Дорж"> 436x20 @305,866 | bg rgba(215,193,195,0.60) | Montserrat 400 16px/19.504px
+                  TEXT: Жишээ: Бат Дорж
+      <frame "Action Buttons"> 768x50 @256,966 | flex-row gap361.63 pad(0, 0, 0, 0) SPACE_BETWEEN | align:CENTER
+        <frame "Button"> 184x50 @256,966 | flex-row gap8 pad(12, 24, 12, 24) CENTER | align:CENTER | border 1px #8a4853 | r9999.0
+          <frame "Container"> 16x16 @281,983 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <vector "Icon"> 16x16 @281,983 | bg #8a4853
+          <text "Text"> 110x24 @305,979 | bg #8a4853 | Montserrat 400 16px/24px | center
+            TEXT: Өмнөх алхам
+        <frame "Button"> 207x48 @817,967 | flex-row gap7.99 pad(12, 32, 12, 32) CENTER | align:CENTER | bg #8a4853 | r9999.0 | shadow 0 1 2 rgba(0,0,0,0.05)
+          <text "Text"> 119x24 @849,979 | bg #ffffff | Montserrat 500 16px/24px | center
+            TEXT: Үргэлжлүүлэх
+          <frame "Container"> 16x16 @976,983 | flex-col gap0 pad(0, 0, 0, 0) | align:CENTER
+            <vector "Icon"> 16x16 @976,983 | bg #ffffff
+  <frame "Footer"> 1280x181 @0,1056 | flex-col gap0 pad(40, 40, 40, 40) | bg #ffffff | border 1px #d7c1c3
+    <frame "Container"> 1200x100 @40,1097 | flex-row gap16 pad(0, 24, 0, 24) CENTER
+      <frame "Container"> 276x100 @64,1097 | flex-col gap16 pad(0, 0, 0, 0)
+        <frame "Link"> 276x36 @64,1097 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "SERENE"> 276x36 @64,1097 | bg #8a4853 | Montserrat 600 28px/36px
+            TEXT: SERENE
+        <frame "Container"> 276x48 @64,1149 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "© 2024 Serene Mongolia. All rights reserved."> 276x48 @64,1149 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: © 2024 Serene Mongolia. ⏎ All rights reserved.
+      <frame "Container"> 276x100 @356,1097 | flex-col gap12 pad(0, 0, 40, 0)
+        <frame "Link"> 276x24 @356,1097 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "About Us"> 276x24 @356,1097 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: About Us
+        <frame "Link"> 276x24 @356,1133 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Services"> 276x24 @356,1133 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: Services
+      <frame "Container"> 276x100 @648,1097 | flex-col gap12 pad(0, 0, 40, 0)
+        <frame "Link"> 276x24 @648,1097 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Privacy Policy"> 276x24 @648,1097 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: Privacy Policy
+        <frame "Link"> 276x24 @648,1133 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Terms of Service"> 276x24 @648,1133 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: Terms of Service
+      <frame "Container"> 276x100 @940,1097 | flex-col gap0 pad(0, 0, 76, 0)
+        <frame "Link"> 276x24 @940,1097 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Contact"> 276x24 @940,1097 | bg #524345 | Montserrat 400 16px/24px
+            TEXT: Contact
+  <frame "TopNavBar"> 1280x81 @0,0 | flex-col gap0 pad(0, 40, 0, 40) | bg rgba(255,255,255,0.70) | border 1px rgba(255,255,255,0.20) | shadow 0 1 2 rgba(0,0,0,0.05)
+    <frame "Container"> 1200x80 @40,0 | flex-row gap262.7 pad(0, 24, 0, 24) SPACE_BETWEEN | align:CENTER
+      <frame "Link"> 113x36 @64,22 | flex-col gap0 pad(0, 0, 0, 0)
+        <text "Text"> 113x36 @64,22 | bg #8a4853 | Montserrat 600 28px/36px
+          TEXT: SERENE
+      <frame "Container"> 338x30 @440,25 | flex-row gap32 pad(0, 0, 0, 0)
+        <frame "Link"> 68x30 @440,25 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Text"> 68x24 @440,25 | bg #4c4546 | Montserrat 400 16px/24px
+            TEXT: Discover
+        <frame "Link"> 80x30 @540,25 | flex-col gap0 pad(0, 0, 0, 0)
+          <text "Text"> 80x24 @540,25 | bg #4c4546 | Montserrat 400 16px/24px
+            TEXT: AI Advisor
+        <frame "Link"> 125x30 @652,25 | flex-col gap0 pad(0, 0, 4, 0) | border 1px #8a4853
+          <text "Text"> 125x24 @652,25 | bg #8a4853 | Montserrat 700 16px/24px
+            TEXT: For Businesses
+      <frame "Container"> 176x40 @1040,20 | flex-row gap18.87 pad(0, 3, 0, 0)
+        <frame "Button"> 45x40 @1040,20 | flex-col gap0 pad(8, 0, 8, 0) CENTER | align:CENTER
+          <text "Text"> 45x24 @1040,28 | bg #4c4546 | Montserrat 400 16px/24px | center
+            TEXT: Login
+        <frame "Button:css-transform"> 109x40 @1104,20 | flex-col gap0 pad(1, 0, 1, 0)
+          <frame "Button"> 109x38 @1104,21 | flex-col gap0 pad(8, 24, 8, 24) CENTER | align:CENTER | bg #8a4853 | r9999.0
+            <text "Text"> 63x23 @1127,29 | bg #ffffff | Montserrat 400 16px/24px | center
+              TEXT: Register
