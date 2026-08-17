@@ -26,6 +26,11 @@ export default function AppTabs() {
         <Label>Explore</Label>
         <Icon src={require('@/assets/images/tabIcons/explore.png')} />
       </NativeTabs.Trigger>
+
+      <NativeTabs.Trigger name="profile">
+        <Label>Профайл</Label>
+        <Icon src={require('@/assets/images/tabIcons/explore.png')} />
+      </NativeTabs.Trigger>
     </NativeTabs>
   );
 }

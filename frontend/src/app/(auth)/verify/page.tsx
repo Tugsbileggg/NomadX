@@ -1,11 +1,22 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, RotateCw } from "lucide-react";
+import { redirect } from "next/navigation";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { AuthPanel, AuthSplit } from "@/components/auth/AuthSplit";
+import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
+import { verifyResetOtp } from "@/lib/auth/actions";
 import { OtpInputs } from "./OtpInputs";
+import { ResendButton } from "./ResendButton";
 
 export const metadata = { title: "Баталгаажуулах код — LUMINA" };
 
-export default function VerifyPage() {
+export default async function VerifyPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string }>;
+}) {
+  const { email } = await searchParams;
+  if (!email) redirect("/forgot-password");
+
   return (
     <AuthSplit>
       <AuthPanel>
@@ -22,29 +33,24 @@ export default function VerifyPage() {
             Баталгаажуулах код оруулна уу
           </h1>
           <p className="text-base leading-[26px] text-body">
-            Бид 99XX-XXXX дугаарт / u***@email.com хаягт 6 оронтой кодыг илгээлээ.
+            Бид {email} хаягт 6 оронтой кодыг илгээлээ.
           </p>
         </div>
 
-        <form className="flex flex-col gap-8">
+        <ActionForm action={verifyResetOtp} className="flex flex-col gap-8">
+          <input type="hidden" name="email" value={email} />
           <OtpInputs />
 
-          <button
-            type="button"
-            className="flex items-center justify-center gap-2 text-xs leading-4 font-medium text-muted hover:text-primary"
-          >
-            <RotateCw className="size-3" />
-            Код дахин илгээх (00:45)
-          </button>
+          <ResendButton email={email} />
 
-          <button
-            type="submit"
+          <SubmitButton
+            pendingLabel="Шалгаж байна..."
             className="flex h-14 items-center justify-center gap-2 rounded-xl bg-primary text-base font-medium text-white hover:bg-primary-dark"
           >
             Баталгаажуулах
             <ArrowRight className="size-4" />
-          </button>
-        </form>
+          </SubmitButton>
+        </ActionForm>
       </AuthPanel>
 
       <p className="text-center text-sm text-body">

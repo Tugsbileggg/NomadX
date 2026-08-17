@@ -26,6 +26,27 @@ export const Colors = {
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
+/** LUMINA брэндийн өнгөнүүд — frontend/src/app/globals.css-тэй яг адил. */
+export const Brand = {
+  primary: '#8a4853',
+  primaryDark: '#70343e',
+  primaryLight: '#a6606b',
+  primaryContainer: '#ffd9dd',
+  ink: '#211a1b',
+  body: '#524345',
+  muted: '#857374',
+  surface: '#fffbff',
+  surfacePage: '#fff8f7',
+  surfaceTint: '#fff0f1',
+  surfaceTint2: '#faeaeb',
+  outline: '#d7c1c3',
+  outlineSoft: '#eedfe0',
+  danger: '#ba1a1a',
+  success: '#16a34a',
+  warning: '#f59e0b',
+  onPrimary: '#ffffff',
+} as const;
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */

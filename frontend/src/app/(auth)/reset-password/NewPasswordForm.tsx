@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Check, Eye, EyeOff } from "lucide-react";
+import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
+import { updatePassword } from "@/lib/auth/actions";
 
 const RULES = [
   { label: "8+ тэмдэгт", test: (v: string) => v.length >= 8 },
@@ -25,13 +27,14 @@ export function NewPasswordForm() {
   const level = LEVELS[Math.max(0, passed - 1)];
 
   return (
-    <form className="flex flex-col gap-5">
+    <ActionForm action={updatePassword} className="flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <label htmlFor="password" className="text-xs leading-4 font-medium text-body">
           Шинэ нууц үг
         </label>
         <PasswordBox
           id="password"
+          name="password"
           value={password}
           onChange={setPassword}
           placeholder="Шинэ нууц үгээ оруулна уу"
@@ -74,6 +77,7 @@ export function NewPasswordForm() {
         </label>
         <PasswordBox
           id="confirm"
+          name="confirm"
           value={confirm}
           onChange={setConfirm}
           placeholder="Нууц үгээ дахин оруулна уу"
@@ -82,18 +86,19 @@ export function NewPasswordForm() {
         />
       </div>
 
-      <button
-        type="submit"
+      <SubmitButton
+        pendingLabel="Хадгалж байна..."
         className="h-14 rounded-xl bg-primary text-base font-medium text-white hover:bg-primary-dark"
       >
         Хадгалах
-      </button>
-    </form>
+      </SubmitButton>
+    </ActionForm>
   );
 }
 
 function PasswordBox({
   id,
+  name,
   value,
   onChange,
   placeholder,
@@ -101,6 +106,7 @@ function PasswordBox({
   onToggle,
 }: {
   id: string;
+  name: string;
   value: string;
   onChange: (v: string) => void;
   placeholder: string;
@@ -112,6 +118,7 @@ function PasswordBox({
     <div className="relative">
       <input
         id={id}
+        name={name}
         type={show ? "text" : "password"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
