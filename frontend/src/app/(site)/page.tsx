@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import QRCode from "qrcode";
 import {
   ArrowRight,
   BadgeCheck,
@@ -10,8 +11,10 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
+import { DownloadAppButton } from "@/components/DownloadAppButton";
 import { ButtonLink } from "@/components/ui/Button";
 import { CATEGORIES, FEATURES, PROVIDERS, STEPS } from "@/lib/home-data";
+import { MOBILE_APP_URL } from "@/lib/mobile-app-url";
 
 const STEP_ICONS = [Search, Sparkles, CalendarCheck];
 
@@ -28,7 +31,11 @@ export default function HomePage() {
   );
 }
 
-function Hero() {
+async function Hero() {
+  const qrSvg = MOBILE_APP_URL
+    ? await QRCode.toString(MOBILE_APP_URL, { type: "svg", margin: 1 })
+    : null;
+
   return (
     <section className="px-4 py-20">
       <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-6 px-6 py-20 lg:flex-row">
@@ -49,10 +56,7 @@ function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4 pt-4">
-            <ButtonLink href="/search" size="lg">
-              Цаг захиалах
-              <ArrowRight className="size-4" />
-            </ButtonLink>
+            <DownloadAppButton qrSvg={qrSvg} url={MOBILE_APP_URL} />
             <ButtonLink href="/business/register" variant="white" size="lg">
               Салон/Артист болох
             </ButtonLink>
