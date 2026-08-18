@@ -9,14 +9,18 @@ export type BusinessCard = {
   about: string | null
   logoPath: string | null
   coverPath: string | null
+  lat: number | null
+  lng: number | null
   categories: string[]
 }
+
+const CARD_COLUMNS = "id, type, name, address, about, logo_path, cover_path, lat, lng"
 
 /** Зөвшөөрөгдсөн (approved) бүх бизнесийг ангилалтай нь хамт татна. */
 export async function fetchApprovedBusinesses(): Promise<BusinessCard[]> {
   const { data: rows, error } = await supabase
     .from("businesses")
-    .select("id, type, name, address, about, logo_path, cover_path")
+    .select(CARD_COLUMNS)
     .eq("status", "approved")
     .order("created_at", { ascending: false })
 
@@ -35,23 +39,14 @@ export async function fetchApprovedBusinesses(): Promise<BusinessCard[]> {
     byBusiness.set(c.business_id, list)
   }
 
-  return rows.map((r) => ({
-    id: r.id,
-    type: r.type,
-    name: r.name,
-    address: r.address,
-    about: r.about,
-    logoPath: r.logo_path,
-    coverPath: r.cover_path,
-    categories: byBusiness.get(r.id) ?? [],
-  }))
+  return rows.map((r) => toCard(r, byBusiness.get(r.id) ?? []))
 }
 
 /** Нэг бизнесийн дэлгэрэнгүйг татна. */
 export async function fetchBusiness(id: string): Promise<BusinessCard | null> {
   const { data: r, error } = await supabase
     .from("businesses")
-    .select("id, type, name, address, about, logo_path, cover_path")
+    .select(CARD_COLUMNS)
     .eq("id", id)
     .eq("status", "approved")
     .maybeSingle()
@@ -63,6 +58,26 @@ export async function fetchBusiness(id: string): Promise<BusinessCard | null> {
     .select("category")
     .eq("business_id", id)
 
+  return toCard(
+    r,
+    (cats ?? []).map((c) => c.category),
+  )
+}
+
+function toCard(
+  r: {
+    id: string
+    type: BusinessType
+    name: string | null
+    address: string | null
+    about: string | null
+    logo_path: string | null
+    cover_path: string | null
+    lat: number | null
+    lng: number | null
+  },
+  categories: string[],
+): BusinessCard {
   return {
     id: r.id,
     type: r.type,
@@ -71,6 +86,8 @@ export async function fetchBusiness(id: string): Promise<BusinessCard | null> {
     about: r.about,
     logoPath: r.logo_path,
     coverPath: r.cover_path,
-    categories: (cats ?? []).map((c) => c.category),
+    lat: r.lat,
+    lng: r.lng,
+    categories,
   }
 }

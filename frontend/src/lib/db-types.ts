@@ -57,6 +57,8 @@ export type Business = {
   staff_size: string | null
   logo_path: string | null
   cover_path: string | null
+  lat: number | null
+  lng: number | null
   status: BusinessStatus
   /** 1..5 — бүртгэлийн wizard хаана зогссоныг заана */
   current_step: number

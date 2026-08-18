@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { storeFile } from "@/lib/storage/store-file";
+import { geocodeAddress } from "@/lib/geocode";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type FormState = { error?: string } | null;
@@ -77,15 +78,19 @@ export async function saveBusinessInfo(
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return { error: "Салоны нэрээ бөглөнө үү." };
 
+  const address = String(formData.get("address") ?? "").trim() || null;
+  const coords = address ? await geocodeAddress(address) : null;
+
   const { error } = await supabase
     .from("businesses")
     .update({
       name,
       email: String(formData.get("email") ?? "").trim() || null,
       phone: String(formData.get("phone") ?? "").trim() || null,
-      address: String(formData.get("address") ?? "").trim() || null,
+      address,
       staff_size: String(formData.get("staff_size") ?? "").trim() || null,
       current_step: advance(business.current_step, 2),
+      ...(coords ? { lat: coords.lat, lng: coords.lng } : {}),
     })
     .eq("id", business.id);
 
