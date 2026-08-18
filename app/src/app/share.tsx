@@ -1,4 +1,6 @@
+import { Ionicons } from "@expo/vector-icons"
 import * as Location from "expo-location"
+import { useRouter } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
   ActivityIndicator,
@@ -21,6 +23,7 @@ import {
 type Publisher = ReturnType<typeof createPublisher>
 
 export default function ShareScreen() {
+  const router = useRouter()
   const [room, setRoom] = useState("UB-1024")
   const [live, setLive] = useState(false)
   const [status, setStatus] = useState("Байршил хуваалцаагүй байна")
@@ -96,6 +99,9 @@ export default function ShareScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
+      <Pressable onPress={() => router.back()} hitSlop={8} style={styles.back}>
+        <Ionicons name="chevron-back" size={22} color="#8a4853" />
+      </Pressable>
       <ScrollView contentContainerStyle={styles.page}>
         <Text style={styles.title}>Байршил хуваалцах</Text>
         <Text style={styles.sub}>
@@ -176,6 +182,16 @@ function Row({ label, value }: { label: string; value: string }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#fff8f7" },
+  back: {
+    marginTop: 8,
+    marginLeft: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   page: { padding: 24, gap: 12, paddingBottom: 96 },
   title: { fontSize: 26, fontWeight: "700", color: "#211a1b" },
   sub: { fontSize: 14, color: "#8a7b7d", marginBottom: 8 },

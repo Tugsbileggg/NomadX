@@ -9,14 +9,6 @@ import { Brand } from "@/constants/theme"
 import { fetchApprovedBusinesses, type BusinessCard } from "@/lib/businesses"
 import { publicAssetUrl } from "@/lib/storage"
 
-type Mode = "salon" | "artist" | "mobile"
-
-const MODES: { key: Mode; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-  { key: "salon", label: "Салонд очих", icon: "business-outline" },
-  { key: "artist", label: "Артистын гэрт", icon: "home-outline" },
-  { key: "mobile", label: "Дуудлагаар", icon: "car-outline" },
-]
-
 const CATEGORIES: { label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { label: "Гоо сайхан", icon: "sparkles-outline" },
   { label: "Үсчин", icon: "cut-outline" },
@@ -27,7 +19,6 @@ const CATEGORIES: { label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
 
 export default function HomeScreen() {
   const router = useRouter()
-  const [mode, setMode] = useState<Mode>("salon")
   const [category, setCategory] = useState<string | null>(null)
   const [businesses, setBusinesses] = useState<BusinessCard[]>([])
   const [loading, setLoading] = useState(true)
@@ -39,41 +30,45 @@ export default function HomeScreen() {
     })
   }, [])
 
-  const filtered = useMemo(() => {
-    return businesses.filter((b) => {
-      if (mode !== "mobile" && b.type !== mode) return false
-      if (category && !b.categories.includes(category)) return false
-      return true
-    })
-  }, [businesses, mode, category])
+  const artists = useMemo(
+    () =>
+      businesses.filter(
+        (b) => b.type === "artist" && (!category || b.categories.includes(category)),
+      ),
+    [businesses, category],
+  )
+  const salons = useMemo(
+    () =>
+      businesses.filter(
+        (b) => b.type === "salon" && (!category || b.categories.includes(category)),
+      ),
+    [businesses, category],
+  )
+
+  function openBusiness(id: string) {
+    router.push({ pathname: "/business/[id]", params: { id } })
+  }
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.page}>
         <View style={styles.headerRow}>
-          <View style={styles.locationRow}>
-            <Ionicons name="location-outline" size={16} color={Brand.primary} />
-            <Text style={styles.locationText}>Улаанбаатар хот</Text>
+          <View style={styles.brandRow}>
+            <View style={styles.logoBadge}>
+              <Ionicons name="leaf-outline" size={16} color={Brand.primary} />
+            </View>
+            <Text style={styles.brandText}>Lumina</Text>
           </View>
-          <Ionicons name="notifications-outline" size={20} color={Brand.body} />
+          <Pressable hitSlop={8}>
+            <Ionicons name="notifications-outline" size={20} color={Brand.body} />
+          </Pressable>
         </View>
 
-        <View style={styles.switcher}>
-          {MODES.map((m) => {
-            const active = mode === m.key
-            return (
-              <Pressable
-                key={m.key}
-                onPress={() => setMode(m.key)}
-                style={[styles.switchPill, active && styles.switchPillActive]}
-              >
-                <Ionicons name={m.icon} size={15} color={active ? "#fff" : Brand.primary} />
-                <Text style={[styles.switchLabel, active && styles.switchLabelActive]}>
-                  {m.label}
-                </Text>
-              </Pressable>
-            )
-          })}
+        <View style={styles.banner}>
+          <Text style={styles.bannerTitle}>Тавтай морил!</Text>
+          <Text style={styles.bannerSubtitle}>
+            Мэргэжлийн үйлчилгээ, танд тухтай орчинд танд зориулж байна.
+          </Text>
         </View>
 
         <ScrollView
@@ -103,36 +98,60 @@ export default function HomeScreen() {
             <Ionicons name="sparkles" size={18} color="#fff" />
           </View>
           <View style={styles.aiTextBox}>
-            <Text style={styles.aiTitle}>Арьсаа AI-аар оношлуулах уу?</Text>
+            <Text style={styles.aiTitle}>Хиймэл оюунаар арьсаа оношлуулах уу?</Text>
             <Text style={styles.aiSubtitle}>Тун удахгүй — тохирох үйлчилгээгээ олоход тусална.</Text>
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>
-          {mode === "salon" ? "Салонууд" : mode === "artist" ? "Артистууд" : "Бүх мэргэжилтэн"}
-        </Text>
-
         {loading ? (
           <ActivityIndicator color={Brand.primary} style={{ marginTop: 24 }} />
-        ) : filtered.length === 0 ? (
-          <Text style={styles.emptyText}>Одоогоор энэ ангилалд бүртгэл алга.</Text>
         ) : (
-          <View style={styles.list}>
-            {filtered.map((b) => (
-              <BusinessRow
-                key={b.id}
-                business={b}
-                onPress={() => router.push({ pathname: "/business/[id]", params: { id: b.id } })}
-              />
-            ))}
-          </View>
+          <>
+            <BusinessSection title="Онцлох артистууд" businesses={artists} onOpen={openBusiness} />
+            <BusinessSection title="Онцлох салонууд" businesses={salons} onOpen={openBusiness} />
+          </>
         )}
+
+        <Text style={styles.sectionTitle}>Сэтгэгдлүүд</Text>
+        <View style={styles.emptyReviews}>
+          <Ionicons name="chatbubble-ellipses-outline" size={20} color={Brand.muted} />
+          <Text style={styles.emptyReviewsText}>Одоогоор сэтгэгдэл алга.</Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-function BusinessRow({
+function BusinessSection({
+  title,
+  businesses,
+  onOpen,
+}: {
+  title: string
+  businesses: BusinessCard[]
+  onOpen: (id: string) => void
+}) {
+  return (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      {businesses.length === 0 ? (
+        <Text style={styles.emptyText}>Одоогоор энэ ангилалд бүртгэл алга.</Text>
+      ) : (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.cardRow}
+        >
+          {businesses.map((b) => (
+            <BusinessCardTile key={b.id} business={b} onPress={() => onOpen(b.id)} />
+          ))}
+        </ScrollView>
+      )}
+    </View>
+  )
+}
+
+function BusinessCardTile({
   business,
   onPress,
 }: {
@@ -143,59 +162,56 @@ function BusinessRow({
   const initial = (business.name ?? "L").trim().charAt(0).toUpperCase()
 
   return (
-    <Pressable onPress={onPress} style={styles.card}>
-      <View style={styles.cardLogo}>
+    <Pressable onPress={onPress} style={styles.tile}>
+      <View style={styles.tileImage}>
         {logoUrl ? (
-          <Image source={{ uri: logoUrl }} style={styles.cardLogoImage} contentFit="cover" />
+          <Image source={{ uri: logoUrl }} style={styles.tileImageInner} contentFit="cover" />
         ) : (
-          <Text style={styles.cardLogoInitial}>{initial}</Text>
+          <Text style={styles.tileInitial}>{initial}</Text>
         )}
       </View>
-      <View style={styles.cardBody}>
-        <View style={styles.cardTypeBadge}>
-          <Text style={styles.cardTypeBadgeText}>
-            {business.type === "salon" ? "Салон" : "Артист"}
+      <Text style={styles.tileName} numberOfLines={1}>
+        {business.name}
+      </Text>
+      {business.categories.length > 0 && (
+        <Text style={styles.tileCategories} numberOfLines={1}>
+          {business.categories.join(", ")}
+        </Text>
+      )}
+      {business.address && (
+        <View style={styles.tileAddressRow}>
+          <Ionicons name="location-outline" size={11} color={Brand.muted} />
+          <Text style={styles.tileAddress} numberOfLines={1}>
+            {business.address}
           </Text>
         </View>
-        <Text style={styles.cardName}>{business.name}</Text>
-        {business.categories.length > 0 && (
-          <Text style={styles.cardCategories}>{business.categories.join(", ")}</Text>
-        )}
-        {business.address && (
-          <View style={styles.cardAddressRow}>
-            <Ionicons name="location-outline" size={12} color={Brand.muted} />
-            <Text style={styles.cardAddress} numberOfLines={1}>
-              {business.address}
-            </Text>
-          </View>
-        )}
-      </View>
-      <Ionicons name="chevron-forward" size={18} color={Brand.muted} />
+      )}
     </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { padding: 20, paddingBottom: 96, gap: 16 },
+  page: { padding: 20, paddingBottom: 96, gap: 18 },
   headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  locationRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-  locationText: { fontSize: 14, fontWeight: "600", color: Brand.ink },
-  switcher: { flexDirection: "row", gap: 8 },
-  switchPill: {
-    flex: 1,
-    flexDirection: "row",
+  brandRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  logoBadge: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    height: 48,
-    borderRadius: 16,
-    backgroundColor: "#fff",
-    paddingHorizontal: 6,
   },
-  switchPillActive: { backgroundColor: Brand.primary },
-  switchLabel: { fontSize: 12, fontWeight: "600", color: Brand.primary, textAlign: "center" },
-  switchLabelActive: { color: "#fff" },
+  brandText: { fontSize: 18, fontWeight: "700", color: Brand.primary },
+  banner: {
+    borderRadius: 20,
+    backgroundColor: Brand.primary,
+    padding: 20,
+    gap: 4,
+  },
+  bannerTitle: { fontSize: 18, fontWeight: "700", color: "#fff" },
+  bannerSubtitle: { fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 18 },
   categoryRow: { gap: 20, paddingVertical: 4 },
   categoryItem: { alignItems: "center", gap: 6, width: 60 },
   categoryIcon: {
@@ -225,41 +241,42 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   aiTextBox: { flex: 1 },
-  aiTitle: { fontSize: 14, fontWeight: "700", color: Brand.ink },
-  aiSubtitle: { fontSize: 12, color: Brand.body, marginTop: 2 },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: Brand.ink, marginTop: 4 },
-  emptyText: { fontSize: 13, color: Brand.muted, textAlign: "center", marginTop: 24 },
-  list: { gap: 12 },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
+  aiTitle: { fontSize: 13, fontWeight: "700", color: Brand.ink },
+  aiSubtitle: { fontSize: 11, color: Brand.body, marginTop: 2 },
+  section: { gap: 10 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: Brand.ink },
+  emptyText: { fontSize: 12, color: Brand.muted },
+  cardRow: { gap: 12, paddingRight: 8 },
+  tile: {
+    width: 148,
     borderRadius: 16,
     backgroundColor: "#fff",
-    padding: 12,
+    padding: 10,
+    gap: 4,
   },
-  cardLogo: {
-    width: 56,
-    height: 56,
-    borderRadius: 14,
+  tileImage: {
+    width: "100%",
+    height: 96,
+    borderRadius: 12,
     backgroundColor: Brand.primaryContainer,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
+    marginBottom: 4,
   },
-  cardLogoImage: { width: "100%", height: "100%" },
-  cardLogoInitial: { fontSize: 20, fontWeight: "700", color: Brand.primaryDark },
-  cardBody: { flex: 1, gap: 2 },
-  cardTypeBadge: {
-    alignSelf: "flex-start",
-    borderRadius: 999,
-    backgroundColor: Brand.surfaceTint2,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+  tileImageInner: { width: "100%", height: "100%" },
+  tileInitial: { fontSize: 24, fontWeight: "700", color: Brand.primaryDark },
+  tileName: { fontSize: 13, fontWeight: "700", color: Brand.ink },
+  tileCategories: { fontSize: 11, color: Brand.body },
+  tileAddressRow: { flexDirection: "row", alignItems: "center", gap: 3 },
+  tileAddress: { fontSize: 10, color: Brand.muted, flexShrink: 1 },
+  emptyReviews: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 14,
+    backgroundColor: "#fff",
+    padding: 16,
   },
-  cardTypeBadgeText: { fontSize: 10, fontWeight: "600", color: Brand.primary },
-  cardName: { fontSize: 14, fontWeight: "700", color: Brand.ink },
-  cardCategories: { fontSize: 12, color: Brand.body },
-  cardAddressRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 2 },
-  cardAddress: { fontSize: 11, color: Brand.muted, flexShrink: 1 },
+  emptyReviewsText: { fontSize: 12, color: Brand.muted },
 })

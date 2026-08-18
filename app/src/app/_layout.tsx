@@ -55,6 +55,7 @@ function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       <Stack.Protected guard={!!session && !passwordRecovery}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="business/[id]" />
+        <Stack.Screen name="share" />
       </Stack.Protected>
       <Stack.Protected guard={!session && !passwordRecovery}>
         <Stack.Screen name="(auth)" />

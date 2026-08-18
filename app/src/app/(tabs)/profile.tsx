@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
+import { useRouter } from "expo-router"
 import { useState } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { Pressable, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
@@ -10,6 +11,7 @@ import { supabase } from "@/lib/supabase"
 
 /** Хамгийн энгийн профайл дэлгэц — зөвхөн гарах боломж өгөхийн тулд нэмсэн. */
 export default function ProfileScreen() {
+  const router = useRouter()
   const { session } = useAuth()
   const [busy, setBusy] = useState(false)
 
@@ -26,6 +28,12 @@ export default function ProfileScreen() {
           <Ionicons name="person" size={32} color={Brand.primary} />
         </View>
         <Text style={styles.email}>{session?.user.email}</Text>
+
+        <Pressable style={styles.menuRow} onPress={() => router.push("/share")}>
+          <Ionicons name="navigate-outline" size={18} color={Brand.primary} />
+          <Text style={styles.menuLabel}>Байршил хуваалцах (POC)</Text>
+          <Ionicons name="chevron-forward" size={16} color={Brand.muted} />
+        </Pressable>
 
         <View style={styles.card}>
           <AuthButton label="Гарах" onPress={onSignOut} busy={busy} variant="outline" />
@@ -47,5 +55,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   email: { fontSize: 16, fontWeight: "600", color: Brand.ink },
-  card: { width: "100%", marginTop: 24 },
+  menuRow: {
+    marginTop: 20,
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 14,
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  menuLabel: { flex: 1, fontSize: 14, fontWeight: "500", color: Brand.ink },
+  card: { width: "100%", marginTop: 12 },
 })
