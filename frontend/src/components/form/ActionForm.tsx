@@ -2,13 +2,13 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-type State = { error?: string } | null;
+type State = { error?: string; success?: string } | null;
 type Action = (state: State, formData: FormData) => Promise<State>;
 
-/** Server action-ыг зөөж, буцаасан алдааг маягтын дээр харуулна. */
+/** Server action-ыг зөөж, буцаасан алдаа/амжилтын мэдээллийг маягтын дээр харуулна. */
 export function ActionForm({
   action,
   className,
@@ -29,6 +29,15 @@ export function ActionForm({
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
           {state.error}
+        </p>
+      )}
+      {state?.success && (
+        <p
+          role="status"
+          className="flex items-start gap-2 rounded-xl bg-[#dcfce7] px-4 py-3 text-sm leading-5 text-success-darker"
+        >
+          <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
+          {state.success}
         </p>
       )}
       {children}
