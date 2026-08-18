@@ -129,7 +129,7 @@ export const BUCKET_PUBLIC = "business-public" as const
 
 /* ------------------------------------------------- supabase-js generic DB */
 
-type Row<T> = { Row: T; Insert: Partial<T>; Update: Partial<T> }
+type Row<T> = { Row: T; Insert: Partial<T>; Update: Partial<T>; Relationships: [] }
 
 export type Database = {
   public: {
