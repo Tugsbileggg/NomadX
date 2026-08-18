@@ -85,8 +85,11 @@ export default function BusinessDetailScreen() {
             </Text>
           </View>
 
-          <Pressable style={styles.bookButton} disabled>
-            <Text style={styles.bookButtonText}>Цаг авах — тун удахгүй</Text>
+          <Pressable
+            style={styles.bookButton}
+            onPress={() => router.push({ pathname: "/book/[id]", params: { id: business.id } })}
+          >
+            <Text style={styles.bookButtonText}>Цаг авах</Text>
           </Pressable>
         </ScrollView>
       )}
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     height: 52,
     borderRadius: 999,
-    backgroundColor: Brand.outline,
+    backgroundColor: Brand.primary,
     alignItems: "center",
     justifyContent: "center",
   },

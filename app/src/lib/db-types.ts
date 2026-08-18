@@ -16,7 +16,7 @@
 
 export type BusinessType = "salon" | "artist"
 
-export type UserRole = "salon" | "artist" | "super_admin"
+export type UserRole = "salon" | "artist" | "super_admin" | "customer"
 
 export type BusinessStatus =
   | "draft"
@@ -33,6 +33,8 @@ export type DocumentKind =
   | "certificate"
   | "logo"
   | "cover"
+
+export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
 
 /* ---------------------------------------------------------------- tables */
 
@@ -121,6 +123,17 @@ export type VerificationEvent = {
   created_at: string
 }
 
+export type Booking = {
+  id: string
+  customer_id: string
+  business_id: string
+  status: BookingStatus
+  scheduled_at: string
+  note: string | null
+  created_at: string
+  updated_at: string
+}
+
 /* --------------------------------------------------------------- storage */
 
 /** Хувийн bucket — баримт бичиг. Зам: `<business_id>/<kind>-<uuid>.<ext>` */
@@ -144,6 +157,7 @@ export type Database = {
       payout_accounts: Row<PayoutAccount>
       contracts: Row<Contract>
       verification_events: Row<VerificationEvent>
+      bookings: Row<Booking>
     }
     Views: Record<never, never>
     Functions: {
@@ -156,6 +170,7 @@ export type Database = {
       user_role: UserRole
       business_status: BusinessStatus
       document_kind: DocumentKind
+      booking_status: BookingStatus
     }
   }
 }
