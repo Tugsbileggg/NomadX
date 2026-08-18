@@ -33,7 +33,7 @@ export default async function VerifyPage({
             Баталгаажуулах код оруулна уу
           </h1>
           <p className="text-base leading-[26px] text-body">
-            Бид {email} хаягт 6 оронтой кодыг илгээлээ.
+            Бид {email} хаягт 8 оронтой кодыг илгээлээ.
           </p>
         </div>
 

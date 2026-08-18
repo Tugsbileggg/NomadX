@@ -2,9 +2,9 @@
 
 import { useRef } from "react";
 
-const LENGTH = 6;
+const LENGTH = 8;
 
-/** Six single-digit boxes that advance focus as the user types. */
+/** Eight single-digit boxes that advance focus as the user types (Supabase OTP length = 8 for this project). */
 export function OtpInputs() {
   const refs = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -14,7 +14,7 @@ export function OtpInputs() {
   }
 
   return (
-    <div className="flex justify-between gap-2">
+    <div className="flex justify-between gap-1.5">
       {Array.from({ length: LENGTH }, (_, i) => (
         <input
           key={i}
@@ -26,7 +26,7 @@ export function OtpInputs() {
           maxLength={1}
           required
           aria-label={`${i + 1}-р орон`}
-          className="h-14 w-12 rounded-xl border border-[#6b7280] bg-white text-center text-xl font-semibold text-ink focus:border-primary focus:outline-2 focus:outline-primary"
+          className="h-14 w-10 rounded-xl border border-[#6b7280] bg-white text-center text-xl font-semibold text-ink focus:border-primary focus:outline-2 focus:outline-primary"
           onChange={(e) => {
             if (e.target.value && i < LENGTH - 1) focus(i + 1);
           }}

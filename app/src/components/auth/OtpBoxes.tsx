@@ -3,7 +3,7 @@ import { StyleSheet, TextInput, View } from "react-native"
 
 import { Brand } from "@/constants/theme"
 
-const LENGTH = 4
+const LENGTH = 8
 
 type Props = {
   value: string
@@ -50,16 +50,16 @@ export function OtpBoxes({ value, onChange }: Props) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
+  row: { flexDirection: "row", justifyContent: "space-between", gap: 6 },
   box: {
     flex: 1,
-    height: 60,
-    borderRadius: 14,
+    height: 52,
+    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: Brand.outline,
     backgroundColor: "#fff",
     textAlign: "center",
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "700",
     color: Brand.ink,
   },

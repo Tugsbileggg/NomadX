@@ -27,8 +27,8 @@ export default function VerifyOtpScreen() {
   }, [seconds])
 
   async function onVerify() {
-    if (code.length < 4) {
-      setError("4 оронтой кодоо бүрэн оруулна уу.")
+    if (code.length < 8) {
+      setError("8 оронтой кодоо бүрэн оруулна уу.")
       return
     }
     setBusy(true)
@@ -67,7 +67,7 @@ export default function VerifyOtpScreen() {
 
           <Text style={styles.title}>Баталгаажуулах</Text>
           <Text style={styles.subtitle}>
-            Таны <Text style={styles.email}>{email}</Text> хаягт 4 оронтой баталгаажуулах код
+            Таны <Text style={styles.email}>{email}</Text> хаягт 8 оронтой баталгаажуулах код
             илгээлээ.
           </Text>
 

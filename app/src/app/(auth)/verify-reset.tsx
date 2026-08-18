@@ -32,7 +32,7 @@ export default function VerifyResetScreen() {
   }, [seconds])
 
   async function onVerify() {
-    if (code.length < 4) {
+    if (code.length < 8) {
       setError("Кодоо бүрэн оруулна уу.")
       return
     }
@@ -68,7 +68,7 @@ export default function VerifyResetScreen() {
 
           <Text style={styles.title}>Баталгаажуулах</Text>
           <Text style={styles.subtitle}>
-            Таны <Text style={styles.email}>{email}</Text> хаягт 4 оронтой баталгаажуулах код
+            Таны <Text style={styles.email}>{email}</Text> хаягт 8 оронтой баталгаажуулах код
             илгээлээ.
           </Text>
 

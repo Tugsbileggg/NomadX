@@ -93,10 +93,10 @@ export async function resendResetOtp(_prev: FormState, formData: FormData): Prom
 
 export async function verifyResetOtp(_prev: FormState, formData: FormData): Promise<FormState> {
   const email = String(formData.get("email") ?? "").trim();
-  const token = Array.from({ length: 6 }, (_, i) => formData.get(`digit-${i}`) ?? "").join("");
+  const token = Array.from({ length: 8 }, (_, i) => formData.get(`digit-${i}`) ?? "").join("");
 
   if (!email) return { error: "И-мэйл хаяг олдсонгүй." };
-  if (token.length < 6) return { error: "6 оронтой кодоо бүрэн оруулна уу." };
+  if (token.length < 8) return { error: "8 оронтой кодоо бүрэн оруулна уу." };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.verifyOtp({ email, token, type: "recovery" });
