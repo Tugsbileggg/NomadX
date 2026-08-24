@@ -51,8 +51,9 @@ async function Hero() {
           </h1>
 
           <p className="text-lg leading-7 text-body">
-            Шилдэг гоо сайхны мэргэжилтнүүдийг олж, хиймэл оюун ухааны тусламжтайгаар өөрт
-            тохирох үйлчилгээг сонгон, цагаа хялбархан захиалаарай.
+            Шилдэг гоо сайхны мэргэжилтнүүдийг олж, хиймэл оюун ухааны
+            тусламжтайгаар өөрт тохирох үйлчилгээг сонгон, цагаа хялбархан
+            захиалаарай.
           </p>
 
           <div className="flex flex-wrap gap-4 pt-4">
@@ -64,19 +65,21 @@ async function Hero() {
 
           <div className="flex items-center gap-4 pt-8">
             <div className="flex">
-              {["/img/user-1.jpg", "/img/user-2.jpg", "/img/user-3.jpg"].map((src, i) => (
-                <Image
-                  key={src}
-                  src={src}
-                  alt=""
-                  width={48}
-                  height={48}
-                  className={cnAvatar(i)}
-                />
-              ))}
+              {["/img/user-1.jpg", "/img/user-2.jpg", "/img/user-3.jpg"].map(
+                (src, i) => (
+                  <Image
+                    key={src}
+                    src={src}
+                    alt=""
+                    width={48}
+                    height={48}
+                    className={cnAvatar(i)}
+                  />
+                ),
+              )}
             </div>
             <p className="text-sm leading-5 font-bold text-primary">
-              10,000+ хэрэглэгчид нэгдсэн
+              10,00+ хэрэглэгчид нэгдсэн
             </p>
           </div>
         </div>
@@ -132,7 +135,9 @@ function FloatingCard({
     <div
       className={`glass absolute hidden items-center gap-3 rounded-4xl p-4 shadow-soft sm:flex ${className}`}
     >
-      <div className={`flex size-9 items-center justify-center rounded-full ${iconBg}`}>
+      <div
+        className={`flex size-9 items-center justify-center rounded-full ${iconBg}`}
+      >
         {icon}
       </div>
       <div>
@@ -147,10 +152,12 @@ function WhyUs() {
   return (
     <section className="mx-auto max-w-[1200px] px-10">
       <div className="flex flex-col items-center gap-4 text-center">
-        <h2 className="text-[28px] leading-9 font-semibold text-ink">Яагаад бид?</h2>
+        <h2 className="text-[28px] leading-9 font-semibold text-ink">
+          Яагаад бид?
+        </h2>
         <p className="max-w-[672px] text-base text-body">
-          Таны гоо сайхны хэрэгцээг нэг дор, хамгийн хялбар бөгөөд найдвартайгаар шийдэх цогц
-          платформ.
+          Таны гоо сайхны хэрэгцээг нэг дор, хамгийн хялбар бөгөөд
+          найдвартайгаар шийдэх цогц платформ.
         </p>
       </div>
 
@@ -162,7 +169,9 @@ function WhyUs() {
               style={{ backgroundPosition: f.sprite }}
               role="presentation"
             />
-            <h3 className="pt-3 text-lg leading-6 font-medium text-ink">{f.title}</h3>
+            <h3 className="pt-3 text-lg leading-6 font-medium text-ink">
+              {f.title}
+            </h3>
             <p className="text-sm leading-5 text-body">{f.body}</p>
           </article>
         ))}
@@ -176,7 +185,9 @@ function HowItWorks() {
     <section className="px-10 py-20">
       <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-20 px-6">
         <div className="flex flex-col items-center gap-4 text-center">
-          <h2 className="text-[28px] leading-9 font-semibold text-ink">Хэрхэн ажилладаг вэ?</h2>
+          <h2 className="text-[28px] leading-9 font-semibold text-ink">
+            Хэрхэн ажилладаг вэ?
+          </h2>
           <p className="text-base text-body">
             Ердөө 3 энгийн алхмаар гоо сайхны үйлчилгээгээ авна.
           </p>
@@ -192,7 +203,10 @@ function HowItWorks() {
             const Icon = STEP_ICONS[i];
             const isLast = i === STEPS.length - 1;
             return (
-              <div key={s.n} className="relative flex flex-col items-center gap-4 text-center">
+              <div
+                key={s.n}
+                className="relative flex flex-col items-center gap-4 text-center"
+              >
                 <div className="relative">
                   <div
                     className={`flex size-24 items-center justify-center rounded-full shadow-card ${
@@ -208,8 +222,12 @@ function HowItWorks() {
                     {s.n}
                   </span>
                 </div>
-                <h3 className="text-lg leading-6 font-medium text-ink">{s.title}</h3>
-                <p className="max-w-[240px] text-sm leading-5 text-body">{s.body}</p>
+                <h3 className="text-lg leading-6 font-medium text-ink">
+                  {s.title}
+                </h3>
+                <p className="max-w-[240px] text-sm leading-5 text-body">
+                  {s.body}
+                </p>
               </div>
             );
           })}
@@ -224,7 +242,9 @@ function PopularCategories() {
     <section className="glass px-10 py-12">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg leading-6 font-semibold text-ink">Түгээмэл ангилал</h2>
+          <h2 className="text-lg leading-6 font-semibold text-ink">
+            Түгээмэл ангилал
+          </h2>
           <Link
             href="/categories"
             className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary-dark"
@@ -237,7 +257,10 @@ function PopularCategories() {
         <ul className="mt-8 grid grid-cols-4 gap-x-4 gap-y-6 md:grid-cols-8">
           {CATEGORIES.map((c) => (
             <li key={c.label}>
-              <Link href="/search" className="group flex flex-col items-center gap-3">
+              <Link
+                href="/search"
+                className="group flex flex-col items-center gap-3"
+              >
                 <Image
                   src={c.img}
                   alt={c.label}
@@ -245,7 +268,9 @@ function PopularCategories() {
                   height={110}
                   className="size-[110px] rounded-4xl border border-white/60 object-cover shadow-hairline transition-transform group-hover:-translate-y-1"
                 />
-                <span className="text-sm text-body group-hover:text-primary">{c.label}</span>
+                <span className="text-sm text-body group-hover:text-primary">
+                  {c.label}
+                </span>
               </Link>
             </li>
           ))}
@@ -295,7 +320,9 @@ function FeaturedProviders() {
                 />
                 <div className="glass absolute top-4 right-4 flex items-center gap-1 rounded-full px-3 py-1 shadow-soft">
                   <Star className="size-3 fill-primary text-primary" />
-                  <span className="text-sm leading-5 font-medium text-ink">{p.rating}</span>
+                  <span className="text-sm leading-5 font-medium text-ink">
+                    {p.rating}
+                  </span>
                 </div>
               </div>
 
@@ -308,13 +335,17 @@ function FeaturedProviders() {
                   className="absolute -top-8 left-6 size-16 rounded-full border-4 border-white object-cover shadow-hairline"
                 />
                 <div className="flex items-center gap-1">
-                  <h3 className="text-lg leading-6 font-medium text-ink">{p.name}</h3>
+                  <h3 className="text-lg leading-6 font-medium text-ink">
+                    {p.name}
+                  </h3>
                   <BadgeCheck className="size-4 shrink-0 text-primary" />
                 </div>
                 <p className="mt-1 text-sm leading-5 text-body">{p.tags}</p>
 
                 <div className="mt-4 flex items-center justify-between border-t border-surface-tint pt-4">
-                  <span className="text-sm leading-5 text-body">Эхлэх үнэ:</span>
+                  <span className="text-sm leading-5 text-body">
+                    Эхлэх үнэ:
+                  </span>
                   <span className="text-base leading-6 font-semibold text-primary">
                     {p.price}
                   </span>
@@ -338,7 +369,13 @@ function BusinessBanner() {
   return (
     <section className="mx-auto max-w-[1200px] px-10 pb-20">
       <div className="glass relative overflow-hidden rounded-5xl shadow-soft">
-        <Image src="/img/banner-bg.jpg" alt="" fill sizes="1200px" className="object-cover" />
+        <Image
+          src="/img/banner-bg.jpg"
+          alt=""
+          fill
+          sizes="1200px"
+          className="object-cover"
+        />
         <div
           aria-hidden
           className="absolute inset-0 bg-linear-to-r from-[rgba(140,75,85,0.9)] to-[rgba(166,96,107,0.8)]"
@@ -350,19 +387,27 @@ function BusinessBanner() {
               Салон эсвэл хувиараа мэргэжилтэн үү? Бидэнтэй нэгдээрэй.
             </h2>
             <p className="mt-4 text-base leading-6 font-medium text-white/90">
-              Орлогоо нэмэгдүүлж, шинэ харилцагчдад хүрч, цагийн хуваариа ухаалгаар удирдах
-              боломж.
+              Орлогоо нэмэгдүүлж, шинэ харилцагчдад хүрч, цагийн хуваариа
+              ухаалгаар удирдах боломж.
             </p>
 
             <div className="mt-4 flex items-center gap-6 py-4">
               <div>
-                <p className="text-[30px] leading-9 font-bold drop-shadow-sm">10,000+</p>
-                <p className="text-sm leading-5 font-medium text-white/80">Сарын захиалга</p>
+                <p className="text-[30px] leading-9 font-bold drop-shadow-sm">
+                  10,000+
+                </p>
+                <p className="text-sm leading-5 font-medium text-white/80">
+                  Сарын захиалга
+                </p>
               </div>
               <div className="h-14 w-px bg-white/30" />
               <div>
-                <p className="text-[30px] leading-9 font-bold drop-shadow-sm">500+</p>
-                <p className="text-sm leading-5 font-medium text-white/80">Мастерууд</p>
+                <p className="text-[30px] leading-9 font-bold drop-shadow-sm">
+                  500+
+                </p>
+                <p className="text-sm leading-5 font-medium text-white/80">
+                  Мастерууд
+                </p>
               </div>
             </div>
 
@@ -398,7 +443,9 @@ function BookingPreviewCard() {
             <CalendarCheck className="size-5 text-primary" />
           </div>
           <div>
-            <p className="text-base leading-6 font-bold text-ink">Шинэ захиалга</p>
+            <p className="text-base leading-6 font-bold text-ink">
+              Шинэ захиалга
+            </p>
             <p className="text-xs leading-4 text-body">Яг одоо</p>
           </div>
         </div>
