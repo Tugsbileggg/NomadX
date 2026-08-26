@@ -4,7 +4,7 @@
 /**
  * LUMINA — Supabase схемийн TypeScript тодорхойлолт.
  *
- * Эх сурвалж: `server/supabase/migrations/0001_init.sql`.
+ * Эх сурвалж: `server/supabase/migrations/` доторх бүх migration.
  * frontend (Next.js), app (Expo), server (Hono) гурав энэ файлыг хуваалцана.
  *
  * Схем өөрчлөгдвөл шинэ migration нэмээд энэ файлыг мөн шинэчилнэ.
@@ -26,6 +26,8 @@ export type BusinessStatus =
   | "rejected"
   | "needs_info"
 
+export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
+
 export type DocumentKind =
   | "id_front"
   | "id_back"
@@ -33,8 +35,6 @@ export type DocumentKind =
   | "certificate"
   | "logo"
   | "cover"
-
-export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
 
 /* ---------------------------------------------------------------- tables */
 
@@ -134,6 +134,67 @@ export type Booking = {
   updated_at: string
 }
 
+export type Service = {
+  id: string
+  business_id: string
+  name: string
+  description: string | null
+  /** Төгрөгөөр, бүхэл тоо */
+  price: number
+  duration_min: number
+  category: string | null
+  is_active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type BusinessStaff = {
+  id: string
+  business_id: string
+  name: string
+  role: string | null
+  photo_path: string | null
+  bio: string | null
+  is_active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type BusinessMedia = {
+  id: string
+  business_id: string
+  /** business-public bucket доторх зам, эсвэл бүтэн http(s) URL */
+  storage_path: string
+  caption: string | null
+  sort_order: number
+  created_at: string
+}
+
+export type Review = {
+  id: string
+  business_id: string
+  author_id: string
+  /** Бичигдсэн үеийн нэрийн хуулбар — profiles-ийн RLS join хийхийг зөвшөөрдөггүй */
+  author_name: string
+  booking_id: string | null
+  /** 1..5 */
+  rating: number
+  body: string | null
+  created_at: string
+  updated_at: string
+}
+
+/* ----------------------------------------------------------------- views */
+
+/** `business_ratings` — сэтгэгдлийн дундаж болон тоо. */
+export type BusinessRating = {
+  business_id: string
+  rating: number
+  review_count: number
+}
+
 /* --------------------------------------------------------------- storage */
 
 /** Хувийн bucket — баримт бичиг. Зам: `<business_id>/<kind>-<uuid>.<ext>` */
@@ -158,8 +219,17 @@ export type Database = {
       contracts: Row<Contract>
       verification_events: Row<VerificationEvent>
       bookings: Row<Booking>
+      services: Row<Service>
+      business_staff: Row<BusinessStaff>
+      business_media: Row<BusinessMedia>
+      reviews: Row<Review>
     }
-    Views: Record<never, never>
+    Views: {
+      // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
+      // Database төрөл нь хязгаарлалтад тохирохгүй болж, бүх хүснэгтийн мөр
+      // `never` болж унана.
+      business_ratings: { Row: BusinessRating; Relationships: [] }
+    }
     Functions: {
       is_super_admin: { Args: Record<never, never>; Returns: boolean }
       owns_business: { Args: { bid: string }; Returns: boolean }

@@ -44,6 +44,7 @@ export const Brand = {
   danger: '#ba1a1a',
   success: '#16a34a',
   warning: '#f59e0b',
+  gold: '#d4af37',
   onPrimary: '#ffffff',
 } as const;
 

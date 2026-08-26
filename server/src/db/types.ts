@@ -1,7 +1,7 @@
 /**
  * LUMINA — Supabase схемийн TypeScript тодорхойлолт.
  *
- * Эх сурвалж: `server/supabase/migrations/0001_init.sql`.
+ * Эх сурвалж: `server/supabase/migrations/` доторх бүх migration.
  * frontend (Next.js), app (Expo), server (Hono) гурав энэ файлыг хуваалцана.
  *
  * Схем өөрчлөгдвөл шинэ migration нэмээд энэ файлыг мөн шинэчилнэ.
@@ -13,7 +13,7 @@
 
 export type BusinessType = "salon" | "artist"
 
-export type UserRole = "salon" | "artist" | "super_admin"
+export type UserRole = "salon" | "artist" | "super_admin" | "customer"
 
 export type BusinessStatus =
   | "draft"
@@ -22,6 +22,8 @@ export type BusinessStatus =
   | "approved"
   | "rejected"
   | "needs_info"
+
+export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
 
 export type DocumentKind =
   | "id_front"
@@ -54,6 +56,8 @@ export type Business = {
   staff_size: string | null
   logo_path: string | null
   cover_path: string | null
+  lat: number | null
+  lng: number | null
   status: BusinessStatus
   /** 1..5 — бүртгэлийн wizard хаана зогссоныг заана */
   current_step: number
@@ -116,6 +120,78 @@ export type VerificationEvent = {
   created_at: string
 }
 
+export type Booking = {
+  id: string
+  customer_id: string
+  business_id: string
+  status: BookingStatus
+  scheduled_at: string
+  note: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type Service = {
+  id: string
+  business_id: string
+  name: string
+  description: string | null
+  /** Төгрөгөөр, бүхэл тоо */
+  price: number
+  duration_min: number
+  category: string | null
+  is_active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type BusinessStaff = {
+  id: string
+  business_id: string
+  name: string
+  role: string | null
+  photo_path: string | null
+  bio: string | null
+  is_active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type BusinessMedia = {
+  id: string
+  business_id: string
+  /** business-public bucket доторх зам, эсвэл бүтэн http(s) URL */
+  storage_path: string
+  caption: string | null
+  sort_order: number
+  created_at: string
+}
+
+export type Review = {
+  id: string
+  business_id: string
+  author_id: string
+  /** Бичигдсэн үеийн нэрийн хуулбар — profiles-ийн RLS join хийхийг зөвшөөрдөггүй */
+  author_name: string
+  booking_id: string | null
+  /** 1..5 */
+  rating: number
+  body: string | null
+  created_at: string
+  updated_at: string
+}
+
+/* ----------------------------------------------------------------- views */
+
+/** `business_ratings` — сэтгэгдлийн дундаж болон тоо. */
+export type BusinessRating = {
+  business_id: string
+  rating: number
+  review_count: number
+}
+
 /* --------------------------------------------------------------- storage */
 
 /** Хувийн bucket — баримт бичиг. Зам: `<business_id>/<kind>-<uuid>.<ext>` */
@@ -126,7 +202,7 @@ export const BUCKET_PUBLIC = "business-public" as const
 
 /* ------------------------------------------------- supabase-js generic DB */
 
-type Row<T> = { Row: T; Insert: Partial<T>; Update: Partial<T> }
+type Row<T> = { Row: T; Insert: Partial<T>; Update: Partial<T>; Relationships: [] }
 
 export type Database = {
   public: {
@@ -139,8 +215,18 @@ export type Database = {
       payout_accounts: Row<PayoutAccount>
       contracts: Row<Contract>
       verification_events: Row<VerificationEvent>
+      bookings: Row<Booking>
+      services: Row<Service>
+      business_staff: Row<BusinessStaff>
+      business_media: Row<BusinessMedia>
+      reviews: Row<Review>
     }
-    Views: Record<never, never>
+    Views: {
+      // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
+      // Database төрөл нь хязгаарлалтад тохирохгүй болж, бүх хүснэгтийн мөр
+      // `never` болж унана.
+      business_ratings: { Row: BusinessRating; Relationships: [] }
+    }
     Functions: {
       is_super_admin: { Args: Record<never, never>; Returns: boolean }
       owns_business: { Args: { bid: string }; Returns: boolean }
@@ -151,6 +237,7 @@ export type Database = {
       user_role: UserRole
       business_status: BusinessStatus
       document_kind: DocumentKind
+      booking_status: BookingStatus
     }
   }
 }

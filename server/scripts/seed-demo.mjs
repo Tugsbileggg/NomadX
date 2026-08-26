@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 /**
  * Жишээ үзүүлэх бүртгэлүүд үүсгэнэ — салон, артист, хэрэглэгчийн
- * demo акаунтууд + бизнесийн бүртгэлүүд (янз бүрийн статустай).
+ * demo акаунтууд + бизнес, үйлчилгээ, мастер, галерей, сэтгэгдэл.
  * RLS-ийг тойрох тул зөвхөн service role key ашиглана.
+ *
+ * Дахин ажиллуулж болно: байгаа бүртгэлийг олж, хүүхэд хүснэгтүүдийг
+ * дарж бичнэ. Тиймээс demo өгөгдлөө шинэчлэхэд дахин ажиллуулахад л хангалттай.
  *
  *   cd server && npm run seed:demo
  */
 import { createClient } from "@supabase/supabase-js"
 import { readFileSync } from "node:fs"
+import ws from "ws"
 
 const env = Object.fromEntries(
   readFileSync(new URL("../.env", import.meta.url), "utf8")
@@ -26,6 +30,9 @@ if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
 
 const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
+  // Node 20-д native WebSocket байхгүй тул supabase-js унадаг. Энэ скрипт
+  // Realtime ашигладаггүй ч client үүсэхдээ шаарддаг — rt-check.mjs-тэй ижил.
+  realtime: { transport: ws },
 })
 
 const PASSWORD = "Demo1234!"
@@ -232,81 +239,267 @@ const USERS = [
   },
 ]
 
-async function main() {
-  console.log(`${USERS.length} demo хэрэглэгч үүсгэж эхэллээ...\n`)
 
-  for (const u of USERS) {
-    const { data: created, error: userError } = await supabase.auth.admin.createUser({
-      email: u.email,
-      password: PASSWORD,
-      email_confirm: true,
-      user_metadata: { full_name: u.full_name, phone: u.phone, role: u.role },
-    })
+// ---------------------------------------------------------------- pools
+// Ангиллаар нь үйлчилгээ түүнэ. Үнэ нь төгрөгөөр, бүхэл тоо.
+const SERVICE_POOL = {
+  "Үсчин": [
+    { name: "Эрэгтэй үс засалт", price: 35000, duration_min: 45, description: "Мэргэжлийн зөвлөгөө, угаалт, тайралт, хэлбэржүүлэлт." },
+    { name: "Эмэгтэй үс засалт", price: 55000, duration_min: 60, description: "Хэлбэр засах, угаалт, сэнс тавих." },
+    { name: "Үс будалт", price: 120000, duration_min: 150, description: "Үндэс болон бүтэн будалт, өнгө сонгох зөвлөгөөтэй." },
+  ],
+  "Хумс": [
+    { name: "Сонгодог маникюр", price: 45000, duration_min: 60, description: "Хумсны хэлбэр засах, cuticule цэвэрлэх." },
+    { name: "Гелэн будалт", price: 65000, duration_min: 90, description: "1-2 өнгийн гель будалт, бэхжүүлэлт." },
+    { name: "Педикюр + Гель", price: 85000, duration_min: 120, description: "Хөлийн арчилгаа, гель будалт." },
+  ],
+  "Арьс арчилгаа": [
+    { name: "Гүн цэвэрлэгээ", price: 75000, duration_min: 60, description: "Арьсны төрлөөс хамаарсан гүн цэвэрлэгээ." },
+    { name: "Чийгшүүлэх маск", price: 55000, duration_min: 45, description: "Хатсан арьсанд зориулсан эрчимт чийгшүүлэлт." },
+  ],
+  "Спа, Массаж": [
+    { name: "Бүтэн биеийн алжаал тайлах", price: 120000, duration_min: 90, description: "Халуун чулуу болон тосон иллэг хосолсон." },
+    { name: "Нурууны иллэг", price: 70000, duration_min: 45, description: "Мөр, нурууны хэсэгчилсэн иллэг." },
+  ],
+  "Гоо сайхан": [
+    { name: "Өдөр тутмын нүүр будалт", price: 60000, duration_min: 60, description: "Байгалийн, өдөржин тогтвортой будалт." },
+    { name: "Гэрлэн чимэглэлийн будалт", price: 180000, duration_min: 120, description: "Туршилтын уулзалт багтсан бүрэн үйлчилгээ." },
+  ],
+}
 
-    if (userError) {
-      console.error(`✗ ${u.email}: ${userError.message}`)
-      continue
-    }
+// Салоны "Мастерууд". Артистууд ганцаараа ажилладаг тул ажилтангүй.
+const STAFF_POOL = [
+  { name: "Солонго", role: "Үсчин" },
+  { name: "Төгөлдөр", role: "Нүүр будагч" },
+  { name: "Ану", role: "Арьс гоо засалч" },
+  { name: "Номи", role: "Хумс засалч" },
+]
 
-    const userId = created.user.id
-    console.log(`✓ ${u.role.padEnd(8)} ${u.email}`)
+// Галерейн зураг. `storage_path` нь бүтэн URL-ыг ч хүлээж авдаг тул
+// demo-д гадны зураг ашиглав — бодит дээр bucket доторх зам байна.
+const GALLERY = [
+  "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80",
+  "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&q=80",
+  "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80",
+  "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&q=80",
+  "https://images.unsplash.com/photo-1519014816548-bf5fe059798b?w=800&q=80",
+  "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=800&q=80",
+]
 
-    if (!u.business) continue
+const REVIEW_POOL = [
+  { rating: 5, body: "Маш цэвэрхэн, нямбай ажилладаг. Сонгосон загварыг яг л хүссэнээр гаргаж өгсөн. Баярлалаа!" },
+  { rating: 5, body: "Орчин нь үнэхээр тухтай, ажилтнууд эелдэг. Дараа заавал дахин үйлчлүүлнэ." },
+  { rating: 4, body: "Ажлын чанар сайн. Цаг товлосноосоо арай хожуу эхэлсэн нь л дутуу." },
+  { rating: 5, body: "Үнийн хувьд бодитой, үр дүн нь хүлээлтээс давсан." },
+]
 
-    const b = u.business
-    const { data: business, error: bizError } = await supabase
-      .from("businesses")
-      .insert({
-        owner_id: userId,
-        type: b.type,
-        name: b.name,
-        phone: b.phone,
-        email: b.email,
-        address: b.address,
-        about: b.about,
-        staff_size: b.staff_size,
-        status: b.status,
-        current_step: b.current_step,
-        submitted_at: b.status === "draft" ? null : new Date().toISOString(),
-      })
-      .select("id")
-      .single()
+/**
+ * Бүх хэрэглэгчийг и-мэйлээр нь индекслэнэ. `createUser` нь давхардсан
+ * и-мэйл дээр алдаа өгдөг тул скриптийг дахин ажиллуулахад одоо байгаа
+ * бүртгэлийг олох хэрэгтэй болно.
+ */
+async function existingUsersByEmail() {
+  const map = new Map()
 
-    if (bizError) {
-      console.error(`  ✗ business: ${bizError.message}`)
-      continue
-    }
-
-    if (b.categories?.length) {
-      await supabase
-        .from("business_categories")
-        .insert(b.categories.map((category) => ({ business_id: business.id, category })))
-    }
-
-    if (b.status !== "draft") {
-      await supabase.from("business_hours").insert(
-        Array.from({ length: 7 }, (_, weekday) => ({
-          business_id: business.id,
-          weekday,
-          open_time: "09:00",
-          close_time: "20:00",
-          is_closed: false,
-        })),
-      )
-    }
-
-    if (b.status === "approved") {
-      await supabase.from("contracts").insert({
-        business_id: business.id,
-        version: "2024-10-01",
-        signed_name: u.full_name,
-      })
-    }
-
-    console.log(`  → business "${b.name}" (${b.status})`)
+  for (let page = 1; ; page++) {
+    const { data, error } = await supabase.auth.admin.listUsers({ page, perPage: 200 })
+    if (error || !data?.users?.length) break
+    for (const u of data.users) if (u.email) map.set(u.email, u.id)
+    if (data.users.length < 200) break
   }
 
-  console.log(`\nБүх demo акаунтын нууц үг: ${PASSWORD}`)
+  return map
+}
+
+/**
+ * Хүүхэд хүснэгтийн мөрүүдийг цэвэрлээд дахин бичнэ. Ингэснээр скриптийг
+ * хэдэн ч удаа ажиллуулж болно — давхардал үүсэхгүй, шинэчилсэн demo
+ * өгөгдөл нь өмнө үүссэн бүртгэлүүд дээр ч тусна.
+ */
+async function replaceRows(table, businessId, rows) {
+  const { error: delError } = await supabase.from(table).delete().eq("business_id", businessId)
+  if (delError) {
+    console.error(`  ✗ ${table} цэвэрлэх: ${delError.message}`)
+    return
+  }
+  if (!rows.length) return
+
+  const { error } = await supabase.from(table).insert(rows)
+  if (error) console.error(`  ✗ ${table}: ${error.message}`)
+}
+
+async function main() {
+  console.log(`${USERS.length} demo хэрэглэгч бэлдэж эхэллээ...\n`)
+
+  const existing = await existingUsersByEmail()
+
+  // Сэтгэгдэл нь үйлчлүүлэгчийн id шаарддаг ч тэд жагсаалтын сүүлд
+  // байдаг тул эхлээд цуглуулаад, дараа нь хоёр дахь ээлжид бичнэ.
+  const createdBusinesses = []
+  const createdCustomers = []
+
+  for (const u of USERS) {
+    let userId = existing.get(u.email) ?? null
+    const isNew = !userId
+
+    if (!userId) {
+      const { data, error } = await supabase.auth.admin.createUser({
+        email: u.email,
+        password: PASSWORD,
+        email_confirm: true,
+        user_metadata: { full_name: u.full_name, phone: u.phone, role: u.role },
+      })
+
+      if (error) {
+        console.error(`✗ ${u.email}: ${error.message}`)
+        continue
+      }
+      userId = data.user.id
+    }
+
+    console.log(`${isNew ? "✓ шинэ " : "· байсан"} ${u.role.padEnd(8)} ${u.email}`)
+
+    if (!u.business) {
+      if (u.role === "customer") createdCustomers.push({ id: userId, name: u.full_name })
+      continue
+    }
+
+    const b = u.business
+    const fields = {
+      owner_id: userId,
+      type: b.type,
+      name: b.name,
+      phone: b.phone,
+      email: b.email,
+      address: b.address,
+      about: b.about,
+      staff_size: b.staff_size,
+      status: b.status,
+      current_step: b.current_step,
+      submitted_at: b.status === "draft" ? null : new Date().toISOString(),
+    }
+
+    // Нэг эзэн нэг бизнестэй (businesses_owner_uniq) тул байгааг нь шинэчилнэ.
+    const { data: found } = await supabase
+      .from("businesses")
+      .select("id")
+      .eq("owner_id", userId)
+      .maybeSingle()
+
+    let businessId = found?.id
+
+    if (businessId) {
+      await supabase.from("businesses").update(fields).eq("id", businessId)
+    } else {
+      const { data, error } = await supabase
+        .from("businesses")
+        .insert(fields)
+        .select("id")
+        .single()
+
+      if (error) {
+        console.error(`  ✗ business: ${error.message}`)
+        continue
+      }
+      businessId = data.id
+    }
+
+    await replaceRows(
+      "business_categories",
+      businessId,
+      (b.categories ?? []).map((category) => ({ business_id: businessId, category })),
+    )
+
+    await replaceRows(
+      "business_hours",
+      businessId,
+      b.status === "draft"
+        ? []
+        : Array.from({ length: 7 }, (_, weekday) => ({
+            business_id: businessId,
+            weekday,
+            open_time: "09:00",
+            close_time: "20:00",
+            is_closed: false,
+          })),
+    )
+
+    // Үйлчилгээ — бизнесийн ангиллуудаас түүнэ.
+    const services = (b.categories ?? [])
+      .flatMap((c) => SERVICE_POOL[c] ?? [])
+      .map((s, i) => ({ ...s, business_id: businessId, category: null, sort_order: i }))
+
+    await replaceRows("services", businessId, services)
+
+    // Мастерууд — зөвхөн салон. Артист ганцаараа ажиллана.
+    const staff =
+      b.type === "salon"
+        ? STAFF_POOL.slice(0, b.staff_size === "1-5" ? 2 : 4).map((m, i) => ({
+            ...m,
+            business_id: businessId,
+            sort_order: i,
+          }))
+        : []
+
+    await replaceRows("business_staff", businessId, staff)
+
+    // Галерей — бизнес бүрт өөр эхлэлтэй 3 зураг.
+    const offset = createdBusinesses.length * 2
+    await replaceRows(
+      "business_media",
+      businessId,
+      Array.from({ length: 3 }, (_, i) => ({
+        business_id: businessId,
+        storage_path: GALLERY[(offset + i) % GALLERY.length],
+        sort_order: i,
+      })),
+    )
+
+    // Гэрээ нь түүхэн бичлэг тул дарж бичихгүй — байхгүй үед л нэмнэ.
+    if (b.status === "approved") {
+      const { count } = await supabase
+        .from("contracts")
+        .select("id", { count: "exact", head: true })
+        .eq("business_id", businessId)
+
+      if (!count) {
+        await supabase.from("contracts").insert({
+          business_id: businessId,
+          version: "2024-10-01",
+          signed_name: u.full_name,
+        })
+      }
+    }
+
+    createdBusinesses.push({ id: businessId, name: b.name, status: b.status })
+
+    console.log(
+      `  → "${b.name}" (${b.status}) · ${services.length} үйлчилгээ · ${staff.length} мастер`,
+    )
+  }
+
+  // Сэтгэгдэл — зөвхөн зөвшөөрөгдсөн бизнест (RLS-ийн дүрэмтэй тааруулав).
+  const approved = createdBusinesses.filter((b) => b.status === "approved")
+  let reviewCount = 0
+
+  for (const [bi, business] of approved.entries()) {
+    const rows = createdCustomers.map((c, ci) => {
+      const r = REVIEW_POOL[(bi + ci) % REVIEW_POOL.length]
+      return {
+        business_id: business.id,
+        author_id: c.id,
+        author_name: c.name,
+        rating: r.rating,
+        body: r.body,
+      }
+    })
+
+    await replaceRows("reviews", business.id, rows)
+    reviewCount += rows.length
+  }
+
+  console.log(`\n${approved.length} зөвшөөрөгдсөн бизнест нийт ${reviewCount} сэтгэгдэл.`)
+  console.log(`Бүх demo акаунтын нууц үг: ${PASSWORD}`)
 }
 
 main()
