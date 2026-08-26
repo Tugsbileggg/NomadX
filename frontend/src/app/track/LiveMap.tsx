@@ -11,8 +11,16 @@ import {
   type Fix,
   type SubscribeState,
 } from "@/lib/live-location";
+import {
+  MARKER_RING,
+  MARKER_SIZE,
+  PIN_COLOR,
+  TILE_ATTRIBUTION,
+  TILE_MAX_ZOOM,
+  TILE_URL,
+} from "@/lib/map-style";
 
-const PIN_COLOR = "#8a4853";
+const PIN_OUTER = MARKER_SIZE + MARKER_RING * 2;
 
 export function LiveMap({ initialRoom }: { initialRoom: string }) {
   const [room, setRoom] = useState(initialRoom);
@@ -52,6 +60,10 @@ function MapPanel({ room }: { room: string }) {
   const [fix, setFix] = useState<Fix | null>(null);
   const [count, setCount] = useState(0);
   const [now, setNow] = useState(0);
+  // Leaflet нь динамикаар ачаалагддаг тул зураг бэлэн болох мөчийг цэг
+  // буулгах effect-д мэдэгдэнэ — эс тэгвэл түүнээс өмнө ирсэн эхний цэг
+  // хаягдана (дараагийн цэг хүртэл marker огт гарахгүй).
+  const [mapReady, setMapReady] = useState(false);
 
   const holder = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
@@ -71,9 +83,9 @@ function MapPanel({ room }: { room: string }) {
 
       const instance = leaflet.map(holder.current).setView(UB, 13);
       leaflet
-        .tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          maxZoom: 19,
-          attribution: "© OpenStreetMap",
+        .tileLayer(TILE_URL, {
+          maxZoom: TILE_MAX_ZOOM,
+          attribution: TILE_ATTRIBUTION,
         })
         .addTo(instance);
 
@@ -92,6 +104,7 @@ function MapPanel({ room }: { room: string }) {
       observer.observe(holder.current);
 
       map.current = instance;
+      setMapReady(true);
     })();
 
     return () => {
@@ -99,6 +112,7 @@ function MapPanel({ room }: { room: string }) {
       observer?.disconnect();
       map.current?.remove();
       map.current = null;
+      setMapReady(false);
     };
   }, []);
 
@@ -131,9 +145,9 @@ function MapPanel({ room }: { room: string }) {
           .marker(point, {
             icon: leaflet.divIcon({
               className: "",
-              iconSize: [20, 20],
-              iconAnchor: [10, 10],
-              html: `<span style="display:block;width:20px;height:20px;border-radius:50%;background:${PIN_COLOR};border:3px solid #fff;box-shadow:0 2px 10px rgba(138,72,83,.5)"></span>`,
+              iconSize: [PIN_OUTER, PIN_OUTER],
+              iconAnchor: [PIN_OUTER / 2, PIN_OUTER / 2],
+              html: `<span style="display:block;width:${MARKER_SIZE}px;height:${MARKER_SIZE}px;border-radius:50%;background:${PIN_COLOR};border:${MARKER_RING}px solid #fff;box-shadow:0 2px 10px rgba(138,72,83,.5)"></span>`,
             }),
           })
           .addTo(instance);
@@ -172,7 +186,10 @@ function MapPanel({ room }: { room: string }) {
 
       if (follow.current) instance.panTo(point, { animate: true });
     })();
-  }, [fix]);
+    // `mapReady` нь зураг хожуу бэлэн болсон тохиолдолд хүлээж байсан
+    // цэгийг буулгуулна. Давхар ажиллахад аюулгүй — marker/halo нэг л удаа
+    // үүсдэг, мөрд 3м-ээс ойр цэг нэмэгддэггүй.
+  }, [fix, mapReady]);
 
   // "хэдэн секундын өмнө"-г шинэчлэх цаг
   useEffect(() => {

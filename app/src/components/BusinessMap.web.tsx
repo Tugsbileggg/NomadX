@@ -1,8 +1,15 @@
 import "leaflet/dist/leaflet.css"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { Brand } from "@/constants/theme"
+import {
+  MARKER_RING,
+  MARKER_SIZE,
+  TILE_ATTRIBUTION,
+  TILE_MAX_ZOOM,
+  TILE_URL,
+} from "@/lib/map-style"
 
 export type MapMarker = { id: string; lat: number; lng: number; title: string }
 
@@ -12,53 +19,96 @@ type Props = {
   onMarkerPress: (id: string) => void
 }
 
+type Leaflet = typeof import("leaflet")
+
 /**
  * Web газрын зураг — Leaflet-ийг imperative API-аар зөвхөн клиент дээр
  * ачаална. Expo Router web нь SSR хийдэг тул `leaflet`-ийг module scope-д
  * шууд import хийвэл "window is not defined" алдаагаар унана (яг адилхан
  * асуудлыг Supabase client дээр өмнө нь олж засаж байсан) — тиймээс
  * `import()`-ийг useEffect дотор л дуудна.
+ *
+ * Суурь tile болон marker-ийн төрх нь `lib/map-style.ts`-ээс ирэх тул
+ * native хувилбартай ижил харагдана.
  */
 export function BusinessMap({ center, markers, onMarkerPress }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<import("leaflet").Map | null>(null)
+  const layerRef = useRef<import("leaflet").LayerGroup | null>(null)
+  const leafletRef = useRef<Leaflet | null>(null)
+  const [ready, setReady] = useState(false)
+
+  // Дуудагдах бүрд шинэ callback ирдэг тул түүнийг effect-ийн хамаарал
+  // болговол marker-ууд байнга дахин үүснэ — ref-ээр хамгийн сүүлийн
+  // утгыг уншина. (Render дотор ref бичих нь React Compiler-т таарахгүй
+  // тул зөвхөн effect дотор шинэчилнэ.)
+  const pressRef = useRef(onMarkerPress)
+  useEffect(() => {
+    pressRef.current = onMarkerPress
+  }, [onMarkerPress])
 
   useEffect(() => {
     let cancelled = false
 
-    import("leaflet").then((L) => {
+    void import("leaflet").then((leaflet) => {
       if (cancelled || !containerRef.current || mapRef.current) return
 
-      const map = L.map(containerRef.current).setView([center.lat, center.lng], 12)
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap",
-        maxZoom: 19,
-      }).addTo(map)
+      const map = leaflet.map(containerRef.current).setView([center.lat, center.lng], 12)
+      leaflet
+        .tileLayer(TILE_URL, { attribution: TILE_ATTRIBUTION, maxZoom: TILE_MAX_ZOOM })
+        .addTo(map)
 
-      const icon = L.divIcon({
-        className: "",
-        html: `<div style="width:16px;height:16px;border-radius:50%;background:${Brand.primary};border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
-      })
-
-      for (const m of markers) {
-        L.marker([m.lat, m.lng], { icon })
-          .addTo(map)
-          .bindTooltip(m.title)
-          .on("click", () => onMarkerPress(m.id))
-      }
-
+      leafletRef.current = leaflet
+      layerRef.current = leaflet.layerGroup().addTo(map)
       mapRef.current = map
+      setReady(true)
     })
 
     return () => {
       cancelled = true
       mapRef.current?.remove()
       mapRef.current = null
+      layerRef.current = null
+      setReady(false)
     }
+    // Зөвхөн нэг удаа үүсгэнэ — `center` нь эхний байрлалыг л тодорхойлно.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Хайлтын үр дүн шүүгдэхэд marker-ууд өөрчлөгддөг тул тусад нь
+  // тааруулна. `markers` нь дуудагдах бүрд шинэ массив ирдэг учир
+  // жинхэнэ агуулга нь өөрчлөгдсөн үед л ажиллахаар түлхүүр болгов.
+  const markerKey = markers.map((m) => `${m.id}:${m.lat}:${m.lng}`).join("|")
+
+  useEffect(() => {
+    const leaflet = leafletRef.current
+    const layer = layerRef.current
+    if (!leaflet || !layer) return
+
+    const icon = leaflet.divIcon({
+      className: "",
+      html: `<div style="
+        width:${MARKER_SIZE}px;
+        height:${MARKER_SIZE}px;
+        border-radius:50%;
+        background:${Brand.primary};
+        border:${MARKER_RING}px solid #fff;
+        box-shadow:0 2px 6px rgba(138,72,83,0.45);
+      "></div>`,
+      iconSize: [MARKER_SIZE + MARKER_RING * 2, MARKER_SIZE + MARKER_RING * 2],
+      iconAnchor: [MARKER_SIZE / 2 + MARKER_RING, MARKER_SIZE / 2 + MARKER_RING],
+    })
+
+    layer.clearLayers()
+    for (const m of markers) {
+      leaflet
+        .marker([m.lat, m.lng], { icon })
+        .bindTooltip(m.title)
+        .on("click", () => pressRef.current(m.id))
+        .addTo(layer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, markerKey])
 
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
 }
