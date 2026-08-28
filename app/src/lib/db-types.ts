@@ -162,6 +162,13 @@ export type Invoice = {
   updated_at: string
 }
 
+/** Хэрэглэгчийн дуртай бизнес — зөвхөн эзэн нь харна. */
+export type Favourite = {
+  customer_id: string
+  business_id: string
+  created_at: string
+}
+
 export type Service = {
   id: string
   business_id: string
@@ -262,6 +269,7 @@ export type Database = {
       reviews: Row<Review>
       booking_images: Row<BookingImage>
       invoices: Row<Invoice>
+      favourites: Row<Favourite>
     }
     Views: {
       // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол

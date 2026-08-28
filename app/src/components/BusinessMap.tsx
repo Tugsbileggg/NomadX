@@ -12,7 +12,14 @@ import {
   TILE_URL,
 } from "@/lib/map-style"
 
-export type MapMarker = { id: string; lat: number; lng: number; title: string }
+export type MapMarker = {
+  id: string
+  lat: number
+  lng: number
+  title: string
+  /** Сонгогдсон цэг — томроод нэрийн бөмбөлөгтэй болно. */
+  selected?: boolean
+}
 
 type Props = {
   center: { lat: number; lng: number }
@@ -73,10 +80,13 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
 function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => void }) {
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
 
+  // Сонгогдсон цэг өөрчлөгдөхөд зургаа дахин авах ёстой тул `selected`-ийг
+  // хамааралд оруулав.
   useEffect(() => {
+    setTracksViewChanges(true)
     const id = setTimeout(() => setTracksViewChanges(false), 300)
     return () => clearTimeout(id)
-  }, [])
+  }, [marker.selected])
 
   return (
     <Marker
@@ -89,7 +99,14 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
       {/* Marker-ийн хүүхэд View-г Android нь яг хэмжээгээр нь bitmap болгон
           хуулдаг — сүүдэрт зай үлдээхгүй бол тайрагдана. */}
       <View style={styles.pinWrap}>
-        <View style={styles.pin} />
+        {marker.selected && (
+          <View style={styles.pinLabel}>
+            <Text style={styles.pinLabelText} numberOfLines={1}>
+              {marker.title}
+            </Text>
+          </View>
+        )}
+        <View style={[styles.pin, marker.selected && styles.pinSelected]} />
       </View>
     </Marker>
   )
@@ -99,7 +116,7 @@ const PIN_OUTER = MARKER_SIZE + MARKER_RING * 2
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  pinWrap: { padding: 4 },
+  pinWrap: { padding: 4, alignItems: "center" },
   pin: {
     width: PIN_OUTER,
     height: PIN_OUTER,
@@ -118,6 +135,30 @@ const styles = StyleSheet.create({
       default: {},
     }),
   },
+  pinSelected: {
+    width: PIN_OUTER + 10,
+    height: PIN_OUTER + 10,
+    borderRadius: (PIN_OUTER + 10) / 2,
+  },
+  pinLabel: {
+    marginBottom: 4,
+    maxWidth: 160,
+    borderRadius: 999,
+    backgroundColor: "#fff",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: Brand.ink,
+        shadowOpacity: 0.18,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+      },
+      android: { elevation: 3 },
+      default: {},
+    }),
+  },
+  pinLabelText: { fontSize: 11, fontWeight: "700", color: Brand.ink },
   attribution: {
     position: "absolute",
     right: 6,

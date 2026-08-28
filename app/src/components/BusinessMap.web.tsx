@@ -11,7 +11,14 @@ import {
   TILE_URL,
 } from "@/lib/map-style"
 
-export type MapMarker = { id: string; lat: number; lng: number; title: string }
+export type MapMarker = {
+  id: string
+  lat: number
+  lng: number
+  title: string
+  /** Сонгогдсон цэг — томроод нэрийн бөмбөлөгтэй болно. */
+  selected?: boolean
+}
 
 type Props = {
   center: { lat: number; lng: number }
@@ -78,32 +85,49 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
   // Хайлтын үр дүн шүүгдэхэд marker-ууд өөрчлөгддөг тул тусад нь
   // тааруулна. `markers` нь дуудагдах бүрд шинэ массив ирдэг учир
   // жинхэнэ агуулга нь өөрчлөгдсөн үед л ажиллахаар түлхүүр болгов.
-  const markerKey = markers.map((m) => `${m.id}:${m.lat}:${m.lng}`).join("|")
+  const markerKey = markers.map((m) => `${m.id}:${m.lat}:${m.lng}:${m.selected ?? 0}`).join("|")
 
   useEffect(() => {
     const leaflet = leafletRef.current
     const layer = layerRef.current
     if (!leaflet || !layer) return
 
-    const icon = leaflet.divIcon({
-      className: "",
-      html: `<div style="
-        width:${MARKER_SIZE}px;
-        height:${MARKER_SIZE}px;
+    layer.clearLayers()
+
+    for (const m of markers) {
+      const size = m.selected ? MARKER_SIZE + 10 : MARKER_SIZE
+      const outer = size + MARKER_RING * 2
+
+      const dot = `<div style="
+        width:${size}px;
+        height:${size}px;
         border-radius:50%;
         background:${Brand.primary};
         border:${MARKER_RING}px solid #fff;
         box-shadow:0 2px 6px rgba(138,72,83,0.45);
-      "></div>`,
-      iconSize: [MARKER_SIZE + MARKER_RING * 2, MARKER_SIZE + MARKER_RING * 2],
-      iconAnchor: [MARKER_SIZE / 2 + MARKER_RING, MARKER_SIZE / 2 + MARKER_RING],
-    })
+      "></div>`
 
-    layer.clearLayers()
-    for (const m of markers) {
+      // Сонгогдсон цэгийн нэр нь цэгийн дээр бөмбөлөг болж гарна.
+      const label = m.selected
+        ? `<div style="
+             position:absolute; bottom:${outer + 4}px; left:50%; transform:translateX(-50%);
+             max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+             background:#fff; border-radius:999px; padding:4px 10px;
+             font-size:11px; font-weight:700; color:${Brand.ink};
+             box-shadow:0 2px 8px rgba(33,26,27,0.18);
+           ">${escapeHtml(m.title)}</div>`
+        : ""
+
       leaflet
-        .marker([m.lat, m.lng], { icon })
-        .bindTooltip(m.title)
+        .marker([m.lat, m.lng], {
+          icon: leaflet.divIcon({
+            className: "",
+            html: `<div style="position:relative">${label}${dot}</div>`,
+            iconSize: [outer, outer],
+            iconAnchor: [outer / 2, outer / 2],
+          }),
+          zIndexOffset: m.selected ? 1000 : 0,
+        })
         .on("click", () => pressRef.current(m.id))
         .addTo(layer)
     }
@@ -111,4 +135,12 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
   }, [ready, markerKey])
 
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+}
+
+/** Нэр нь хэрэглэгчийн оруулсан текст тул HTML-д шууд тавихгүй. */
+function escapeHtml(value: string) {
+  return value.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string,
+  )
 }
