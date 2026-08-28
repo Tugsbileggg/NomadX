@@ -464,6 +464,13 @@ function ReviewCard({ review }: { review: ProfileReview }) {
         <Text style={styles.reviewAge}>{mnTimeAgo(review.createdAt)}</Text>
       </View>
       {review.body && <Text style={styles.reviewBody}>{review.body}</Text>}
+
+      {review.reply && (
+        <View style={styles.replyBox}>
+          <Text style={styles.replyLabel}>Бизнесийн хариу</Text>
+          <Text style={styles.replyBody}>{review.reply}</Text>
+        </View>
+      )}
     </View>
   )
 }
@@ -674,6 +681,17 @@ const styles = StyleSheet.create({
   starsRow: { flexDirection: "row", gap: 1, marginTop: 2 },
   reviewAge: { fontSize: 10, color: Brand.muted },
   reviewBody: { fontSize: 12, lineHeight: 19, color: Brand.body, marginTop: 10 },
+  replyBox: {
+    marginTop: 10,
+    borderRadius: 12,
+    backgroundColor: Brand.surfaceTint,
+    padding: 10,
+    // Зүүн талын зураас нь хариуг сэтгэгдлээс тусгаарлана.
+    borderLeftWidth: 2,
+    borderLeftColor: Brand.primaryContainer,
+  },
+  replyLabel: { fontSize: 10, fontWeight: "700", color: Brand.primary },
+  replyBody: { fontSize: 12, lineHeight: 18, color: Brand.body, marginTop: 3 },
 
   ratingPill: {
     flexDirection: "row",

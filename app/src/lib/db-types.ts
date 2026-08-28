@@ -210,6 +210,9 @@ export type Review = {
   /** 1..5 */
   rating: number
   body: string | null
+  /** Бизнесийн хариу — зөвхөн `reply_to_review()`-ээр бичигдэнэ. */
+  reply: string | null
+  replied_at: string | null
   created_at: string
   updated_at: string
 }
@@ -272,6 +275,7 @@ export type Database = {
       can_read_business: { Args: { bid: string }; Returns: boolean }
       owns_booking: { Args: { bid: string }; Returns: boolean }
       can_read_booking: { Args: { bid: string }; Returns: boolean }
+      reply_to_review: { Args: { rid: string; body: string }; Returns: undefined }
     }
     Enums: {
       business_type: BusinessType

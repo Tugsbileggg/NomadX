@@ -31,6 +31,8 @@ export type ProfileReview = {
   rating: number
   body: string | null
   createdAt: string
+  /** Бизнесийн хариу — байхгүй бол null. */
+  reply: string | null
 }
 
 export type BusinessProfile = {
@@ -79,7 +81,7 @@ export async function fetchBusinessProfile(id: string): Promise<BusinessProfile 
       .order("sort_order"),
     supabase
       .from("reviews")
-      .select("id, author_name, rating, body, created_at")
+      .select("id, author_name, rating, body, created_at, reply")
       .eq("business_id", id)
       .order("created_at", { ascending: false })
       .limit(REVIEW_PREVIEW),
@@ -128,6 +130,7 @@ export async function fetchBusinessProfile(id: string): Promise<BusinessProfile 
       rating: r.rating,
       body: r.body,
       createdAt: r.created_at,
+      reply: r.reply,
     })),
     rating: rating.data ? { average: rating.data.rating, count: rating.data.review_count } : null,
     todayHours: openToday,
