@@ -570,6 +570,37 @@ async function main() {
   }
 
   console.log(`\n${bookingCount} захиалга нэмэгдлээ.`)
+
+  // Дууссан захиалгад туршилтын нэхэмжлэх. Байгаа бол дарж бичихгүй.
+  const { data: completed } = await supabase
+    .from("bookings")
+    .select("id, business_id")
+    .eq("status", "completed")
+
+  let invoiceCount = 0
+
+  for (const b of completed ?? []) {
+    const { count } = await supabase
+      .from("invoices")
+      .select("id", { count: "exact", head: true })
+      .eq("booking_id", b.id)
+
+    if (count) continue
+
+    const { error } = await supabase.from("invoices").insert({
+      booking_id: b.id,
+      business_id: b.business_id,
+      // ⚠️ Туршилтын дүн — бодит төлбөр тооцоо хийгддэггүй.
+      amount: 120000,
+      note: "Хийгдсэн ажлын дүн (туршилтын)",
+      status: "issued",
+    })
+
+    if (error) console.error(`  ✗ invoice: ${error.message}`)
+    else invoiceCount++
+  }
+
+  console.log(`${invoiceCount} туршилтын нэхэмжлэх нэмэгдлээ.`)
   let reviewCount = 0
 
   for (const [bi, business] of approved.entries()) {

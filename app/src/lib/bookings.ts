@@ -1,6 +1,10 @@
 import { decode } from "base64-arraybuffer"
 
-import { BUCKET_BOOKING_REFS, type BookingStatus } from "@/lib/db-types"
+import {
+  BUCKET_BOOKING_REFS,
+  type BookingStatus,
+  type InvoiceStatus,
+} from "@/lib/db-types"
 import { supabase } from "@/lib/supabase"
 
 /** Signed URL-ийн хүчинтэй хугацаа (сек) — нэг дэлгэц үзэхэд хангалттай. */
@@ -17,6 +21,8 @@ export type BookingWithBusiness = {
     type: "salon" | "artist"
     logoPath: string | null
   } | null
+  /** ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */
+  invoice: { amount: number; note: string | null; status: InvoiceStatus } | null
 }
 
 /** Нэвтэрсэн хэрэглэгчийн бүх захиалгыг (шинэ нь эхэндээ) бизнесийн мэдээлэлтэй нь татна. */
@@ -42,6 +48,16 @@ export async function fetchMyBookings(): Promise<BookingWithBusiness[]> {
 
   const byId = new Map((businesses ?? []).map((b) => [b.id, b]))
 
+  const { data: invoices } = await supabase
+    .from("invoices")
+    .select("booking_id, amount, note, status")
+    .in(
+      "booking_id",
+      rows.map((r) => r.id),
+    )
+
+  const byInvoice = new Map((invoices ?? []).map((i) => [i.booking_id, i]))
+
   return rows.map((r) => {
     const b = byId.get(r.business_id)
     return {
@@ -50,6 +66,7 @@ export async function fetchMyBookings(): Promise<BookingWithBusiness[]> {
       scheduledAt: r.scheduled_at,
       note: r.note,
       business: b ? { id: b.id, name: b.name, type: b.type, logoPath: b.logo_path } : null,
+      invoice: byInvoice.get(r.id) ?? null,
     }
   })
 }

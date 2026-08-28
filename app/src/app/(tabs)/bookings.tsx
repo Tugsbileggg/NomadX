@@ -17,6 +17,12 @@ import { cancelBooking, fetchMyBookings, type BookingWithBusiness } from "@/lib/
 import { mnDateLabel, mnTimeLabel } from "@/lib/mn-date"
 import { publicAssetUrl } from "@/lib/storage"
 
+const INVOICE_LABEL: Record<string, string> = {
+  issued: "Төлөх дүн",
+  paid: "Төлөгдсөн",
+  cancelled: "Цуцлагдсан нэхэмжлэх",
+}
+
 const STATUS_LABEL: Record<string, string> = {
   pending: "Хүлээгдэж буй",
   confirmed: "Баталгаажсан",
@@ -152,6 +158,31 @@ function BookingRow({
 
       {booking.note ? <Text style={styles.note}>{booking.note}</Text> : null}
 
+      {/* ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй, зөвхөн
+          бизнесийн бичсэн дүнг харуулна. */}
+      {booking.invoice && (
+        <View style={styles.invoice}>
+          <View style={styles.invoiceTop}>
+            <Ionicons name="receipt-outline" size={14} color={Brand.primary} />
+            <Text style={styles.invoiceLabel}>
+              {INVOICE_LABEL[booking.invoice.status] ?? "Нэхэмжлэх"}
+            </Text>
+            <Text style={styles.invoiceTest}>туршилтын</Text>
+          </View>
+          <Text
+            style={[
+              styles.invoiceAmount,
+              booking.invoice.status === "cancelled" && styles.invoiceVoid,
+            ]}
+          >
+            {booking.invoice.amount.toLocaleString("en-US")}₮
+          </Text>
+          {booking.invoice.note ? (
+            <Text style={styles.invoiceNote}>{booking.invoice.note}</Text>
+          ) : null}
+        </View>
+      )}
+
       {canCancel && (
         <Pressable onPress={onCancel} style={styles.cancelButton}>
           <Text style={styles.cancelText}>Захиалга цуцлах</Text>
@@ -195,6 +226,28 @@ const styles = StyleSheet.create({
   statusPill: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
   statusText: { fontSize: 10, fontWeight: "700", color: Brand.ink },
   note: { fontSize: 12, color: Brand.body, backgroundColor: Brand.surfaceTint, borderRadius: 10, padding: 10 },
+  invoice: {
+    marginTop: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: Brand.outline,
+    padding: 12,
+  },
+  invoiceTop: { flexDirection: "row", alignItems: "center", gap: 5 },
+  invoiceLabel: { fontSize: 11, fontWeight: "700", color: Brand.body },
+  invoiceTest: {
+    fontSize: 9,
+    fontWeight: "600",
+    color: Brand.muted,
+    backgroundColor: Brand.surfaceTint2,
+    borderRadius: 999,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  invoiceAmount: { marginTop: 4, fontSize: 20, fontWeight: "700", color: Brand.ink },
+  invoiceVoid: { textDecorationLine: "line-through", color: Brand.muted },
+  invoiceNote: { marginTop: 2, fontSize: 12, color: Brand.body },
   cancelButton: { alignSelf: "flex-start" },
   cancelText: { fontSize: 12, fontWeight: "600", color: Brand.danger },
 })

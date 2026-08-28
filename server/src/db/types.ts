@@ -25,6 +25,9 @@ export type BusinessStatus =
 
 export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
 
+/** ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */
+export type InvoiceStatus = "issued" | "paid" | "cancelled"
+
 export type DocumentKind =
   | "id_front"
   | "id_back"
@@ -140,6 +143,22 @@ export type BookingImage = {
   created_at: string
 }
 
+/**
+ * Захиалгын нэхэмжлэх — ЗӨВХӨН ТУРШИЛТЫН бүртгэл.
+ * Гүйлгээ хийгддэггүй; бизнес дүнгээ бичиж, үйлчлүүлэгч хардаг.
+ */
+export type Invoice = {
+  id: string
+  booking_id: string
+  business_id: string
+  /** Төгрөгөөр, бүхэл тоо */
+  amount: number
+  note: string | null
+  status: InvoiceStatus
+  created_at: string
+  updated_at: string
+}
+
 export type Service = {
   id: string
   business_id: string
@@ -236,6 +255,7 @@ export type Database = {
       business_media: Row<BusinessMedia>
       reviews: Row<Review>
       booking_images: Row<BookingImage>
+      invoices: Row<Invoice>
     }
     Views: {
       // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
@@ -256,6 +276,7 @@ export type Database = {
       business_status: BusinessStatus
       document_kind: DocumentKind
       booking_status: BookingStatus
+      invoice_status: InvoiceStatus
     }
   }
 }

@@ -1,5 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
-import { BUCKET_BOOKING_REFS, type BookingStatus } from "@/lib/db-types";
+import {
+  BUCKET_BOOKING_REFS,
+  type BookingStatus,
+  type InvoiceStatus,
+} from "@/lib/db-types";
 
 /** Signed URL-ийн хугацаа (сек) — хуудас нэг харахад хангалттай. */
 const SIGNED_URL_TTL = 60 * 60;
@@ -14,6 +18,8 @@ export type PanelBooking = {
   customer: { name: string; phone: string | null } | null;
   /** Жишээ зургууд — bucket хувийн тул signed URL. */
   images: string[];
+  /** ⚠️ Туршилтын нэхэмжлэх. Үүсээгүй бол null. */
+  invoice: { id: string; amount: number; note: string | null; status: InvoiceStatus } | null;
 };
 
 export type BookingCounts = {
@@ -80,6 +86,16 @@ export async function fetchPanelBookings(status?: BookingStatus): Promise<PanelB
 
   const signed = await signPaths(supabase, (images ?? []).map((i) => i.storage_path));
 
+  const { data: invoices } = await supabase
+    .from("invoices")
+    .select("id, booking_id, amount, note, status")
+    .in(
+      "booking_id",
+      rows.map((r) => r.id),
+    );
+
+  const byInvoice = new Map((invoices ?? []).map((i) => [i.booking_id, i]));
+
   const byBooking = new Map<string, string[]>();
   for (const image of images ?? []) {
     const url = signed.get(image.storage_path);
@@ -99,6 +115,7 @@ export async function fetchPanelBookings(status?: BookingStatus): Promise<PanelB
         createdAt: r.created_at,
         customer: p ? { name: p.full_name, phone: p.phone } : null,
         images: byBooking.get(r.id) ?? [],
+        invoice: byInvoice.get(r.id) ?? null,
       };
     }),
   };

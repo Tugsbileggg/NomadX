@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CalendarClock, Phone } from "lucide-react";
+import { CalendarClock, Phone, ReceiptText } from "lucide-react";
 
 import { Badge, Monogram, type Tone } from "@/components/admin/kit";
 import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
-import { setBookingStatus } from "@/lib/bookings/actions";
-import type { BookingStatus } from "@/lib/db-types";
+import { saveInvoice, setBookingStatus, setInvoiceStatus } from "@/lib/bookings/actions";
+import type { BookingStatus, InvoiceStatus } from "@/lib/db-types";
 import type { PanelBooking } from "@/lib/bookings/queries";
 import { cn } from "@/lib/cn";
 
@@ -28,6 +28,12 @@ const NEXT_STEPS: Record<BookingStatus, { status: BookingStatus; label: string; 
   ],
   completed: [],
   cancelled: [],
+};
+
+const INVOICE_STATUS: Record<InvoiceStatus, { label: string; tone: Tone }> = {
+  issued: { label: "Илгээсэн", tone: "warning" },
+  paid: { label: "Төлөгдсөн", tone: "success" },
+  cancelled: { label: "Цуцлагдсан", tone: "danger" },
 };
 
 export const STATUS_TABS: { label: string; value: BookingStatus | null }[] = [
@@ -146,6 +152,8 @@ function BookingCard({ booking }: { booking: PanelBooking }) {
         </div>
       )}
 
+      {booking.status === "completed" && <InvoiceBlock booking={booking} />}
+
       {steps.length > 0 && (
         <div className="mt-5 flex flex-wrap gap-3 border-t border-surface-tint pt-4">
           {steps.map((step) => (
@@ -167,6 +175,95 @@ function BookingCard({ booking }: { booking: PanelBooking }) {
         </div>
       )}
     </article>
+  );
+}
+
+/**
+ * ⚠️ Туршилтын нэхэмжлэх. Бодит төлбөр тооцоо хийгддэггүй — бизнес дүнгээ
+ * бичиж үлдээхэд үйлчлүүлэгчийн аппад харагдана, төлөв нь гар аргаар л
+ * өөрчлөгдөнө.
+ */
+function InvoiceBlock({ booking }: { booking: PanelBooking }) {
+  const invoice = booking.invoice;
+
+  return (
+    <div className="mt-5 rounded-xl border border-dashed border-outline px-4 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="flex items-center gap-2 text-xs font-medium tracking-[0.6px] text-muted uppercase">
+          <ReceiptText className="size-3.5" />
+          Нэхэмжлэх
+          <span className="rounded-full bg-surface-variant px-2 py-0.5 text-[10px] tracking-normal normal-case">
+            туршилтын
+          </span>
+        </p>
+        {invoice && <Badge tone={INVOICE_STATUS[invoice.status].tone}>
+          {INVOICE_STATUS[invoice.status].label}
+        </Badge>}
+      </div>
+
+      {invoice && (
+        <p className="mt-3 text-2xl leading-8 font-semibold text-ink">
+          {invoice.amount.toLocaleString("en-US")}₮
+        </p>
+      )}
+      {invoice?.note && <p className="mt-1 text-sm text-body">{invoice.note}</p>}
+
+      {/* ActionForm нь алдаа/амжилтын мэдэгдлээ эхний хүүхэд болгон гаргадаг
+          тул баганаар өрж, талбаруудыг дотор нь мөр болгоно — эс тэгвэл
+          мэдэгдэл нь оролтуудын хооронд шахагдана. */}
+      <ActionForm action={saveInvoice} className="mt-3 flex flex-col gap-3">
+        <input type="hidden" name="booking_id" value={booking.id} />
+        <div className="flex flex-wrap items-end gap-3">
+        <label className="flex flex-col gap-1.5">
+          <span className="text-xs text-muted">Дүн (₮)</span>
+          <input
+            type="number"
+            name="amount"
+            min={0}
+            required
+            defaultValue={invoice?.amount ?? ""}
+            placeholder="0"
+            className="h-10 w-40 rounded-lg bg-surface-tint px-3 text-sm text-ink focus:outline-2 focus:outline-primary"
+          />
+        </label>
+        <label className="flex min-w-[200px] flex-1 flex-col gap-1.5">
+          <span className="text-xs text-muted">Тайлбар (заавал биш)</span>
+          <input
+            type="text"
+            name="note"
+            defaultValue={invoice?.note ?? ""}
+            placeholder="Хийгдсэн ажлын товч"
+            className="h-10 w-full rounded-lg bg-surface-tint px-3 text-sm text-ink focus:outline-2 focus:outline-primary"
+          />
+        </label>
+        <SubmitButton
+          className="h-10 rounded-full bg-primary px-5 text-xs font-medium text-white hover:bg-primary-dark"
+          pendingLabel="Хадгалж байна..."
+        >
+          {invoice ? "Дүнг шинэчлэх" : "Нэхэмжлэх үүсгэх"}
+        </SubmitButton>
+        </div>
+      </ActionForm>
+
+      {invoice && invoice.status === "issued" && (
+        <div className="mt-3 flex flex-wrap gap-3">
+          <ActionForm action={setInvoiceStatus} className="contents">
+            <input type="hidden" name="invoice_id" value={invoice.id} />
+            <input type="hidden" name="status" value="paid" />
+            <SubmitButton className="h-9 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint">
+              Төлөгдсөн гэж тэмдэглэх
+            </SubmitButton>
+          </ActionForm>
+          <ActionForm action={setInvoiceStatus} className="contents">
+            <input type="hidden" name="invoice_id" value={invoice.id} />
+            <input type="hidden" name="status" value="cancelled" />
+            <SubmitButton className="h-9 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint">
+              Цуцлах
+            </SubmitButton>
+          </ActionForm>
+        </div>
+      )}
+    </div>
   );
 }
 
