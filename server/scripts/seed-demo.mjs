@@ -286,6 +286,31 @@ const GALLERY = [
   "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=800&q=80",
 ]
 
+// Захиалгын хүсэлт — үйлчилгээ сонгодоггүй тул чөлөөт тайлбар.
+const BOOKING_POOL = [
+  {
+    status: "pending",
+    inDays: 2,
+    hour: 11,
+    note: "Мөрний урттай үсээ 10 см тайруулж, доод талыг нь давхаргатай болгомоор байна. Өнгө өөрчлөхгүй.",
+    withImage: true,
+  },
+  {
+    status: "confirmed",
+    inDays: 4,
+    hour: 15,
+    note: "Хумсаа богино байлгаад, тансаг цайвар ягаан гелэн будалт хиймээр байна. Гялтганахгүй, матт өнгө.",
+    withImage: false,
+  },
+  {
+    status: "completed",
+    inDays: -6,
+    hour: 13,
+    note: "Хуримын өмнөх туршилтын будалт. Байгалийн, гэрэл зурагт сайн харагдах маягаар.",
+    withImage: false,
+  },
+]
+
 const REVIEW_POOL = [
   { rating: 5, body: "Маш цэвэрхэн, нямбай ажилладаг. Сонгосон загварыг яг л хүссэнээр гаргаж өгсөн. Баярлалаа!" },
   { rating: 5, body: "Орчин нь үнэхээр тухтай, ажилтнууд эелдэг. Дараа заавал дахин үйлчлүүлнэ." },
@@ -478,8 +503,73 @@ async function main() {
     )
   }
 
-  // Сэтгэгдэл — зөвхөн зөвшөөрөгдсөн бизнест (RLS-ийн дүрэмтэй тааруулав).
+  // Захиалга — зөвхөн зөвшөөрөгдсөн бизнест, зөвхөн урьд нь байхгүй бол.
+  // Дарж бичихгүй: та аппаас гараар үүсгэсэн захиалгаа алдах ёсгүй.
   const approved = createdBusinesses.filter((b) => b.status === "approved")
+  let bookingCount = 0
+
+  for (const [bi, business] of approved.entries()) {
+    const { count } = await supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("business_id", business.id)
+
+    if (count) {
+      console.log(`· "${business.name}" дээр ${count} захиалга байна — алгаслаа`)
+      continue
+    }
+
+    for (const [pi, tpl] of BOOKING_POOL.entries()) {
+      const customer = createdCustomers[(bi + pi) % createdCustomers.length]
+      if (!customer) continue
+
+      const when = new Date()
+      when.setDate(when.getDate() + tpl.inDays)
+      when.setHours(tpl.hour, 0, 0, 0)
+
+      const { data: booking, error } = await supabase
+        .from("bookings")
+        .insert({
+          customer_id: customer.id,
+          business_id: business.id,
+          status: tpl.status,
+          scheduled_at: when.toISOString(),
+          note: tpl.note,
+        })
+        .select("id")
+        .single()
+
+      if (error) {
+        console.error(`  ✗ booking: ${error.message}`)
+        continue
+      }
+      bookingCount++
+
+      if (!tpl.withImage) continue
+
+      // Жишээ зураг — гадны зургийг татаж booking-refs руу хийнэ.
+      // (Аппаас ирэхдээ base64-аар ирдэг; энд зүгээр байт хуулна.)
+      try {
+        const res = await fetch(GALLERY[(bi + 1) % GALLERY.length])
+        const bytes = new Uint8Array(await res.arrayBuffer())
+        const path = `${customer.id}/seed-${booking.id.slice(0, 8)}.jpg`
+
+        const { error: upError } = await supabase.storage
+          .from("booking-refs")
+          .upload(path, bytes, { contentType: "image/jpeg", upsert: true })
+
+        if (upError) throw new Error(upError.message)
+
+        await supabase
+          .from("booking_images")
+          .insert({ booking_id: booking.id, storage_path: path, sort_order: 0 })
+      } catch (e) {
+        console.error(`  ✗ booking зураг: ${e.message}`)
+      }
+    }
+  }
+
+  console.log(`\n${bookingCount} захиалга нэмэгдлээ.`)
   let reviewCount = 0
 
   for (const [bi, business] of approved.entries()) {
@@ -498,7 +588,7 @@ async function main() {
     reviewCount += rows.length
   }
 
-  console.log(`\n${approved.length} зөвшөөрөгдсөн бизнест нийт ${reviewCount} сэтгэгдэл.`)
+  console.log(`${approved.length} зөвшөөрөгдсөн бизнест нийт ${reviewCount} сэтгэгдэл.`)
   console.log(`Бүх demo акаунтын нууц үг: ${PASSWORD}`)
 }
 
