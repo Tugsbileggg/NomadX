@@ -1,5 +1,10 @@
+import { decode } from "base64-arraybuffer"
+
+import { BUCKET_BOOKING_REFS, type BookingStatus } from "@/lib/db-types"
 import { supabase } from "@/lib/supabase"
-import type { BookingStatus } from "@/lib/db-types"
+
+/** Signed URL-ийн хүчинтэй хугацаа (сек) — нэг дэлгэц үзэхэд хангалттай. */
+const SIGNED_URL_TTL = 60 * 60
 
 export type BookingWithBusiness = {
   id: string
@@ -49,25 +54,101 @@ export async function fetchMyBookings(): Promise<BookingWithBusiness[]> {
   })
 }
 
-/** Шинэ захиалга үүсгэнэ. */
+export type NewBooking = { id: string } | { error: string }
+
+/**
+ * Шинэ захиалга үүсгэнэ.
+ *
+ * `note` нь үйлчлүүлэгч юу хийлгэхээ бичсэн тайлбар — үйлчилгээний
+ * жагсаалтаас сонгодоггүй тул энэ нь бизнест очих гол мэдээлэл.
+ * Жишээ зургийг захиалга үүссэний дараа `uploadBookingImages`-ээр
+ * хавсаргана (зам нь захиалгын id-г шаарддаггүй ч RLS нь захиалга
+ * аль хэдийн үүссэн байхыг шаардана).
+ */
 export async function createBooking(
   businessId: string,
   scheduledAt: Date,
-  note?: string,
+  note: string,
+): Promise<NewBooking> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { error: "Нэвтрээгүй байна." }
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert({
+      customer_id: user.id,
+      business_id: businessId,
+      scheduled_at: scheduledAt.toISOString(),
+      note: note.trim(),
+    })
+    .select("id")
+    .single()
+
+  if (error || !data) return { error: error?.message ?? "Захиалга үүсгэж чадсангүй." }
+  return { id: data.id }
+}
+
+/**
+ * Жишээ зургуудыг booking-refs bucket руу байршуулж, захиалгад холбоно.
+ *
+ * React Native дээр `fetch(uri).arrayBuffer()` найдваргүй (FileReader нь
+ * readAsArrayBuffer-ийг дэмждэггүй) тул зургийг ImagePicker-ээс base64-аар
+ * авч энд хөрвүүлнэ.
+ */
+export async function uploadBookingImages(
+  bookingId: string,
+  images: { base64: string; mime: string }[],
 ): Promise<string | null> {
+  if (!images.length) return null
+
   const {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) return "Нэвтрээгүй байна."
 
-  const { error } = await supabase.from("bookings").insert({
-    customer_id: user.id,
-    business_id: businessId,
-    scheduled_at: scheduledAt.toISOString(),
-    note: note?.trim() || null,
-  })
+  const rows: { booking_id: string; storage_path: string; sort_order: number }[] = []
 
+  for (const [i, image] of images.entries()) {
+    const ext = image.mime.split("/")[1]?.replace("jpeg", "jpg") || "jpg"
+    // Зам нь захиалагчийн id-аар эхэлнэ — storage-ийн бичих эрх үүгээр
+    // шийдэгдэнэ. Hermes дээр `crypto.randomUUID` байхгүй тул нэрийг
+    // цаг + санамсаргүй мөрөөр үүсгэв (нэг хавтас дотор хангалттай).
+    const unique = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+    const path = `${user.id}/${unique}.${ext}`
+
+    const { error } = await supabase.storage
+      .from(BUCKET_BOOKING_REFS)
+      .upload(path, decode(image.base64), { contentType: image.mime })
+
+    if (error) return error.message
+    rows.push({ booking_id: bookingId, storage_path: path, sort_order: i })
+  }
+
+  const { error } = await supabase.from("booking_images").insert(rows)
   return error ? error.message : null
+}
+
+/**
+ * Захиалгын зургуудын түр хугацааны URL. Bucket нь хувийн тул
+ * getPublicUrl ажиллахгүй — signed URL шаардана.
+ */
+export async function bookingImageUrls(bookingId: string): Promise<string[]> {
+  const { data: rows } = await supabase
+    .from("booking_images")
+    .select("storage_path")
+    .eq("booking_id", bookingId)
+    .order("sort_order")
+
+  if (!rows?.length) return []
+
+  const { data } = await supabase.storage
+    .from(BUCKET_BOOKING_REFS)
+    .createSignedUrls(rows.map((r) => r.storage_path), SIGNED_URL_TTL)
+
+  // Аль нэг зам алдаа өгвөл signedUrl нь null ирдэг тул шүүнэ.
+  return (data ?? []).flatMap((d) => (d.signedUrl ? [d.signedUrl] : []))
 }
 
 /** Захиалгаа цуцлана (зөвхөн pending/confirmed үед боломжтой). */

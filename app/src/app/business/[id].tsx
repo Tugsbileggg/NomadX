@@ -1,14 +1,18 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   ActivityIndicator,
   Dimensions,
+  Linking,
+  Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -35,6 +39,8 @@ export default function BusinessDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>()
   const [profile, setProfile] = useState<BusinessProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  // Галерейн бүтэн дэлгэцийн үзүүлэгч — null бол хаалттай.
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null)
 
   useEffect(() => {
     let active = true
@@ -97,17 +103,14 @@ export default function BusinessDetailScreen() {
         )}
 
         {services.length > 0 && (
-          <Section title={isSalon ? "Үйлчилгээ" : "Үйлчилгээ & Үнэ"}>
+          <Section title={isSalon ? "Үйлчилгээний цэс" : "Үйлчилгээ & Үнэ"}>
+            <Text style={styles.menuHint}>
+              Жишиг үнэ. Захиалга өгөхдөө юу хийлгэхээ өөрөө бичиж, жишээ зураг хавсаргана —
+              эцсийн дүнг үйлчилгээ дууссаны дараа тооцно.
+            </Text>
             <View style={styles.card}>
               {services.map((s, i) => (
-                <ServiceRow
-                  key={s.id}
-                  service={s}
-                  divider={i > 0}
-                  onPress={() =>
-                    router.push({ pathname: "/book/[id]", params: { id: business.id } })
-                  }
-                />
+                <ServiceRow key={s.id} service={s} divider={i > 0} />
               ))}
             </View>
           </Section>
@@ -116,8 +119,8 @@ export default function BusinessDetailScreen() {
         {gallery.length > 0 && (
           <Section title={isSalon ? "Галерей" : "Бүтээлүүд"}>
             <View style={styles.gallery}>
-              {gallery.map((g) => (
-                <GalleryTile key={g.id} item={g} />
+              {gallery.map((g, i) => (
+                <GalleryTile key={g.id} item={g} onPress={() => setViewerIndex(i)} />
               ))}
             </View>
           </Section>
@@ -133,9 +136,14 @@ export default function BusinessDetailScreen() {
 
         {hasLocation && (
           <Section title="Байршил">
-            <View style={styles.card}>
+            <Pressable
+              style={styles.card}
+              onPress={() =>
+                openInMaps(business.lat as number, business.lng as number, business.name ?? "")
+              }
+            >
               {/* Зураг зөвхөн харуулах зорилготой — pointerEvents-гүй бол
-                  ScrollView-гийн гүйлгэлтийг өөр дээрээ авчихна. */}
+                  ScrollView-гийн гүйлгэлт болон дарахыг өөр дээрээ авчихна. */}
               <View style={styles.mapWrap} pointerEvents="none">
                 <BusinessMap
                   center={{ lat: business.lat as number, lng: business.lng as number }}
@@ -149,14 +157,19 @@ export default function BusinessDetailScreen() {
                   ]}
                   onMarkerPress={() => {}}
                 />
+                <View style={styles.mapBadge}>
+                  <Ionicons name="navigate" size={11} color={Brand.primary} />
+                  <Text style={styles.mapBadgeText}>Замын заавар</Text>
+                </View>
               </View>
               {business.address && (
                 <View style={styles.mapAddress}>
                   <Ionicons name="location" size={14} color={Brand.primary} />
                   <Text style={styles.mapAddressText}>{business.address}</Text>
+                  <Ionicons name="open-outline" size={13} color={Brand.muted} />
                 </View>
               )}
-            </View>
+            </Pressable>
           </Section>
         )}
 
@@ -181,6 +194,8 @@ export default function BusinessDetailScreen() {
       </ScrollView>
 
       <BackButton onPress={() => router.back()} />
+
+      <GalleryViewer items={gallery} index={viewerIndex} onClose={() => setViewerIndex(null)} />
 
       <SafeAreaView edges={["bottom"]} style={styles.bookBar}>
         <Pressable
@@ -304,17 +319,10 @@ function Section({
   )
 }
 
-function ServiceRow({
-  service,
-  divider,
-  onPress,
-}: {
-  service: ProfileService
-  divider: boolean
-  onPress: () => void
-}) {
+/** Зөвхөн харуулах мөр — үйлчилгээг захиалгын үед сонгодоггүй. */
+function ServiceRow({ service, divider }: { service: ProfileService; divider: boolean }) {
   return (
-    <Pressable onPress={onPress} style={[styles.serviceRow, divider && styles.divider]}>
+    <View style={[styles.serviceRow, divider && styles.divider]}>
       <View style={{ flex: 1 }}>
         <Text style={styles.serviceName}>{service.name}</Text>
         {service.description && (
@@ -328,7 +336,7 @@ function ServiceRow({
         </View>
       </View>
       <Text style={styles.price}>{formatPrice(service.price)}</Text>
-    </Pressable>
+    </View>
   )
 }
 
@@ -348,15 +356,100 @@ function StaffCard({ member }: { member: ProfileStaff }) {
   )
 }
 
-function GalleryTile({ item }: { item: ProfileMedia }) {
+function GalleryTile({ item, onPress }: { item: ProfileMedia; onPress: () => void }) {
   const url = publicAssetUrl(item.path)
   return (
-    <View style={styles.galleryTile}>
+    <Pressable onPress={onPress} style={styles.galleryTile}>
       {url ? (
         <Image source={{ uri: url }} style={StyleSheet.absoluteFill} contentFit="cover" />
       ) : null}
-    </View>
+    </Pressable>
   )
+}
+
+/**
+ * Галерейн бүтэн дэлгэцийн үзүүлэгч. Хэвтээ хуудаслалтаар зураг хооронд
+ * шудрана; зураг эсвэл × дээр дарвал хаагдана.
+ */
+function GalleryViewer({
+  items,
+  index,
+  onClose,
+}: {
+  items: ProfileMedia[]
+  index: number | null
+  onClose: () => void
+}) {
+  const { width, height } = useWindowDimensions()
+  const scroller = useRef<ScrollView>(null)
+
+  // `contentOffset` нь Android дээр үл хэрэгсэгддэг тул нээгдэх бүрд
+  // сонгосон зураг руу нь гараар үсэргэнэ.
+  useEffect(() => {
+    if (index == null) return
+    // Modal-ын агуулга гарч ирсний дараа хэмжээ нь тогтдог тул нэг frame хүлээнэ.
+    const id = setTimeout(() => {
+      scroller.current?.scrollTo({ x: index * width, animated: false })
+    }, 0)
+    return () => clearTimeout(id)
+  }, [index, width])
+
+  return (
+    <Modal visible={index != null} transparent animationType="fade" onRequestClose={onClose}>
+      <View style={styles.viewerBackdrop}>
+        <ScrollView
+          ref={scroller}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+        >
+          {items.map((item) => {
+            const url = publicAssetUrl(item.path)
+            return (
+              <Pressable key={item.id} onPress={onClose} style={{ width, height }}>
+                {url ? (
+                  <Image
+                    source={{ uri: url }}
+                    style={StyleSheet.absoluteFill}
+                    contentFit="contain"
+                  />
+                ) : null}
+              </Pressable>
+            )
+          })}
+        </ScrollView>
+
+        <Pressable onPress={onClose} hitSlop={10} style={styles.viewerClose}>
+          <Ionicons name="close" size={22} color="#fff" />
+        </Pressable>
+      </View>
+    </Modal>
+  )
+}
+
+/**
+ * Байршлыг утасны газрын зургийн апп руу дамжуулна. Google Maps суулгасан
+ * бол түүнийг эрхэмлэнэ (iOS дээр танихын тулд app.json-д
+ * LSApplicationQueriesSchemes бүртгэсэн); үгүй бол платформынхаа өөрийн
+ * аппыг нээнэ.
+ */
+async function openInMaps(lat: number, lng: number, label: string) {
+  const google = `comgooglemaps://?q=${lat},${lng}&center=${lat},${lng}&zoom=16`
+
+  if (Platform.OS !== "web") {
+    const hasGoogle = await Linking.canOpenURL(google).catch(() => false)
+    if (hasGoogle) return Linking.openURL(google)
+  }
+
+  const q = encodeURIComponent(label)
+  const url =
+    Platform.select({
+      ios: `maps://?q=${q}&ll=${lat},${lng}`,
+      android: `geo:${lat},${lng}?q=${lat},${lng}(${q})`,
+      default: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
+    }) ?? `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`
+
+  return Linking.openURL(url)
 }
 
 function ReviewCard({ review }: { review: ProfileReview }) {
@@ -457,6 +550,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    // Гүйлгэх үед агуулгын дээгүүр хөвдөг тул тусгаарлаж харагдана.
+    ...Platform.select({
+      ios: {
+        shadowColor: Brand.ink,
+        shadowOpacity: 0.18,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 2 },
+      },
+      android: { elevation: 4 },
+      default: { boxShadow: "0 2px 8px rgba(33,26,27,0.18)" },
+    }),
   },
 
   /* header — салон */
@@ -516,6 +620,7 @@ const styles = StyleSheet.create({
   sectionHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   sectionTitle: { fontSize: 15, fontWeight: "700", color: Brand.ink },
   card: { borderRadius: 18, backgroundColor: "#fff", padding: 16 },
+  menuHint: { fontSize: 11, color: Brand.muted, lineHeight: 16, marginTop: -2 },
   about: { fontSize: 13, lineHeight: 20, color: Brand.body },
 
   /* үйлчилгээ */
@@ -545,6 +650,21 @@ const styles = StyleSheet.create({
 
   /* байршил */
   mapWrap: { height: 150, borderRadius: 14, overflow: "hidden" },
+  mapBadge: {
+    position: "absolute",
+    right: 8,
+    top: 8,
+    // Leaflet-ийн pane-ууд 400-800 z-index-тэй тул түүнээс дээгүүр гаргана.
+    zIndex: 900,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.92)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  mapBadgeText: { fontSize: 10, fontWeight: "700", color: Brand.primary },
   mapAddress: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12 },
   mapAddressText: { flex: 1, fontSize: 12, color: Brand.body },
 
@@ -566,6 +686,19 @@ const styles = StyleSheet.create({
   },
   ratingValue: { fontSize: 12, fontWeight: "700", color: Brand.ink },
   ratingCount: { fontSize: 11, color: Brand.muted },
+
+  viewerBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)" },
+  viewerClose: {
+    position: "absolute",
+    top: 52,
+    right: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
   avatar: {
     backgroundColor: Brand.primaryContainer,

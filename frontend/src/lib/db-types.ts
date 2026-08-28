@@ -134,6 +134,15 @@ export type Booking = {
   updated_at: string
 }
 
+export type BookingImage = {
+  id: string
+  booking_id: string
+  /** booking-refs bucket доторх зам: `<customer_id>/<uuid>.<ext>` */
+  storage_path: string
+  sort_order: number
+  created_at: string
+}
+
 export type Service = {
   id: string
   business_id: string
@@ -203,6 +212,12 @@ export const BUCKET_DOCS = "business-docs" as const
 /** Нийтийн bucket — лого, ковер зураг. */
 export const BUCKET_PUBLIC = "business-public" as const
 
+/**
+ * Хувийн bucket — захиалгын жишээ зураг. Зам: `<customer_id>/<uuid>.<ext>`
+ * Зөвхөн захиалагч болон захиалга хүлээн авсан бизнес уншина.
+ */
+export const BUCKET_BOOKING_REFS = "booking-refs" as const
+
 /* ------------------------------------------------- supabase-js generic DB */
 
 type Row<T> = { Row: T; Insert: Partial<T>; Update: Partial<T>; Relationships: [] }
@@ -223,6 +238,7 @@ export type Database = {
       business_staff: Row<BusinessStaff>
       business_media: Row<BusinessMedia>
       reviews: Row<Review>
+      booking_images: Row<BookingImage>
     }
     Views: {
       // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
@@ -234,6 +250,8 @@ export type Database = {
       is_super_admin: { Args: Record<never, never>; Returns: boolean }
       owns_business: { Args: { bid: string }; Returns: boolean }
       can_read_business: { Args: { bid: string }; Returns: boolean }
+      owns_booking: { Args: { bid: string }; Returns: boolean }
+      can_read_booking: { Args: { bid: string }; Returns: boolean }
     }
     Enums: {
       business_type: BusinessType

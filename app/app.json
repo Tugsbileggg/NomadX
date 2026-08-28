@@ -8,7 +8,12 @@
     "scheme": "app",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "comgooglemaps"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,6 +42,13 @@
         "expo-location",
         {
           "locationWhenInUsePermission": "LUMINA нь ойролцоох мэргэжилтнүүдийг олоход, мөн захиалга идэвхтэй үед байршлыг харуулахад ашиглана."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Захиалга өгөхдөө ямар үйлчилгээ авахаа тайлбарлах жишээ зураг хавсаргахад ашиглана.",
+          "cameraPermission": "Захиалгадаа жишээ зураг шууд авахад ашиглана."
         }
       ]
     ],
