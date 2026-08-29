@@ -11,9 +11,6 @@ const PANEL_PATHS = [
   "/business",
   "/business/bookings",
   "/business/calendar",
-  "/artist",
-  "/artist/bookings",
-  "/artist/calendar",
 ];
 
 /** Бизнесийн зүгээс хийж болох төлөвийн шилжилтүүд. */

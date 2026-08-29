@@ -58,6 +58,7 @@ export async function updateBusinessProfile(
     if (failed) return { error: failed };
   }
 
-  revalidatePath(business.type === "artist" ? "/artist" : "/business", "layout");
+  // Артист профайлаа аппаас засдаг болсон тул зөвхөн салоны панел.
+  revalidatePath("/business", "layout");
   return { success: "Профайл амжилттай шинэчлэгдлээ." };
 }

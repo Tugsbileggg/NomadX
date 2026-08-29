@@ -28,6 +28,5 @@ export async function replyToReview(_prev: FormState, formData: FormData): Promi
   if (error) return { error: error.message };
 
   revalidatePath("/business/reviews");
-  revalidatePath("/artist/reviews");
   return { success: body ? "Хариуг хадгаллаа." : "Хариуг устгалаа." };
 }

@@ -8,7 +8,7 @@ export type FormState = { error?: string; success?: string } | null;
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 /** Хуваарийг харуулдаг замууд — цаг өөрчлөгдвөл захиалгын дүрэм ч өөрчлөгдөнө. */
-const PATHS = ["/business/availability", "/artist/availability"];
+const PATHS = ["/business/availability"];
 
 /**
  * Долоо хоногийн ажлын цаг болон цагийн нүдний тохиргоог хадгална.

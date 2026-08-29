@@ -12,9 +12,7 @@ const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 function revalidateCatalog() {
   revalidatePath("/business/services");
   revalidatePath("/business/employees");
-  revalidatePath("/artist/services");
   revalidatePath("/business/gallery");
-  revalidatePath("/artist/portfolio");
 }
 
 /** Нэвтэрсэн хэрэглэгчийн бизнесийг олно — бүх үйлдэл үүгээр эхэлнэ. */

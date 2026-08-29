@@ -66,8 +66,9 @@ export async function saveBusinessType(
   _prev: FormState,
   formData: FormData,
 ): Promise<FormState> {
+  // Хувиараа артист аппаар бүртгүүлдэг болсон тул вэбээр зөвхөн салон.
   const type = formData.get("business-type");
-  if (type !== "salon" && type !== "artist") {
+  if (type !== "salon") {
     return { error: "Бизнесийн төрлөө сонгоно уу." };
   }
 

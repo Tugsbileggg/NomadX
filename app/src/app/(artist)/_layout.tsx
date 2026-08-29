@@ -17,6 +17,7 @@ export default function ArtistLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={approved}>
         <Stack.Screen name="(panel)" />
+        <Stack.Screen name="profile-edit" />
         <Stack.Screen name="services" />
         <Stack.Screen name="portfolio" />
         <Stack.Screen name="schedule" />

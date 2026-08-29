@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Flower2, Paintbrush } from "lucide-react";
+import { Flower2 } from "lucide-react";
 import { RegisterTopBar, StepCard, StepTracker } from "@/components/register/shell";
 import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
 import { saveBusinessType } from "@/lib/registration/actions";
@@ -14,13 +14,6 @@ const TYPES = [
     image: "/img/provider-1-cover.jpg",
     title: "Салон",
     body: "Олон ажилтантай, тогтмол байршилтай гоо сайхан, спа үйлчилгээний газар.",
-  },
-  {
-    id: "artist",
-    icon: Paintbrush,
-    image: "/img/provider-1-avatar.jpg",
-    title: "Хувиараа Артист",
-    body: "Бие даан ажилладаг гоо сайханч, нүүр будагч, үсчин гэх мэт мэргэжилтэн.",
   },
 ];
 

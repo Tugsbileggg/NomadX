@@ -87,6 +87,12 @@ export default async function proxy(request: NextRequest) {
   // Супер админ бүртгэлийн урсгалд хамаарахгүй.
   if (role === "super_admin") return redirect(request, "/admin");
 
+  // Артистын ажлын самбар апп руу шилжсэн. `/artist` нь тайлбар хуудас
+  // болж үлдсэн тул түүнийг л зөвшөөрнө — бүртгэлийн урсгал ч аппад.
+  if (role === "artist") {
+    return pathname === "/artist" ? response : redirect(request, "/artist");
+  }
+
   const { data: business } = await supabase
     .from("businesses")
     .select("status, current_step")
@@ -111,20 +117,23 @@ export default async function proxy(request: NextRequest) {
     return status === "approved" ? redirect(request, panelFor(role)) : response;
   }
 
-  if (pathname.startsWith("/business") || pathname.startsWith("/artist")) {
+  if (pathname.startsWith("/business")) {
     if (status !== "approved") {
       return redirect(request, status ? "/status" : "/business/register");
     }
-    // Салон артистын панел руу, артист салоны панел руу орохгүй.
-    const panel = panelFor(role);
-    if (!pathname.startsWith(panel)) return redirect(request, panel);
   }
 
   return response;
 }
 
-function panelFor(role: string) {
-  return role === "artist" ? "/artist" : "/business";
+/**
+ * Нэвтэрсний дараа очих панел.
+ *
+ * Артист энэ функц хүртэл ирэхгүй — дээр нь `/artist` тайлбар хуудас руу
+ * шилжсэн байна.
+ */
+function panelFor(_role: string) {
+  return "/business";
 }
 
 function redirect(request: NextRequest, to: string) {

@@ -13,6 +13,7 @@ import type { ThemePreference } from "@/lib/theme-context"
 
 /** Ажлын самбарын дэд дэлгэцүүд — tab-д багтахгүй тул эндээс. */
 const MENU = [
+  { href: "/(artist)/profile-edit" as const, label: "Профайл засах", icon: "person-outline" as const },
   { href: "/(artist)/schedule" as const, label: "Хуваарь", icon: "time-outline" as const },
   { href: "/(artist)/services" as const, label: "Үйлчилгээ", icon: "pricetags-outline" as const },
   { href: "/(artist)/portfolio" as const, label: "Бүтээлүүд", icon: "images-outline" as const },
@@ -29,9 +30,8 @@ const THEME_OPTIONS: { label: string; value: ThemePreference }[] = [
 /**
  * Артистын профайл — акаунт, тохиргоо, ажлын самбарын дэд дэлгэцүүд.
  *
- * Хуваарь, үйлчилгээ, бүтээл, сэтгэгдэл нь tab-д багтахгүй тул эндээс
- * нээгдэнэ. Профайлын мэдээлэл засах (нэр, хаяг, лого) хараахан ороогүй —
- * тэр нь вэб панел дээр үлдэж байна.
+ * Профайл засах, хуваарь, үйлчилгээ, бүтээл, сэтгэгдэл нь tab-д
+ * багтахгүй тул эндээс нээгдэнэ.
  */
 export default function ArtistProfileScreen() {
   const { colors, preference, setPreference } = useAppTheme()

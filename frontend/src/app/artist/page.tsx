@@ -1,69 +1,57 @@
-import { CalendarCheck, Heart, Star, Wallet } from "lucide-react";
-import { ArtistPageHeader, ArtistPanel, ArtistShell, ArtistStat } from "@/components/artist/ArtistShell";
-import { ARTIST, ARTIST_NAV } from "@/components/artist/nav";
-import {
-  RecentReviews,
-  StatusMix,
-  TodoPanel,
-  TrendChart,
-} from "@/components/dashboard/DashboardPanels";
-import { fetchDashboard } from "@/lib/dashboard/queries";
+import Link from "next/link";
+import { Smartphone } from "lucide-react";
 
-export const metadata = { title: "Ерөнхий тойм — Артистын админ" };
+export const metadata = { title: "Артистын самбар — LUMINA" };
 
-export default async function ArtistDashboardPage() {
-  const { stats, trend, statusMix, recentReviews, todo } = await fetchDashboard();
+const APP_URL = process.env.NEXT_PUBLIC_MOBILE_APP_URL;
 
+/**
+ * Артистын ажлын самбар апп руу шилжсэн.
+ *
+ * Хувиараа ажилладаг артист захиалгаа хөдөлгөөнтэй үедээ, гар утаснаасаа
+ * удирдах нь зөв — вэб панелаар ажиллах нь бодит хэрэглээнд тохирохгүй
+ * байв. Бүртгэл, захиалга, хуваарь, үйлчилгээ, бүтээл, сэтгэгдэл бүгд
+ * аппад шилжсэн.
+ *
+ * Салон (`/business/*`) вэб панелаараа хэвээр ажиллана.
+ */
+export default function ArtistMovedPage() {
   return (
-    <ArtistShell nav={ARTIST_NAV} active="/artist" {...ARTIST}>
-      <ArtistPageHeader
-        title="Ерөнхий тойм"
-        chip={stats.rating != null ? `${stats.rating.toFixed(1)} / 5` : "Сэтгэгдэлгүй"}
-      />
+    <main className="flex min-h-screen items-center justify-center bg-surface-tint px-6 py-16">
+      <div className="w-full max-w-[440px] rounded-3xl border border-surface-variant bg-white p-8 text-center shadow-hairline">
+        <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-surface-tint">
+          <Smartphone className="size-7 text-primary" strokeWidth={1.6} />
+        </span>
 
-      <div className="flex flex-col gap-6">
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          <ArtistStat
-            label="Нэхэмжилсэн"
-            value={stats.invoiced.toLocaleString("en-US")}
-            suffix="₮"
-            icon={Wallet}
-          />
-          <ArtistStat label="Нийт захиалга" value={String(stats.bookings)} icon={CalendarCheck} />
-          <ArtistStat
-            label="Дундаж үнэлгээ"
-            value={stats.rating?.toFixed(1) ?? "—"}
-            suffix={`/ ${stats.reviewCount} сэтгэгдэл`}
-            icon={Star}
-          />
-          <ArtistStat
-            label="Дахин ирсэн"
-            value={String(stats.returningPct)}
-            suffix="%"
-            icon={Heart}
-          />
-        </div>
+        <h1 className="mt-5 text-xl leading-7 font-semibold text-ink">
+          Артистын самбар апп руу шилжлээ
+        </h1>
+        <p className="mt-3 text-sm leading-5 text-body">
+          Захиалга, хуваарь, үйлчилгээ, бүтээл, сэтгэгдэл бүгд Lumina апп дотор.
+          Ижил и-мэйл, нууц үгээрээ нэвтэрнэ үү.
+        </p>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          <ArtistPanel title="Сүүлийн 7 хоногийн захиалга" className="lg:col-span-2">
-            <TrendChart trend={trend} />
-          </ArtistPanel>
+        {APP_URL ? (
+          <a
+            href={APP_URL}
+            className="mt-6 flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-white hover:bg-primary-dark"
+          >
+            Апп нээх
+          </a>
+        ) : (
+          <p className="mt-6 text-xs text-muted">
+            Аппын холбоос тун удахгүй нэмэгдэнэ.
+          </p>
+        )}
 
-          <ArtistPanel title="Сүүлийн сэтгэгдлүүд">
-            <RecentReviews reviews={recentReviews} href="/artist/reviews" />
-          </ArtistPanel>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          <ArtistPanel title="Захиалгын төлөв" className="lg:col-span-2">
-            <StatusMix mix={statusMix} />
-          </ArtistPanel>
-
-          <ArtistPanel title="Анхаарал шаардсан">
-            <TodoPanel todo={todo} bookingsHref="/artist/bookings" reviewsHref="/artist/reviews" />
-          </ArtistPanel>
-        </div>
+        <p className="mt-6 text-xs leading-4 text-muted">
+          Салон эрхэлдэг бол{" "}
+          <Link href="/business" className="text-primary hover:underline">
+            салоны панел
+          </Link>{" "}
+          руу орно уу.
+        </p>
       </div>
-    </ArtistShell>
+    </main>
   );
 }

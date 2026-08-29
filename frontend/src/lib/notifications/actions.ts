@@ -5,10 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 
 export type FormState = { error?: string; success?: string } | null;
 
-/** Хонх бүх панелийн толгойд байдаг тул бүхэл layout-ыг шинэчилнэ. */
+/** Хонх салоны панелийн толгойд байдаг тул бүхэл layout-ыг шинэчилнэ. */
 function revalidatePanels() {
   revalidatePath("/business", "layout");
-  revalidatePath("/artist", "layout");
 }
 
 /**
