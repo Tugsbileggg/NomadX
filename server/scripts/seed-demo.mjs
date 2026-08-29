@@ -230,6 +230,15 @@ const USERS = [
     role: "customer",
     business: null,
   },
+
+  // ---------------------------------------------------------------- супер админ ×1
+  {
+    email: "admin@lumina.demo",
+    full_name: "Б. Мөнхбат",
+    phone: "88001122",
+    role: "super_admin",
+    business: null,
+  },
 ]
 
 async function main() {

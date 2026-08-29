@@ -1,12 +1,12 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Icon, Label, NativeTabs, VectorIcon } from 'expo-router/unstable-native-tabs';
-import { useColorScheme } from 'react-native';
 
 import { Colors } from '@/constants/theme';
+import { useAppTheme } from '@/lib/theme-context';
 
 export default function AppTabs() {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme ?? 'light'];
+  const { scheme } = useAppTheme();
+  const colors = Colors[scheme];
 
   return (
     <NativeTabs
@@ -24,17 +24,17 @@ export default function AppTabs() {
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="ai-advisor">
-        <Label>AI Зөвлөгөө</Label>
+        <Label>AI</Label>
         <Icon src={<VectorIcon family={Ionicons} name="sparkles-outline" />} />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="bookings">
-        <Label>Захиалга</Label>
+        <Label>Цаг</Label>
         <Icon src={<VectorIcon family={Ionicons} name="calendar-outline" />} />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="profile">
-        <Label>Профайл</Label>
+        <Label>Хувийн</Label>
         <Icon src={<VectorIcon family={Ionicons} name="person-outline" />} />
       </NativeTabs.Trigger>
     </NativeTabs>

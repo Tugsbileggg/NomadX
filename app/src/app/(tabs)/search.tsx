@@ -15,10 +15,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { BusinessMap, type MapMarker } from "@/components/BusinessMap"
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { fetchApprovedBusinesses, type BusinessCard } from "@/lib/businesses"
 import { distanceMeters, formatDistance } from "@/lib/distance"
 import { publicAssetUrl } from "@/lib/storage"
+import { useAppTheme } from "@/lib/theme-context"
 
 const UB_CENTER = { lat: 47.9184, lng: 106.9177 }
 
@@ -26,6 +27,8 @@ type WithDistance = BusinessCard & { distance: number | null }
 
 export default function SearchScreen() {
   const router = useRouter()
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const [query, setQuery] = useState("")
   const [businesses, setBusinesses] = useState<BusinessCard[]>([])
   const [loading, setLoading] = useState(true)
@@ -86,18 +89,18 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.searchBar}>
-        <Ionicons name="search-outline" size={18} color={Brand.muted} />
+        <Ionicons name="search-outline" size={18} color={colors.muted} />
         <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder="Салон эсвэл артистын нэрээр хайх"
-          placeholderTextColor={Brand.muted}
+          placeholderTextColor={colors.muted}
           style={styles.searchInput}
         />
       </View>
 
       {loading ? (
-        <ActivityIndicator color={Brand.primary} style={{ marginTop: 24 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginTop: 24 }} />
       ) : (
         <>
           <View style={styles.mapWrap}>
@@ -142,6 +145,8 @@ export default function SearchScreen() {
 }
 
 function ArtistRow({ artist, onPress }: { artist: WithDistance; onPress: () => void }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const logoUrl = publicAssetUrl(artist.logoPath)
   const initial = (artist.name ?? "L").trim().charAt(0).toUpperCase()
 
@@ -162,7 +167,7 @@ function ArtistRow({ artist, onPress }: { artist: WithDistance; onPress: () => v
       </View>
       {artist.distance != null && (
         <View style={styles.distancePill}>
-          <Ionicons name="navigate-outline" size={11} color={Brand.primary} />
+          <Ionicons name="navigate-outline" size={11} color={colors.primary} />
           <Text style={styles.distanceText}>{formatDistance(artist.distance)}</Text>
         </View>
       )}
@@ -170,69 +175,71 @@ function ArtistRow({ artist, onPress }: { artist: WithDistance; onPress: () => v
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  searchBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginHorizontal: 20,
-    marginTop: 12,
-    marginBottom: 8,
-    height: 46,
-    borderRadius: 14,
-    backgroundColor: "#fff",
-    paddingHorizontal: 14,
-  },
-  searchInput: { flex: 1, fontSize: 14, color: Brand.ink },
-  mapWrap: { height: 220, marginHorizontal: 20, borderRadius: 18, overflow: "hidden" },
-  mapLegend: {
-    position: "absolute",
-    left: 10,
-    bottom: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: "#fff",
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  legendDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: Brand.primary },
-  legendText: { fontSize: 11, fontWeight: "600", color: Brand.ink },
-  listPage: { padding: 20, paddingTop: 16, gap: 10, paddingBottom: 96 },
-  sectionTitle: { fontSize: 15, fontWeight: "700", color: Brand.ink },
-  hint: { fontSize: 12, color: Brand.muted, lineHeight: 18 },
-  artistRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    borderRadius: 14,
-    backgroundColor: "#fff",
-    padding: 10,
-  },
-  artistLogo: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: Brand.primaryContainer,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  artistLogoImage: { width: "100%", height: "100%" },
-  artistInitial: { fontSize: 16, fontWeight: "700", color: Brand.primaryDark },
-  artistBody: { flex: 1 },
-  artistName: { fontSize: 13, fontWeight: "700", color: Brand.ink },
-  artistCategories: { fontSize: 11, color: Brand.body },
-  distancePill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    borderRadius: 999,
-    backgroundColor: Brand.surfaceTint2,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  distanceText: { fontSize: 11, fontWeight: "700", color: Brand.primary },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    searchBar: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      marginHorizontal: 20,
+      marginTop: 12,
+      marginBottom: 8,
+      height: 46,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+      paddingHorizontal: 14,
+    },
+    searchInput: { flex: 1, fontSize: 14, color: colors.ink },
+    mapWrap: { height: 220, marginHorizontal: 20, borderRadius: 18, overflow: "hidden" },
+    mapLegend: {
+      position: "absolute",
+      left: 10,
+      bottom: 10,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      backgroundColor: colors.surface,
+      borderRadius: 999,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+    },
+    legendDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary },
+    legendText: { fontSize: 11, fontWeight: "600", color: colors.ink },
+    listPage: { padding: 20, paddingTop: 16, gap: 10, paddingBottom: 96 },
+    sectionTitle: { fontSize: 15, fontWeight: "700", color: colors.ink },
+    hint: { fontSize: 12, color: colors.muted, lineHeight: 18 },
+    artistRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+      padding: 10,
+    },
+    artistLogo: {
+      width: 44,
+      height: 44,
+      borderRadius: 12,
+      backgroundColor: colors.primaryContainer,
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+    },
+    artistLogoImage: { width: "100%", height: "100%" },
+    artistInitial: { fontSize: 16, fontWeight: "700", color: colors.primaryDark },
+    artistBody: { flex: 1 },
+    artistName: { fontSize: 13, fontWeight: "700", color: colors.ink },
+    artistCategories: { fontSize: 11, color: colors.body },
+    distancePill: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 3,
+      borderRadius: 999,
+      backgroundColor: colors.surfaceTint2,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    distanceText: { fontSize: 11, fontWeight: "700", color: colors.primary },
+  })
+}

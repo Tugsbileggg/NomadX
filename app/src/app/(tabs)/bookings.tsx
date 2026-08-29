@@ -12,10 +12,11 @@ import {
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { cancelBooking, fetchMyBookings, type BookingWithBusiness } from "@/lib/bookings"
 import { mnDateLabel, mnTimeLabel } from "@/lib/mn-date"
 import { publicAssetUrl } from "@/lib/storage"
+import { useAppTheme } from "@/lib/theme-context"
 
 const STATUS_LABEL: Record<string, string> = {
   pending: "Хүлээгдэж буй",
@@ -26,6 +27,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 export default function BookingsScreen() {
   const router = useRouter()
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const [bookings, setBookings] = useState<BookingWithBusiness[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<"upcoming" | "history">("upcoming")
@@ -86,10 +89,10 @@ export default function BookingsScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator color={Brand.primary} style={{ marginTop: 24 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginTop: 24 }} />
       ) : list.length === 0 ? (
         <View style={styles.empty}>
-          <Ionicons name="calendar-outline" size={28} color={Brand.muted} />
+          <Ionicons name="calendar-outline" size={28} color={colors.muted} />
           <Text style={styles.emptyText}>
             {tab === "upcoming" ? "Идэвхтэй захиалга алга." : "Түүх хоосон байна."}
           </Text>
@@ -122,6 +125,8 @@ function BookingRow({
   onPress: () => void
   onCancel: () => void
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const logoUrl = publicAssetUrl(booking.business?.logoPath)
   const initial = (booking.business?.name ?? "L").trim().charAt(0).toUpperCase()
   const date = new Date(booking.scheduledAt)
@@ -145,7 +150,7 @@ function BookingRow({
             {dateLabel} · {timeLabel}
           </Text>
         </View>
-        <View style={[styles.statusPill, statusStyle(booking.status)]}>
+        <View style={[styles.statusPill, { backgroundColor: statusColor(colors, booking.status) }]}>
           <Text style={styles.statusText}>{STATUS_LABEL[booking.status] ?? booking.status}</Text>
         </View>
       </View>
@@ -161,40 +166,42 @@ function BookingRow({
   )
 }
 
-function statusStyle(status: string) {
+function statusColor(colors: BrandPalette, status: string) {
   switch (status) {
     case "confirmed":
-      return { backgroundColor: "#dcfce7" }
+      return colors.successSoft
     case "cancelled":
-      return { backgroundColor: "#fee2e2" }
+      return colors.dangerSoft
     case "completed":
-      return { backgroundColor: Brand.surfaceTint2 }
+      return colors.surfaceTint2
     default:
-      return { backgroundColor: "#fef3c7" }
+      return colors.warningSoft
   }
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  title: { fontSize: 20, fontWeight: "700", color: Brand.ink, marginTop: 12, marginHorizontal: 20 },
-  tabRow: { flexDirection: "row", gap: 8, marginHorizontal: 20, marginTop: 16 },
-  tabButton: { flex: 1, height: 40, borderRadius: 12, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" },
-  tabButtonActive: { backgroundColor: Brand.primary },
-  tabText: { fontSize: 12, fontWeight: "600", color: Brand.ink },
-  tabTextActive: { color: "#fff" },
-  empty: { flex: 1, alignItems: "center", justifyContent: "center", gap: 8, padding: 32 },
-  emptyText: { fontSize: 13, color: Brand.muted },
-  list: { padding: 20, gap: 12, paddingBottom: 96 },
-  card: { borderRadius: 16, backgroundColor: "#fff", padding: 14, gap: 10 },
-  cardTop: { flexDirection: "row", alignItems: "center", gap: 12 },
-  cardLogo: { width: 44, height: 44, borderRadius: 12, backgroundColor: Brand.primaryContainer, alignItems: "center", justifyContent: "center", overflow: "hidden" },
-  cardLogoImage: { width: "100%", height: "100%" },
-  cardLogoInitial: { fontSize: 16, fontWeight: "700", color: Brand.primaryDark },
-  cardName: { fontSize: 14, fontWeight: "700", color: Brand.ink },
-  cardDate: { fontSize: 12, color: Brand.body, marginTop: 1 },
-  statusPill: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
-  statusText: { fontSize: 10, fontWeight: "700", color: Brand.ink },
-  note: { fontSize: 12, color: Brand.body, backgroundColor: Brand.surfaceTint, borderRadius: 10, padding: 10 },
-  cancelButton: { alignSelf: "flex-start" },
-  cancelText: { fontSize: 12, fontWeight: "600", color: Brand.danger },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    title: { fontSize: 20, fontWeight: "700", color: colors.ink, marginTop: 12, marginHorizontal: 20 },
+    tabRow: { flexDirection: "row", gap: 8, marginHorizontal: 20, marginTop: 16 },
+    tabButton: { flex: 1, height: 40, borderRadius: 12, backgroundColor: colors.surface, alignItems: "center", justifyContent: "center" },
+    tabButtonActive: { backgroundColor: colors.primary },
+    tabText: { fontSize: 12, fontWeight: "600", color: colors.ink },
+    tabTextActive: { color: colors.onPrimary },
+    empty: { flex: 1, alignItems: "center", justifyContent: "center", gap: 8, padding: 32 },
+    emptyText: { fontSize: 13, color: colors.muted },
+    list: { padding: 20, gap: 12, paddingBottom: 96 },
+    card: { borderRadius: 16, backgroundColor: colors.surface, padding: 14, gap: 10 },
+    cardTop: { flexDirection: "row", alignItems: "center", gap: 12 },
+    cardLogo: { width: 44, height: 44, borderRadius: 12, backgroundColor: colors.primaryContainer, alignItems: "center", justifyContent: "center", overflow: "hidden" },
+    cardLogoImage: { width: "100%", height: "100%" },
+    cardLogoInitial: { fontSize: 16, fontWeight: "700", color: colors.primaryDark },
+    cardName: { fontSize: 14, fontWeight: "700", color: colors.ink },
+    cardDate: { fontSize: 12, color: colors.body, marginTop: 1 },
+    statusPill: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
+    statusText: { fontSize: 10, fontWeight: "700", color: colors.ink },
+    note: { fontSize: 12, color: colors.body, backgroundColor: colors.surfaceTint, borderRadius: 10, padding: 10 },
+    cancelButton: { alignSelf: "flex-start" },
+    cancelText: { fontSize: 12, fontWeight: "600", color: colors.danger },
+  })
+}

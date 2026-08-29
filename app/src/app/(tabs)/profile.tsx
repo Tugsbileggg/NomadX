@@ -1,14 +1,15 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect, useRouter } from "expo-router"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { useAuth } from "@/lib/auth-context"
 import { fetchMyProfile, updateMyProfile } from "@/lib/profile"
 import { supabase } from "@/lib/supabase"
+import { useAppTheme, type ThemePreference } from "@/lib/theme-context"
 
 const ROLE_LABEL: Record<string, string> = {
   customer: "Хэрэглэгч",
@@ -17,9 +18,17 @@ const ROLE_LABEL: Record<string, string> = {
   super_admin: "Админ",
 }
 
+const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
+  { value: "system", label: "Систем" },
+  { value: "light", label: "Цайвар" },
+  { value: "dark", label: "Бараан" },
+]
+
 export default function ProfileScreen() {
   const router = useRouter()
   const { session } = useAuth()
+  const { colors, preference, setPreference } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const [fullName, setFullName] = useState("")
   const [phone, setPhone] = useState("")
   const [role, setRole] = useState<string | null>(null)
@@ -73,7 +82,7 @@ export default function ProfileScreen() {
               value={fullName}
               onChangeText={setFullName}
               placeholder="Таны нэр"
-              placeholderTextColor={Brand.muted}
+              placeholderTextColor={colors.muted}
               style={styles.input}
             />
 
@@ -82,7 +91,7 @@ export default function ProfileScreen() {
               value={phone}
               onChangeText={setPhone}
               placeholder="9911 2233"
-              placeholderTextColor={Brand.muted}
+              placeholderTextColor={colors.muted}
               keyboardType="phone-pad"
               style={styles.input}
             />
@@ -97,10 +106,30 @@ export default function ProfileScreen() {
           </View>
         )}
 
+        <View style={styles.card}>
+          <Text style={styles.label}>Дэлгэцийн горим</Text>
+          <View style={styles.themeRow}>
+            {THEME_OPTIONS.map((opt) => {
+              const active = preference === opt.value
+              return (
+                <Pressable
+                  key={opt.value}
+                  onPress={() => setPreference(opt.value)}
+                  style={[styles.themeButton, active && styles.themeButtonActive]}
+                >
+                  <Text style={[styles.themeText, active && styles.themeTextActive]}>
+                    {opt.label}
+                  </Text>
+                </Pressable>
+              )
+            })}
+          </View>
+        </View>
+
         <Pressable style={styles.menuRow} onPress={() => router.push("/share")}>
-          <Ionicons name="navigate-outline" size={18} color={Brand.primary} />
+          <Ionicons name="navigate-outline" size={18} color={colors.primary} />
           <Text style={styles.menuLabel}>Байршил хуваалцах (POC)</Text>
-          <Ionicons name="chevron-forward" size={16} color={Brand.muted} />
+          <Ionicons name="chevron-forward" size={16} color={colors.muted} />
         </Pressable>
 
         <View style={styles.card}>
@@ -111,51 +140,65 @@ export default function ProfileScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { alignItems: "center", padding: 24, paddingTop: 48, gap: 12, paddingBottom: 96 },
-  avatar: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatarInitial: { fontSize: 24, fontWeight: "700", color: Brand.primaryDark },
-  email: { fontSize: 15, fontWeight: "600", color: Brand.ink, marginTop: 4 },
-  roleTag: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: Brand.primary,
-    backgroundColor: Brand.surfaceTint2,
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
-  card: { width: "100%", marginTop: 12, backgroundColor: "#fff", borderRadius: 16, padding: 16, gap: 10 },
-  label: { fontSize: 12, fontWeight: "600", color: Brand.body },
-  input: {
-    height: 46,
-    borderRadius: 12,
-    backgroundColor: Brand.surfaceTint,
-    paddingHorizontal: 14,
-    fontSize: 14,
-    color: Brand.ink,
-    marginBottom: 4,
-  },
-  message: { fontSize: 12, color: Brand.success, textAlign: "center" },
-  messageError: { color: Brand.danger },
-  menuRow: {
-    marginTop: 16,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 14,
-    backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  menuLabel: { flex: 1, fontSize: 14, fontWeight: "500", color: Brand.ink },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    page: { alignItems: "center", padding: 24, paddingTop: 48, gap: 12, paddingBottom: 96 },
+    avatar: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    avatarInitial: { fontSize: 24, fontWeight: "700", color: colors.primaryDark },
+    email: { fontSize: 15, fontWeight: "600", color: colors.ink, marginTop: 4 },
+    roleTag: {
+      fontSize: 11,
+      fontWeight: "600",
+      color: colors.primary,
+      backgroundColor: colors.surfaceTint2,
+      borderRadius: 999,
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+    },
+    card: { width: "100%", marginTop: 12, backgroundColor: colors.surface, borderRadius: 16, padding: 16, gap: 10 },
+    label: { fontSize: 12, fontWeight: "600", color: colors.body },
+    input: {
+      height: 46,
+      borderRadius: 12,
+      backgroundColor: colors.surfaceTint,
+      paddingHorizontal: 14,
+      fontSize: 14,
+      color: colors.ink,
+      marginBottom: 4,
+    },
+    message: { fontSize: 12, color: colors.success, textAlign: "center" },
+    messageError: { color: colors.danger },
+    themeRow: { flexDirection: "row", gap: 8 },
+    themeButton: {
+      flex: 1,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: colors.surfaceTint,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    themeButtonActive: { backgroundColor: colors.primary },
+    themeText: { fontSize: 12, fontWeight: "600", color: colors.ink },
+    themeTextActive: { color: colors.onPrimary },
+    menuRow: {
+      marginTop: 16,
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+    },
+    menuLabel: { flex: 1, fontSize: 14, fontWeight: "500", color: colors.ink },
+  })
+}

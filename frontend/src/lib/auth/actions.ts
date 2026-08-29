@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { resolveLandingPath } from "@/lib/registration/actions";
 
 export type FormState = { error?: string } | null;
 
@@ -48,12 +49,12 @@ export async function signIn(_prev: FormState, formData: FormData): Promise<Form
   if (!email || !password) return { error: "И-мэйл, нууц үгээ оруулна уу." };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) return { error: translate(error.message) };
 
   revalidatePath("/", "layout");
-  redirect("/business/register");
+  redirect(await resolveLandingPath(supabase, data.user.id));
 }
 
 export async function signOut() {

@@ -1,155 +1,133 @@
-import { BadgeCheck, Clock, PowerOff, Star, Store } from "lucide-react";
+import Link from "next/link";
+import { BadgeCheck, Clock, Store, XCircle } from "lucide-react";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { SUPER_BRAND, SUPER_NAV, SUPER_USER } from "@/components/admin/super-nav";
-import {
-  Badge,
-  FilterTabs,
-  Pagination,
-  Panel,
-  StatCard,
-  Table,
-  Td,
-  Toolbar,
-  type Tone,
-} from "@/components/admin/kit";
+import { SUPER_BRAND, SUPER_NAV } from "@/components/admin/super-nav";
+import { Badge, Panel, StatCard, Table, Td, type Tone } from "@/components/admin/kit";
+import { cn } from "@/lib/cn";
+import { fetchAdminBusinesses, getCurrentAdmin, type AdminBusinessRow } from "@/lib/admin/data";
 
 export const metadata = { title: "Салонуудын удирдлага — Супер админ" };
 
-const ROWS: Array<{
-  name: string;
-  id: string;
-  address: string;
-  category: string;
-  rating: string;
-  reviews?: string;
-  bookings: string;
-  revenue: string;
-  status: string;
-  tone: Tone;
-}> = [
-  {
-    name: "Luxe Sanctuary Salon",
-    id: "SLN-001",
-    address: "Улаанбаатар, СБД, 1-р хороо",
-    category: "Спа, Массаж",
-    rating: "4.9",
-    reviews: "(124)",
-    bookings: "2,145",
-    revenue: "₮ 12.5M / сар",
-    status: "Баталгаажсан",
-    tone: "success",
-  },
-  {
-    name: "Velvet Nails Studio",
-    id: "SLN-088",
-    address: "Улаанбаатар, ХУД, 15-р хороо",
-    category: "Хумс",
-    rating: "Шинэ",
-    bookings: "0",
-    revenue: "-",
-    status: "Хүлээгдэж буй",
-    tone: "warning",
-  },
-  {
-    name: "Aura Hair Design",
-    id: "SLN-042",
-    address: "Эрдэнэт, Баян-Өндөр",
-    category: "Үсчин",
-    rating: "3.2",
-    bookings: "145",
-    revenue: "₮ 1.2M / сар",
-    status: "Идэвхгүй",
-    tone: "neutral",
-  },
-];
+const BASE_PATH = "/admin/salons";
 
-export default function SalonsPage() {
+const STATUS_LABEL: Record<string, string> = {
+  draft: "Ноорог",
+  submitted: "Хүлээгдэж буй",
+  under_review: "Хянагдаж буй",
+  approved: "Баталгаажсан",
+  rejected: "Татгалзсан",
+  needs_info: "Мэдээлэл дутуу",
+};
+const STATUS_TONE: Record<string, Tone> = {
+  draft: "neutral",
+  submitted: "warning",
+  under_review: "warning",
+  approved: "success",
+  rejected: "danger",
+  needs_info: "warning",
+};
+
+const FILTERS = [
+  { label: "Бүгд", value: "all" },
+  { label: "Баталгаажсан", value: "approved" },
+  { label: "Хүлээгдэж буй", value: "pending" },
+  { label: "Татгалзсан", value: "rejected" },
+] as const;
+
+function matchesFilter(row: AdminBusinessRow, filter: string) {
+  if (filter === "approved") return row.status === "approved";
+  if (filter === "pending") return row.status === "submitted" || row.status === "under_review";
+  if (filter === "rejected") return row.status === "rejected";
+  return true;
+}
+
+export default async function SalonsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string }>;
+}) {
+  const { status } = await searchParams;
+  const filter = status ?? "all";
+
+  const [admin, rows] = await Promise.all([getCurrentAdmin(), fetchAdminBusinesses("salon")]);
+
+  const approvedCount = rows.filter((r) => r.status === "approved").length;
+  const pendingCount = rows.filter(
+    (r) => r.status === "submitted" || r.status === "under_review",
+  ).length;
+  const rejectedCount = rows.filter((r) => r.status === "rejected").length;
+  const filtered = rows.filter((r) => matchesFilter(r, filter));
+
   return (
     <AdminShell
       {...SUPER_BRAND}
       nav={SUPER_NAV}
-      user={SUPER_USER}
+      user={admin}
       active="/admin/salons"
       title="Салонуудын удирдлага"
       description="Платформын бодит хугацааны үзүүлэлтүүд."
-      actions={
-        <button
-          type="button"
-          className="h-10 rounded-full bg-primary px-5 text-xs leading-4 font-semibold tracking-[0.6px] text-white uppercase hover:bg-primary-dark"
-        >
-          Шинэ салон нэмэх
-        </button>
-      }
     >
       <div className="flex flex-col gap-6">
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard label="Нийт салон" value="128" icon={Store} />
-          <StatCard label="Баталгаажсан" value="112" icon={BadgeCheck} />
-          <StatCard label="Хүлээгдэж буй" value="12" icon={Clock} />
-          <StatCard label="Идэвхгүй" value="4" icon={PowerOff} />
+          <StatCard label="Нийт салон" value={String(rows.length)} icon={Store} />
+          <StatCard label="Баталгаажсан" value={String(approvedCount)} icon={BadgeCheck} />
+          <StatCard label="Хүлээгдэж буй" value={String(pendingCount)} icon={Clock} />
+          <StatCard label="Татгалзсан" value={String(rejectedCount)} icon={XCircle} />
         </div>
 
         <Panel>
           <div className="flex flex-col gap-4">
-            <FilterTabs
-              tabs={["Бүгд", "Баталгаажсан", "Хүлээгдэж буй", "Хориглогдсон"]}
-              active="Бүгд"
-            />
-            <Toolbar
-              placeholder="Салон хайх..."
-              filters={[
-                { label: "Хот", options: ["Бүх хот", "Улаанбаатар", "Эрдэнэт", "Дархан"] },
-                {
-                  label: "Ангилал",
-                  options: ["Бүх ангилал", "Үсчин", "Хумс", "Спа, Массаж"],
-                },
-              ]}
-            />
-
-            <Table
-              headers={["Салон", "Хаяг / Ангилал", "Үнэлгээ", "Үзүүлэлт", "Төлөв", "Үйлдэл"]}
-            >
-              {ROWS.map((r) => (
-                <tr key={r.id}>
-                  <Td>
-                    <span className="block text-sm font-medium text-ink">{r.name}</span>
-                    <span className="block text-xs text-muted">ID: {r.id}</span>
-                  </Td>
-                  <Td>
-                    <span className="block text-sm text-ink">{r.address}</span>
-                    <span className="block text-xs text-muted">{r.category}</span>
-                  </Td>
-                  <Td>
-                    {r.rating === "Шинэ" ? (
-                      <Badge tone="primary">Шинэ</Badge>
-                    ) : (
-                      <span className="flex items-center gap-1 text-sm text-ink">
-                        <Star className="size-3.5 fill-primary text-primary" />
-                        {r.rating}
-                        {r.reviews && <span className="text-xs text-muted">{r.reviews}</span>}
-                      </span>
-                    )}
-                  </Td>
-                  <Td>
-                    <span className="block text-sm text-ink">{r.bookings} захиалга</span>
-                    <span className="block text-xs text-muted">{r.revenue}</span>
-                  </Td>
-                  <Td>
-                    <Badge tone={r.tone}>{r.status}</Badge>
-                  </Td>
-                  <Td>
-                    <button
-                      type="button"
-                      className="text-xs font-medium text-primary hover:underline"
-                    >
-                      Дэлгэрэнгүй
-                    </button>
-                  </Td>
-                </tr>
+            <div className="flex flex-wrap gap-2">
+              {FILTERS.map((f) => (
+                <Link
+                  key={f.value}
+                  href={f.value === "all" ? BASE_PATH : `${BASE_PATH}?status=${f.value}`}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
+                    filter === f.value
+                      ? "bg-primary text-white"
+                      : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                  )}
+                >
+                  {f.label}
+                </Link>
               ))}
-            </Table>
+            </div>
 
-            <Pagination summary="Нийт 128-аас 1-10 харуулж байна" />
+            {filtered.length === 0 ? (
+              <p className="py-10 text-center text-sm text-muted">Салон олдсонгүй.</p>
+            ) : (
+              <Table headers={["Салон", "Хаяг / Ангилал", "Захиалга", "Төлөв", "Үйлдэл"]}>
+                {filtered.map((r) => (
+                  <tr key={r.id}>
+                    <Td>
+                      <span className="block text-sm font-medium text-ink">{r.name}</span>
+                      <span className="block text-xs text-muted">ID: {r.id.slice(0, 8)}</span>
+                    </Td>
+                    <Td>
+                      <span className="block text-sm text-ink">{r.address ?? "—"}</span>
+                      <span className="block text-xs text-muted">
+                        {r.categories.length ? r.categories.join(", ") : "—"}
+                      </span>
+                    </Td>
+                    <Td>{r.bookingsCount} захиалга</Td>
+                    <Td>
+                      <Badge tone={STATUS_TONE[r.status] ?? "neutral"}>
+                        {STATUS_LABEL[r.status] ?? r.status}
+                      </Badge>
+                    </Td>
+                    <Td>
+                      <Link
+                        href="/admin/verification"
+                        className="text-xs font-medium text-primary hover:underline"
+                      >
+                        Дэлгэрэнгүй
+                      </Link>
+                    </Td>
+                  </tr>
+                ))}
+              </Table>
+            )}
           </div>
         </Panel>
       </div>
