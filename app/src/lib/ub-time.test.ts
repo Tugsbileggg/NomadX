@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import {
   buildDaySlots,
+  dateKey,
   minutesToLabel,
   timeToMinutes,
   ubToInstant,
@@ -36,6 +37,19 @@ describe("ubToInstant", () => {
     const summer = ubToInstant(2026, 6, 15, 12 * 60)
     expect(winter.getUTCHours()).toBe(summer.getUTCHours())
     expect(UB_OFFSET_MIN).toBe(480)
+  })
+})
+
+describe("dateKey", () => {
+  it("локал огноогоор YYYY-MM-DD болгоно", () => {
+    expect(dateKey(new Date(2026, 7, 5))).toBe("2026-08-05")
+    expect(dateKey(new Date(2026, 11, 31))).toBe("2026-12-31")
+  })
+
+  it("оройн цагт өдөр ухраахгүй (UTC руу хөрвүүлэхгүй)", () => {
+    // toISOString().slice(0,10) энэ тохиолдолд "2026-08-30" болгож
+    // алдаа гаргана — тестүүд UTC бүсэд ажилладаг тул илэрнэ.
+    expect(dateKey(new Date(2026, 7, 31, 2, 0))).toBe("2026-08-31")
   })
 })
 

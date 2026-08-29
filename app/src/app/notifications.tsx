@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import type { BrandPalette } from "@/constants/theme"
 import { useAppTheme } from "@/lib/theme-context"
+import { useAuth } from "@/lib/auth-context"
 import { mnTimeAgo } from "@/lib/mn-date"
 import {
   deleteNotification,
@@ -20,6 +21,7 @@ export default function NotificationsScreen() {
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
+  const { account } = useAuth()
   const [items, setItems] = useState<AppNotification[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -45,9 +47,19 @@ export default function NotificationsScreen() {
       await markRead(item.id)
     }
 
-    // Захиалгын мэдэгдэл нь Захиалга tab руу, бусад нь бизнесийн профайл руу.
-    if (item.bookingId) router.push("/bookings")
-    else if (item.businessId) {
+    // Захиалгын мэдэгдэл нь Захиалга tab руу. `bookings` нэртэй дэлгэц
+    // хоёр бүлэгт байдаг тул эрхээр нь ялгана.
+    if (item.bookingId) {
+      router.push(
+        account?.role === "artist" ? "/(artist)/(panel)/bookings" : "/(tabs)/bookings",
+      )
+      return
+    }
+
+    // Бизнесийн профайл нь зөвхөн харилцагчийн бүлэгт бүртгэлтэй. Артист
+    // өөрийн бүртгэлийн шийдвэрийн мэдэгдэл дээр дарвал энэ route байхгүй
+    // тул зөвхөн уншсан болгоод үлдэнэ.
+    if (item.businessId && account?.role !== "artist") {
       router.push({ pathname: "/business/[id]", params: { id: item.businessId } })
     }
   }

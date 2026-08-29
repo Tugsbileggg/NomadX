@@ -141,7 +141,7 @@ export default function BookScreen() {
             {business?.name} таны хүсэлтийг хараад баталгаажуулна. Үнийн дүнг үйлчилгээ
             дууссаны дараа тэд оруулна. &ldquo;Захиалга&rdquo; tab-аас хянана.
           </Text>
-          <AuthButton label="Захиалгууд руу очих" onPress={() => router.replace("/bookings")} />
+          <AuthButton label="Захиалгууд руу очих" onPress={() => router.replace("/(tabs)/bookings")} />
         </View>
       </SafeAreaView>
     )

@@ -24,6 +24,20 @@ export function ubToInstant(year: number, month: number, day: number, minutes: n
 }
 
 /**
+ * Огноог "YYYY-MM-DD" түлхүүр болгоно.
+ *
+ * `toISOString().slice(0,10)` нь UTC руу хөрвүүлдэг тул орой болсон
+ * огноог өмнөх өдөр болгож алдаа үүсгэдэг — талбар тус бүрээр нь угсарна.
+ */
+export function dateKey(value: Date): string {
+  return [
+    value.getFullYear(),
+    String(value.getMonth() + 1).padStart(2, "0"),
+    String(value.getDate()).padStart(2, "0"),
+  ].join("-")
+}
+
+/**
  * `business_hours.weekday` индекс: 0 = Даваа … 6 = Ням.
  *
  * JS-ийн `getDay()` дээр 0 = Ням тул шилжүүлнэ. Энэ хоёрыг андуурах нь
