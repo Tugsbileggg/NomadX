@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons"
-import { useRouter } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import { useMemo, useState } from "react"
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -49,7 +49,11 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [agreed, setAgreed] = useState(false)
-  const [accountType, setAccountType] = useState<"customer" | "artist">("customer")
+  // Нэвтрэх дэлгэц эсвэл угтах дэлгэцээс ирсэн сонголтыг дагана.
+  const { as } = useLocalSearchParams<{ as?: string }>()
+  const [accountType, setAccountType] = useState<"customer" | "artist">(
+    as === "artist" ? "artist" : "customer",
+  )
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 

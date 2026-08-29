@@ -517,21 +517,23 @@ async function main() {
     )
   }
 
-  // Захиалга — зөвхөн зөвшөөрөгдсөн бизнест, зөвхөн урьд нь байхгүй бол.
-  // Дарж бичихгүй: та аппаас гараар үүсгэсэн захиалгаа алдах ёсгүй.
+  // Захиалга — зөвхөн зөвшөөрөгдсөн бизнест.
+  //
+  // Урьд нь захиалгатай бизнесийг БҮХЭЛД НЬ алгасдаг байсан. Тэгснээр эрт
+  // үеийн ганц (тэр ч байтугай цуцлагдсан) захиалгатай үлдсэн бизнес
+  // хэзээ ч дүүрдэггүй — артистын панелыг туршихад хоосон харагдана.
+  // Одоо дутууг нь НӨХНӨ: одоо байгаа мөрийг хөндөхгүй, зөвхөн тухайн
+  // цагт захиалга байхгүй бол л нэмнэ.
   const approved = createdBusinesses.filter((b) => b.status === "approved")
   let bookingCount = 0
 
   for (const [bi, business] of approved.entries()) {
-    const { count } = await supabase
+    const { data: existing } = await supabase
       .from("bookings")
-      .select("id", { count: "exact", head: true })
+      .select("scheduled_at")
       .eq("business_id", business.id)
 
-    if (count) {
-      console.log(`· "${business.name}" дээр ${count} захиалга байна — алгаслаа`)
-      continue
-    }
+    const taken = new Set((existing ?? []).map((b) => new Date(b.scheduled_at).getTime()))
 
     for (const [pi, tpl] of BOOKING_POOL.entries()) {
       const customer = createdCustomers[(bi + pi) % createdCustomers.length]
@@ -543,6 +545,11 @@ async function main() {
       // Ням гараг амралт (дээрх business_hours) — 0014-ийн триггер тухайн
       // өдрийн захиалгыг татгалзана. Дараагийн өдөр рүү шилжүүлнэ.
       if (when.getDay() === 0) when.setDate(when.getDate() + 1)
+
+      // Тухайн цагт аль хэдийн захиалга байвал (өмнөх ажиллуулалт эсвэл
+      // гараар үүсгэсэн) давхардуулахгүй — 0014-ийн багтаамжийн триггер ч
+      // татгалзана.
+      if (taken.has(when.getTime())) continue
 
       const { data: booking, error } = await supabase
         .from("bookings")

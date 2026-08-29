@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import { useMemo } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { Pressable, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
@@ -32,6 +32,16 @@ export default function WelcomeScreen() {
               onPress={() => router.push("/signup")}
             />
           </View>
+
+          {/* Артист энэ аппаар ажилладаг гэдгийг эхний дэлгэцээс мэдэгдэнэ —
+              эс тэгвэл зөвхөн үйлчлүүлэгчид зориулсан мэт харагдана. */}
+          <Pressable
+            style={styles.artistLink}
+            onPress={() => router.push({ pathname: "/login", params: { as: "artist" } })}
+          >
+            <Ionicons name="color-palette-outline" size={16} color={colors.primary} />
+            <Text style={styles.artistLinkText}>Хувиараа артист уу? Эндээс нэвтэрнэ</Text>
+          </Pressable>
         </View>
       </View>
     </SafeAreaView>
@@ -42,6 +52,15 @@ function makeStyles(colors: BrandPalette) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: colors.surfaceTint },
     center: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
+    artistLink: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+      marginTop: 18,
+      paddingVertical: 6,
+    },
+    artistLinkText: { fontSize: 12, fontWeight: "600", color: colors.primary },
     card: {
       width: "100%",
       maxWidth: 360,

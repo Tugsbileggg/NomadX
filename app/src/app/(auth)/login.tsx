@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
-import { Link, useRouter } from "expo-router"
+import { Link, useLocalSearchParams, useRouter } from "expo-router"
 import { useMemo, useState } from "react"
-import { ScrollView, StyleSheet, Text, View } from "react-native"
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
@@ -10,10 +10,28 @@ import { AuthInput } from "@/components/auth/AuthInput"
 import type { BrandPalette } from "@/constants/theme"
 import { supabase } from "@/lib/supabase"
 
+/**
+ * Нэвтрэх төрлийн сонголт.
+ *
+ * ⚠️ Энэ нь эрхийг ТОДОРХОЙЛДОГГҮЙ — эрх нь бүртгэлээрээ тогтдог бөгөөд
+ * нэвтэрсний дараа root layout зөв бүлэг рүү чиглүүлнэ. Сонголтын
+ * зорилго нь артист энэ аппаар нэвтэрдэг гэдгийг харуулах, бүртгүүлэх
+ * холбоосыг зөв төрөл рүү чиглүүлэх. Буруу сонгосон хүнийг хааж болохгүй.
+ */
+const LOGIN_AS = [
+  { id: "customer" as const, label: "Үйлчлүүлэгч" },
+  { id: "artist" as const, label: "Артист" },
+]
+
 export default function LoginScreen() {
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
+  // Угтах дэлгэцээс "Артистаар" гэж ирвэл сонголт нь урьдчилан тавигдана.
+  const { as } = useLocalSearchParams<{ as?: string }>()
+  const [loginAs, setLoginAs] = useState<"customer" | "artist">(
+    as === "artist" ? "artist" : "customer",
+  )
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -43,7 +61,28 @@ export default function LoginScreen() {
             <Ionicons name="leaf-outline" size={26} color={colors.primary} />
           </View>
           <Text style={styles.title}>Lumina</Text>
-          <Text style={styles.subtitle}>Үзэсгэлэнт ертөнцөд дахин тавтай морил</Text>
+          <Text style={styles.subtitle}>
+            {loginAs === "artist"
+              ? "Артистын ажлын самбар руу нэвтэрнэ"
+              : "Үзэсгэлэнт ертөнцөд дахин тавтай морил"}
+          </Text>
+        </View>
+
+        <View style={styles.segment}>
+          {LOGIN_AS.map((t) => {
+            const active = loginAs === t.id
+            return (
+              <Pressable
+                key={t.id}
+                onPress={() => setLoginAs(t.id)}
+                style={[styles.segmentItem, active && styles.segmentItemActive]}
+              >
+                <Text style={[styles.segmentText, active && styles.segmentTextActive]}>
+                  {t.label}
+                </Text>
+              </Pressable>
+            )
+          })}
         </View>
 
         <View style={styles.card}>
@@ -91,7 +130,10 @@ export default function LoginScreen() {
 
         <Text style={styles.footer}>
           Шинэ хэрэглэгч үү?{" "}
-          <Text style={styles.footerLink} onPress={() => router.push("/signup")}>
+          <Text
+            style={styles.footerLink}
+            onPress={() => router.push({ pathname: "/signup", params: { as: loginAs } })}
+          >
             Бүртгүүлэх
           </Text>
         </Text>
@@ -124,6 +166,24 @@ function makeStyles(colors: BrandPalette) {
     },
     title: { fontSize: 26, fontWeight: "600", color: colors.ink },
     subtitle: { fontSize: 14, color: colors.body },
+    segment: {
+      flexDirection: "row",
+      gap: 6,
+      backgroundColor: colors.surfaceTint2,
+      borderRadius: 999,
+      padding: 4,
+      marginTop: 20,
+    },
+    segmentItem: {
+      flex: 1,
+      height: 38,
+      borderRadius: 999,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    segmentItemActive: { backgroundColor: colors.primary },
+    segmentText: { fontSize: 13, fontWeight: "600", color: colors.body },
+    segmentTextActive: { color: colors.onPrimary },
     card: {
       borderRadius: 24,
       backgroundColor: colors.surfacePage,
