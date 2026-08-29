@@ -62,6 +62,10 @@ export type Business = {
   lat: number | null
   lng: number | null
   status: BusinessStatus
+  /** Захиалгын нэг цагийн нүдний урт, минутаар (0014). */
+  slot_minutes: number
+  /** Нэг цагт зэрэг үйлчилж чадах тоо (0014). */
+  slot_capacity: number
   /** 1..5 — бүртгэлийн wizard хаана зогссоныг заана */
   current_step: number
   submitted_at: string | null
@@ -281,6 +285,11 @@ export type Database = {
       owns_booking: { Args: { bid: string }; Returns: boolean }
       can_read_booking: { Args: { bid: string }; Returns: boolean }
       reply_to_review: { Args: { rid: string; body: string }; Returns: undefined }
+      /** Эзэлсэн цагууд — зөвхөн цаг, тоо (0014). */
+      booking_slot_load: {
+        Args: { bid: string; from_ts: string; to_ts: string }
+        Returns: { slot: string; taken: number }[]
+      }
     }
     Enums: {
       business_type: BusinessType

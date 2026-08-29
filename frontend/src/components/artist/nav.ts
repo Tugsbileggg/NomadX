@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  CalendarClock,
   CalendarDays,
   ClipboardList,
   LayoutDashboard,
@@ -18,6 +19,7 @@ export const ARTIST_NAV: ArtistNavItem[] = [
   { href: "/artist", label: "Хяналтын самбар", icon: LayoutDashboard },
   { href: "/artist/bookings", label: "Захиалгууд", icon: ClipboardList },
   { href: "/artist/calendar", label: "Календарь", icon: CalendarDays },
+  { href: "/artist/availability", label: "Хуваарь", icon: CalendarClock },
   { href: "/artist/services", label: "Үйлчилгээнүүд", icon: Sparkles },
   { href: "/artist/clients", label: "Харилцагчид", icon: Users },
   { href: "/artist/profile", label: "Миний профайл", icon: UserRound },

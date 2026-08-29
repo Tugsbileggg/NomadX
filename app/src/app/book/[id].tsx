@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import * as ImagePicker from "expo-image-picker"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -19,22 +19,12 @@ import { Brand } from "@/constants/theme"
 import { createBooking, uploadBookingImages } from "@/lib/bookings"
 import { fetchBusiness, type BusinessCard } from "@/lib/businesses"
 import { mnWeekdayShort } from "@/lib/mn-date"
-
-const HOURS = Array.from({ length: 11 }, (_, i) => 9 + i) // 09:00 .. 19:00
+import { fetchSlotDays, type SlotDay } from "@/lib/slots"
 
 /** Хэт олон зураг илгээвэл base64 нь санах ойд хүндрэх тул хязгаарлав. */
 const MAX_IMAGES = 4
 
 type PickedImage = { uri: string; base64: string; mime: string }
-
-function nextDays(count: number) {
-  return Array.from({ length: count }, (_, i) => {
-    const d = new Date()
-    d.setHours(0, 0, 0, 0)
-    d.setDate(d.getDate() + i)
-    return d
-  })
-}
 
 function dayLabel(d: Date, index: number) {
   if (index === 0) return "Өнөөдөр"
@@ -48,21 +38,28 @@ export default function BookScreen() {
   const [business, setBusiness] = useState<BusinessCard | null>(null)
   const [loading, setLoading] = useState(true)
   const [dayIndex, setDayIndex] = useState(0)
-  const [hour, setHour] = useState<number | null>(null)
+  const [days, setDays] = useState<SlotDay[]>([])
+  /** Сонгосон цагийн бодит мөч — өдөр солиход тэглэгдэнэ. */
+  const [slotAt, setSlotAt] = useState<Date | null>(null)
   const [description, setDescription] = useState("")
   const [images, setImages] = useState<PickedImage[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
 
-  const days = useMemo(() => nextDays(7), [])
-
   useEffect(() => {
-    fetchBusiness(id).then((b) => {
+    Promise.all([fetchBusiness(id), fetchSlotDays(id)]).then(([b, d]) => {
       setBusiness(b)
+      setDays(d)
+      // Эхний боломжтой өдөр рүү шилжинэ — өнөөдөр амарч байвал хоосон
+      // жагсаалт харуулах нь утгагүй.
+      const first = d.findIndex((day) => day.slots.some((slot) => !slot.full))
+      setDayIndex(first === -1 ? 0 : first)
       setLoading(false)
     })
   }, [id])
+
+  const activeDay = days[dayIndex]
 
   async function onPickImages() {
     const remaining = MAX_IMAGES - images.length
@@ -98,7 +95,7 @@ export default function BookScreen() {
   }
 
   async function onConfirm() {
-    if (hour == null) {
+    if (!slotAt) {
       setError("Цагаа сонгоно уу.")
       return
     }
@@ -110,10 +107,7 @@ export default function BookScreen() {
     setBusy(true)
     setError(null)
 
-    const scheduled = new Date(days[dayIndex])
-    scheduled.setHours(hour, 0, 0, 0)
-
-    const booking = await createBooking(id, scheduled, description)
+    const booking = await createBooking(id, slotAt, description)
     if ("error" in booking) {
       setBusy(false)
       setError(booking.error)
@@ -166,16 +160,25 @@ export default function BookScreen() {
           <Text style={styles.sectionLabel}>Өдөр сонгох</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
             <View style={styles.dayRow}>
-              {days.map((d, i) => {
+              {days.map((day, i) => {
                 const active = i === dayIndex
+                // Амарч байгаа болон бүх цаг нь дүүрсэн өдрийг бүдэг харуулна.
+                const unavailable = day.slots.every((slot) => slot.full)
                 return (
                   <Pressable
-                    key={d.toISOString()}
-                    onPress={() => setDayIndex(i)}
-                    style={[styles.dayChip, active && styles.dayChipActive]}
+                    key={day.date.toISOString()}
+                    onPress={() => {
+                      setDayIndex(i)
+                      setSlotAt(null)
+                    }}
+                    style={[
+                      styles.dayChip,
+                      active && styles.dayChipActive,
+                      !active && unavailable && styles.dayChipDisabled,
+                    ]}
                   >
                     <Text style={[styles.dayChipText, active && styles.dayChipTextActive]}>
-                      {dayLabel(d, i)}
+                      {dayLabel(day.date, i)}
                     </Text>
                   </Pressable>
                 )
@@ -184,22 +187,41 @@ export default function BookScreen() {
           </ScrollView>
 
           <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Цаг сонгох</Text>
-          <View style={styles.hourGrid}>
-            {HOURS.map((h) => {
-              const active = h === hour
-              return (
-                <Pressable
-                  key={h}
-                  onPress={() => setHour(h)}
-                  style={[styles.hourChip, active && styles.hourChipActive]}
-                >
-                  <Text style={[styles.hourChipText, active && styles.hourChipTextActive]}>
-                    {String(h).padStart(2, "0")}:00
-                  </Text>
-                </Pressable>
-              )
-            })}
-          </View>
+          {activeDay && activeDay.slots.length === 0 ? (
+            <Text style={styles.emptySlots}>
+              {activeDay.closed
+                ? "Энэ өдөр амарна. Өөр өдөр сонгоно уу."
+                : "Энэ өдөр захиалга авах цаг алга."}
+            </Text>
+          ) : (
+            <View style={styles.hourGrid}>
+              {activeDay?.slots.map((slot) => {
+                const active = slotAt?.getTime() === slot.at.getTime()
+                return (
+                  <Pressable
+                    key={slot.at.toISOString()}
+                    disabled={slot.full}
+                    onPress={() => setSlotAt(slot.at)}
+                    style={[
+                      styles.hourChip,
+                      active && styles.hourChipActive,
+                      slot.full && styles.hourChipFull,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.hourChipText,
+                        active && styles.hourChipTextActive,
+                        slot.full && styles.hourChipTextFull,
+                      ]}
+                    >
+                      {slot.label}
+                    </Text>
+                  </Pressable>
+                )
+              })}
+            </View>
+          )}
 
           <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Ямар үйлчилгээ авах вэ?</Text>
           <Text style={styles.sectionHint}>
@@ -268,11 +290,23 @@ const styles = StyleSheet.create({
   dayChipActive: { backgroundColor: Brand.primary },
   dayChipText: { fontSize: 12, fontWeight: "600", color: Brand.ink },
   dayChipTextActive: { color: "#fff" },
+  dayChipDisabled: { backgroundColor: Brand.surfaceTint, opacity: 0.6 },
   hourGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 },
   hourChip: { width: "22%", height: 40, borderRadius: 12, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" },
   hourChipActive: { backgroundColor: Brand.primary },
   hourChipText: { fontSize: 12, fontWeight: "600", color: Brand.ink },
   hourChipTextActive: { color: "#fff" },
+  hourChipFull: { backgroundColor: Brand.surfaceTint2 },
+  hourChipTextFull: { color: Brand.muted, textDecorationLine: "line-through" },
+  emptySlots: {
+    marginTop: 12,
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    fontSize: 12,
+    color: Brand.muted,
+    textAlign: "center",
+  },
   noteInput: { marginTop: 8, minHeight: 96, borderRadius: 14, backgroundColor: "#fff", padding: 14, fontSize: 13, lineHeight: 19, color: Brand.ink, textAlignVertical: "top" },
   imageRow: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 10 },
   thumb: { width: 76, height: 76, borderRadius: 12, overflow: "hidden", backgroundColor: Brand.surfaceTint2 },

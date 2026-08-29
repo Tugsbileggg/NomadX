@@ -409,6 +409,9 @@ async function main() {
       about: b.about,
       staff_size: b.staff_size,
       status: b.status,
+      slot_minutes: 60,
+      // Зэрэг үйлчилж чадах тоо нь мастеруудынхаа тоотой тэнцүү (0014).
+      slot_capacity: b.type === "salon" ? (b.staff_size === "1-5" ? 2 : 4) : 1,
       current_step: b.current_step,
       submitted_at: b.status === "draft" ? null : new Date().toISOString(),
     }
@@ -454,7 +457,9 @@ async function main() {
             weekday,
             open_time: "09:00",
             close_time: "20:00",
-            is_closed: false,
+            // 6 = Ням — амарна. Аппын "амарна" төлвийг бодитоор турших
+            // боломж өгнө (бүх өдөр нээлттэй бол хэзээ ч харагдахгүй).
+            is_closed: weekday === 6,
           })),
     )
 
