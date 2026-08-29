@@ -6,10 +6,7 @@ import { CopyPlus } from "lucide-react";
 import { Panel } from "@/components/admin/kit";
 import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
 import { saveSchedule } from "@/lib/schedule/actions";
-import { WEEKDAY_LABELS, type OwnerSchedule } from "@/lib/schedule/queries";
-
-/** Сонгож болох цагийн нүдний урт — server action-ы шалгалттай ижил. */
-const SLOT_OPTIONS = [15, 30, 45, 60, 90, 120];
+import { SLOT_OPTIONS, WEEKDAY_LABELS, type OwnerSchedule } from "@/lib/schedule/types";
 
 const INPUT =
   "h-10 rounded-lg bg-surface-tint px-3 text-sm text-ink focus:outline-2 focus:outline-primary disabled:opacity-50";

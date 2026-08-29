@@ -1,31 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
+import type { DayHours, OwnerSchedule } from "@/lib/schedule/types";
 
-/** 0 = Даваа … 6 = Ням — `business_hours.weekday`-тэй ижил дараалал. */
-export const WEEKDAY_LABELS = [
-  "Даваа",
-  "Мягмар",
-  "Лхагва",
-  "Пүрэв",
-  "Баасан",
-  "Бямба",
-  "Ням",
-];
-
-export type DayHours = {
-  weekday: number;
-  /** "09:00" — бүртгээгүй бол null. */
-  open: string | null;
-  close: string | null;
-  isClosed: boolean;
-};
-
-export type OwnerSchedule = {
-  hasBusiness: boolean;
-  /** Долоо хоногийн 7 өдөр, Даваагаас эхэлж, дутууг нь нөхсөн. */
-  days: DayHours[];
-  slotMinutes: number;
-  slotCapacity: number;
-};
+export type { DayHours, OwnerSchedule };
 
 const DEFAULT_SCHEDULE: OwnerSchedule = {
   hasBusiness: false,
