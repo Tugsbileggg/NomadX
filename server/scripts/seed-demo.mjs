@@ -540,6 +540,9 @@ async function main() {
       const when = new Date()
       when.setDate(when.getDate() + tpl.inDays)
       when.setHours(tpl.hour, 0, 0, 0)
+      // Ням гараг амралт (дээрх business_hours) — 0014-ийн триггер тухайн
+      // өдрийн захиалгыг татгалзана. Дараагийн өдөр рүү шилжүүлнэ.
+      if (when.getDay() === 0) when.setDate(when.getDate() + 1)
 
       const { data: booking, error } = await supabase
         .from("bookings")
