@@ -11,6 +11,15 @@ import { supabase } from "@/lib/supabase"
 import { useAppTheme } from "@/lib/theme-context"
 import type { ThemePreference } from "@/lib/theme-context"
 
+/** Ажлын самбарын дэд дэлгэцүүд — tab-д багтахгүй тул эндээс. */
+const MENU = [
+  { href: "/(artist)/schedule" as const, label: "Хуваарь", icon: "time-outline" as const },
+  { href: "/(artist)/services" as const, label: "Үйлчилгээ", icon: "pricetags-outline" as const },
+  { href: "/(artist)/portfolio" as const, label: "Бүтээлүүд", icon: "images-outline" as const },
+  { href: "/(artist)/reviews" as const, label: "Сэтгэгдэл", icon: "star-outline" as const },
+  { href: "/notifications" as const, label: "Мэдэгдэл", icon: "notifications-outline" as const },
+]
+
 const THEME_OPTIONS: { label: string; value: ThemePreference }[] = [
   { label: "Систем", value: "system" },
   { label: "Цайвар", value: "light" },
@@ -18,11 +27,11 @@ const THEME_OPTIONS: { label: string; value: ThemePreference }[] = [
 ]
 
 /**
- * Артистын профайл — акаунт, тохиргоо, гарах.
+ * Артистын профайл — акаунт, тохиргоо, ажлын самбарын дэд дэлгэцүүд.
  *
- * ⚠️ Үйлчилгээ, бүтээл, сэтгэгдэл, харилцагчид зэрэг хэсэг хараахан
- * аппад ороогүй — тэднийг вэб панелаас удирдана. Вэбийг 4-р шатанд л
- * хаана.
+ * Хуваарь, үйлчилгээ, бүтээл, сэтгэгдэл нь tab-д багтахгүй тул эндээс
+ * нээгдэнэ. Профайлын мэдээлэл засах (нэр, хаяг, лого) хараахан ороогүй —
+ * тэр нь вэб панел дээр үлдэж байна.
  */
 export default function ArtistProfileScreen() {
   const { colors, preference, setPreference } = useAppTheme()
@@ -74,19 +83,13 @@ export default function ArtistProfileScreen() {
           </View>
         </View>
 
-        <Pressable style={styles.menuRow} onPress={() => router.push("/notifications")}>
-          <Ionicons name="notifications-outline" size={18} color={colors.primary} />
-          <Text style={styles.menuLabel}>Мэдэгдэл</Text>
-          <Ionicons name="chevron-forward" size={16} color={colors.muted} />
-        </Pressable>
-
-        <View style={styles.notice}>
-          <Ionicons name="construct-outline" size={16} color={colors.primary} />
-          <Text style={styles.noticeText}>
-            Үйлчилгээ, бүтээл, сэтгэгдэл, хуваарийн тохиргоог одоохондоо вэб
-            хуудаснаас удирдана. Тэдгээрийг ч аппад шилжүүлж байна.
-          </Text>
-        </View>
+        {MENU.map((m) => (
+          <Pressable key={m.href} style={styles.menuRow} onPress={() => router.push(m.href)}>
+            <Ionicons name={m.icon} size={18} color={colors.primary} />
+            <Text style={styles.menuLabel}>{m.label}</Text>
+            <Ionicons name="chevron-forward" size={16} color={colors.muted} />
+          </Pressable>
+        ))}
 
         <View style={styles.signOut}>
           <AuthButton label="Гарах" onPress={onSignOut} busy={signingOut} variant="outline" />
@@ -149,18 +152,6 @@ function makeStyles(colors: BrandPalette) {
       paddingVertical: 14,
     },
     menuLabel: { flex: 1, fontSize: 13, fontWeight: "600", color: colors.ink },
-
-    notice: {
-      flexDirection: "row",
-      gap: 10,
-      alignItems: "flex-start",
-      width: "100%",
-      backgroundColor: colors.surface,
-      borderRadius: 14,
-      padding: 14,
-      marginTop: 12,
-    },
-    noticeText: { flex: 1, fontSize: 12, color: colors.body, lineHeight: 18 },
 
     signOut: { width: "100%", marginTop: 16 },
   })

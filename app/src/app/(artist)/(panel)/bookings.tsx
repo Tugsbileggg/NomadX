@@ -84,22 +84,20 @@ export default function ArtistBookingsScreen() {
         <Stat label="Нийт" value={counts.total} styles={styles} />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-        <View style={styles.filterRow}>
-          {FILTERS.map((f) => {
-            const active = filter === f.value
-            return (
-              <Pressable
-                key={f.value}
-                onPress={() => setFilter(f.value)}
-                style={[styles.chip, active && styles.chipActive]}
-              >
-                <Text style={[styles.chipText, active && styles.chipTextActive]}>{f.label}</Text>
-              </Pressable>
-            )
-          })}
-        </View>
-      </ScrollView>
+      <View style={styles.filterRow}>
+        {FILTERS.map((f) => {
+          const active = filter === f.value
+          return (
+            <Pressable
+              key={f.value}
+              onPress={() => setFilter(f.value)}
+              style={[styles.chip, active && styles.chipActive]}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]}>{f.label}</Text>
+            </Pressable>
+          )
+        })}
+      </View>
 
       {error && <Text style={styles.error}>{error}</Text>}
 
@@ -301,8 +299,14 @@ function makeStyles(colors: BrandPalette) {
     statValue: { fontSize: 18, fontWeight: "700", color: colors.ink },
     statLabel: { fontSize: 10, color: colors.muted },
 
-    filterScroll: { marginTop: 14, maxHeight: 44 },
-    filterRow: { flexDirection: "row", gap: 8, paddingHorizontal: 20 },
+    // Мөр дамжуулна — хэвтээ гүйлгээ нь ирмэг дээрээ тасарсан мэт харагддаг.
+    filterRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 8,
+      marginTop: 14,
+      paddingHorizontal: 20,
+    },
     chip: {
       height: 34,
       justifyContent: "center",

@@ -17,6 +17,10 @@ export default function ArtistLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={approved}>
         <Stack.Screen name="(panel)" />
+        <Stack.Screen name="services" />
+        <Stack.Screen name="portfolio" />
+        <Stack.Screen name="schedule" />
+        <Stack.Screen name="reviews" />
       </Stack.Protected>
       <Stack.Protected guard={!approved}>
         <Stack.Screen name="index" />
