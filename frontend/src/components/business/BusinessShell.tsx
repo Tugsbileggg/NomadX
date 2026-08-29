@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Bell, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { PanelBell } from "@/components/notifications/PanelBell";
 
 export type BizNavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -84,13 +85,10 @@ export function BusinessShell({
           </label>
 
           <div className="flex items-center gap-4">
-            <button
-              type="button"
-              aria-label="Мэдэгдэл"
-              className="flex size-10 items-center justify-center rounded-full text-primary hover:bg-white"
-            >
-              <Bell className="size-5" />
-            </button>
+            <PanelBell
+              href="/business/notifications"
+              className="relative flex size-10 items-center justify-center rounded-full text-primary hover:bg-white"
+            />
             {avatar ?? (
               <span className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-primary-container text-xs font-semibold text-primary-dark">
                 LU

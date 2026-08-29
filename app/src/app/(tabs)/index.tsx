@@ -1,12 +1,13 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
-import { useRouter } from "expo-router"
-import { useEffect, useMemo, useState } from "react"
+import { useFocusEffect, useRouter } from "expo-router"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import type { BrandPalette } from "@/constants/theme"
 import { fetchApprovedBusinesses, type BusinessCard } from "@/lib/businesses"
+import { fetchUnreadCount } from "@/lib/notifications"
 import { publicAssetUrl } from "@/lib/storage"
 import { useAppTheme } from "@/lib/theme-context"
 
@@ -25,6 +26,7 @@ export default function HomeScreen() {
   const [category, setCategory] = useState<string | null>(null)
   const [businesses, setBusinesses] = useState<BusinessCard[]>([])
   const [loading, setLoading] = useState(true)
+  const [unread, setUnread] = useState(0)
 
   useEffect(() => {
     fetchApprovedBusinesses().then((rows) => {
@@ -32,6 +34,19 @@ export default function HomeScreen() {
       setLoading(false)
     })
   }, [])
+
+  // Мэдэгдлийн дэлгэцээс буцаж ирэхэд тоолуур шинэчлэгдэнэ.
+  useFocusEffect(
+    useCallback(() => {
+      let active = true
+      fetchUnreadCount().then((n) => {
+        if (active) setUnread(n)
+      })
+      return () => {
+        active = false
+      }
+    }, []),
+  )
 
   const artists = useMemo(
     () =>
@@ -68,8 +83,13 @@ export default function HomeScreen() {
             <Text style={styles.brandText}>Lumina</Text>
           </View>
           <View style={styles.headerSideRight}>
-            <Pressable hitSlop={8}>
+            <Pressable hitSlop={8} onPress={() => router.push("/notifications")}>
               <Ionicons name="notifications-outline" size={20} color={colors.body} />
+              {unread > 0 && (
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>{unread > 9 ? "9+" : unread}</Text>
+                </View>
+              )}
             </Pressable>
           </View>
         </View>
@@ -210,6 +230,19 @@ function makeStyles(colors: BrandPalette) {
     safe: { flex: 1, backgroundColor: colors.surfaceTint },
     page: { padding: 20, paddingBottom: 96, gap: 18 },
     headerRow: { flexDirection: "row", alignItems: "center" },
+    badge: {
+      position: "absolute",
+      top: -4,
+      right: -6,
+      minWidth: 16,
+      height: 16,
+      borderRadius: 8,
+      paddingHorizontal: 4,
+      backgroundColor: colors.primary,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    badgeText: { fontSize: 9, fontWeight: "700", color: colors.onPrimary },
     headerSide: { flex: 1 },
     headerSideRight: { flex: 1, alignItems: "flex-end" },
     brandRow: { flexDirection: "row", alignItems: "center", gap: 8 },

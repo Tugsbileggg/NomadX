@@ -28,6 +28,16 @@ export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
 /** ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */
 export type InvoiceStatus = "issued" | "paid" | "cancelled"
 
+/** Мэдэгдлийн төрөл (0020) — DB-ийн триггерүүд үүсгэнэ. */
+export type NotificationKind =
+  | "booking_created"
+  | "booking_confirmed"
+  | "booking_cancelled"
+  | "booking_completed"
+  | "invoice_issued"
+  | "review_replied"
+  | "business_status"
+
 export type DocumentKind =
   | "id_front"
   | "id_back"
@@ -167,6 +177,24 @@ export type Invoice = {
   updated_at: string
 }
 
+/**
+ * Апп доторх мэдэгдэл (0020).
+ *
+ * Зөвхөн DB-ийн триггерүүд үүсгэнэ — INSERT policy зориудаар байхгүй.
+ */
+export type Notification = {
+  id: string
+  profile_id: string
+  kind: NotificationKind
+  title: string
+  body: string | null
+  booking_id: string | null
+  business_id: string | null
+  /** null бол уншаагүй. */
+  read_at: string | null
+  created_at: string
+}
+
 /** Хэрэглэгчийн дуртай бизнес — зөвхөн эзэн нь харна. */
 export type Favourite = {
   customer_id: string
@@ -275,6 +303,7 @@ export type Database = {
       booking_images: Row<BookingImage>
       invoices: Row<Invoice>
       favourites: Row<Favourite>
+      notifications: Row<Notification>
     }
     Views: {
       // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
@@ -302,6 +331,7 @@ export type Database = {
       document_kind: DocumentKind
       booking_status: BookingStatus
       invoice_status: InvoiceStatus
+      notification_kind: NotificationKind
     }
   }
 }

@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Bell, HelpCircle, LogOut, Plus, Search } from "lucide-react";
+import { HelpCircle, LogOut, Plus, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { PanelBell } from "@/components/notifications/PanelBell";
 
 export type ArtistNavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -81,14 +82,10 @@ export function ArtistShell({
           </label>
 
           <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="Мэдэгдэл"
+            <PanelBell
+              href="/artist/notifications"
               className="relative flex size-10 items-center justify-center rounded-full text-primary hover:bg-white/70"
-            >
-              <Bell className="size-5" />
-              <span className="absolute top-2 right-2 size-2 rounded-full bg-danger" />
-            </button>
+            />
             <button
               type="button"
               aria-label="Тусламж"
