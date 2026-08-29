@@ -136,7 +136,9 @@ export async function fetchAnalytics(range: Range): Promise<Analytics> {
 
   const perCustomer = new Map<string, number>();
   for (const b of active) {
-    if (b.status !== "completed") continue;
+    // Зочны захиалгад customer_id байхгүй (0019) — дахин ирэлт тооцох
+    // таних тэмдэггүй тул хасна.
+    if (b.status !== "completed" || !b.customer_id) continue;
     perCustomer.set(b.customer_id, (perCustomer.get(b.customer_id) ?? 0) + 1);
   }
   const returning = [...perCustomer.values()].filter((n) => n > 1).length;

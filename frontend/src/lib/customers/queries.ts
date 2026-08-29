@@ -63,12 +63,18 @@ export async function fetchPanelCustomers(filter: CustomerFilter): Promise<Panel
     .maybeSingle();
   if (!business) return empty;
 
-  const { data: bookings } = await supabase
+  const { data: rows } = await supabase
     .from("bookings")
     .select("id, customer_id, status, scheduled_at")
     .eq("business_id", business.id);
 
-  if (!bookings?.length) return empty;
+  // Зочны захиалга (0019) нь бүртгэлтэй хэрэглэгчгүй тул харилцагчийн
+  // жагсаалтад ордоггүй — давтан ирснийг нь тоолох таних тэмдэггүй.
+  const bookings = (rows ?? []).filter(
+    (b): b is typeof b & { customer_id: string } => b.customer_id !== null,
+  );
+
+  if (!bookings.length) return empty;
 
   const customerIds = [...new Set(bookings.map((b) => b.customer_id))];
 

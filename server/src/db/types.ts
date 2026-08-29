@@ -129,11 +129,15 @@ export type VerificationEvent = {
 
 export type Booking = {
   id: string
-  customer_id: string
+  /** Зочны захиалгад null — оронд нь guest_name/guest_phone (0019). */
+  customer_id: string | null
   business_id: string
   status: BookingStatus
   scheduled_at: string
   note: string | null
+  /** Бүртгэлгүй зочны нэр — панелаас үүсгэсэн захиалгад (0019). */
+  guest_name: string | null
+  guest_phone: string | null
   created_at: string
   updated_at: string
 }

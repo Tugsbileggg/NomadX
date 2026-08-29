@@ -149,3 +149,51 @@ export async function setInvoiceStatus(_prev: FormState, formData: FormData): Pr
   for (const path of PANEL_PATHS) revalidatePath(path);
   return { success: "Нэхэмжлэхийн төлөвийг шинэчиллээ." };
 }
+
+/**
+ * Панелаас зочны захиалга үүсгэнэ — утсаар залгасан, ирсэн газраасаа
+ * захиалсан хүнд зориулав (0019).
+ *
+ * Цаг, багтаамж, ажлын цагийн шалгалтыг DB-ийн `validate_booking()`
+ * триггер хийнэ — энд зөвхөн маягтын утгуудыг шалгаад дамжуулна.
+ */
+export async function createGuestBooking(
+  _prev: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const name = String(formData.get("guest_name") ?? "").trim();
+  const phone = String(formData.get("guest_phone") ?? "").trim();
+  const at = String(formData.get("scheduled_at") ?? "");
+  const note = String(formData.get("note") ?? "").trim();
+
+  if (!name) return { error: "Үйлчлүүлэгчийн нэрийг бөглөнө үү." };
+  if (!at || Number.isNaN(Date.parse(at))) return { error: "Цагаа сонгоно уу." };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Нэвтрээгүй байна." };
+
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("id")
+    .eq("owner_id", user.id)
+    .maybeSingle();
+  if (!business) return { error: "Бизнесийн бүртгэл олдсонгүй." };
+
+  const { error } = await supabase.from("bookings").insert({
+    business_id: business.id,
+    customer_id: null,
+    guest_name: name,
+    guest_phone: phone || null,
+    // Панелаас үүсгэсэн захиалга нь эзний өөрийнх тул шууд баталгаажсан.
+    status: "confirmed",
+    scheduled_at: new Date(at).toISOString(),
+    note: note || null,
+  });
+  if (error) return { error: error.message };
+
+  for (const path of PANEL_PATHS) revalidatePath(path);
+  return { success: `${name}-ийн захиалгыг бүртгэлээ.` };
+}

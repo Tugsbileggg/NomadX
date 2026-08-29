@@ -167,8 +167,13 @@ export function BookingCalendar({
                     {formatTime(b.scheduledAt)}
                   </span>
                   <div className="min-w-[160px] flex-1">
-                    <p className="text-sm font-medium text-ink">
+                    <p className="flex items-center gap-2 text-sm font-medium text-ink">
                       {b.customer?.name?.trim() || "Нэргүй хэрэглэгч"}
+                      {b.customer?.isGuest && (
+                        <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-medium text-muted">
+                          зочин
+                        </span>
+                      )}
                     </p>
                     {b.customer?.phone && (
                       <a

@@ -100,7 +100,11 @@ export async function fetchDashboard(): Promise<Dashboard> {
   const invoicedBookings = new Set((invoices ?? []).map((i) => i.booking_id));
 
   const byCustomer = new Map<string, number>();
-  for (const b of rows) byCustomer.set(b.customer_id, (byCustomer.get(b.customer_id) ?? 0) + 1);
+  // Зочны захиалгад customer_id байхгүй (0019) — давтан ирэлт тооцогдохгүй.
+  for (const b of rows) {
+    if (!b.customer_id) continue;
+    byCustomer.set(b.customer_id, (byCustomer.get(b.customer_id) ?? 0) + 1);
+  }
   const returning = [...byCustomer.values()].filter((n) => n >= 2).length;
 
   const ratings = (reviews ?? []).map((r) => r.rating);

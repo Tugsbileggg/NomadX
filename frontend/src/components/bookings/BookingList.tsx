@@ -98,7 +98,14 @@ function BookingCard({ booking }: { booking: PanelBooking }) {
         <div className="flex items-center gap-3">
           <Monogram name={name} />
           <div>
-            <p className="text-sm font-medium text-ink">{name}</p>
+            <p className="flex items-center gap-2 text-sm font-medium text-ink">
+              {name}
+              {booking.customer?.isGuest && (
+                <span className="rounded-full bg-surface-tint px-2 py-0.5 text-[10px] font-medium text-muted">
+                  зочин
+                </span>
+              )}
+            </p>
             {booking.customer?.phone && (
               <a
                 href={`tel:${booking.customer.phone}`}

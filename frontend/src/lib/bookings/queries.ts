@@ -15,7 +15,8 @@ export type PanelBooking = {
   /** Үйлчлүүлэгчийн бичсэн тайлбар — юу хийлгэхийг заана. */
   note: string | null;
   createdAt: string;
-  customer: { name: string; phone: string | null } | null;
+  /** Бүртгэлтэй хэрэглэгч, эсвэл панелаас бүртгэсэн зочин (0019). */
+  customer: { name: string; phone: string | null; isGuest: boolean } | null;
   /** Жишээ зургууд — bucket хувийн тул signed URL. */
   images: string[];
   /** ⚠️ Туршилтын нэхэмжлэх. Үүсээгүй бол null. */
@@ -58,7 +59,7 @@ export async function fetchPanelBookings(status?: BookingStatus): Promise<PanelB
 
   let query = supabase
     .from("bookings")
-    .select("id, status, scheduled_at, note, created_at, customer_id")
+    .select("id, status, scheduled_at, note, created_at, customer_id, guest_name, guest_phone")
     .eq("business_id", business.id)
     .order("scheduled_at", { ascending: false });
 
@@ -67,11 +68,11 @@ export async function fetchPanelBookings(status?: BookingStatus): Promise<PanelB
   const { data: rows } = await query;
   if (!rows?.length) return { ...empty, counts: await countBookings(business.id) };
 
-  const customerIds = [...new Set(rows.map((r) => r.customer_id))];
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, full_name, phone")
-    .in("id", customerIds);
+  // Зочны захиалгад customer_id байхгүй — профайл татах хэрэггүй.
+  const customerIds = [...new Set(rows.map((r) => r.customer_id).filter((id) => id !== null))];
+  const { data: profiles } = customerIds.length
+    ? await supabase.from("profiles").select("id, full_name, phone").in("id", customerIds)
+    : { data: [] };
 
   const byCustomer = new Map((profiles ?? []).map((p) => [p.id, p]));
 
@@ -106,14 +107,18 @@ export async function fetchPanelBookings(status?: BookingStatus): Promise<PanelB
   return {
     counts: await countBookings(business.id),
     bookings: rows.map((r) => {
-      const p = byCustomer.get(r.customer_id);
+      const p = r.customer_id ? byCustomer.get(r.customer_id) : null;
       return {
         id: r.id,
         status: r.status,
         scheduledAt: r.scheduled_at,
         note: r.note,
         createdAt: r.created_at,
-        customer: p ? { name: p.full_name, phone: p.phone } : null,
+        customer: p
+          ? { name: p.full_name, phone: p.phone, isGuest: false }
+          : r.guest_name
+            ? { name: r.guest_name, phone: r.guest_phone, isGuest: true }
+            : null,
         images: byBooking.get(r.id) ?? [],
         invoice: byInvoice.get(r.id) ?? null,
       };

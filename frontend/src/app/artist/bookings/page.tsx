@@ -1,4 +1,5 @@
-import { CalendarCheck, CalendarClock, CalendarRange } from "lucide-react";
+import Link from "next/link";
+import { CalendarCheck, CalendarClock, CalendarRange, Plus } from "lucide-react";
 import { ArtistPageHeader, ArtistPanel, ArtistShell, ArtistStat } from "@/components/artist/ArtistShell";
 import { ARTIST, ARTIST_NAV } from "@/components/artist/nav";
 import { BookingList, StatusTabs } from "@/components/bookings/BookingList";
@@ -22,7 +23,19 @@ export default async function ArtistBookingsPage({
 
   return (
     <ArtistShell nav={ARTIST_NAV} active="/artist/bookings" {...ARTIST}>
-      <ArtistPageHeader title="Захиалгууд" chip={`Хүлээгдэж буй ${counts.pending}`} />
+      <ArtistPageHeader
+        title="Захиалгууд"
+        chip={`Хүлээгдэж буй ${counts.pending}`}
+        actions={
+          <Link
+            href="/artist/bookings/new"
+            className="flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-xs font-medium text-white hover:bg-primary-dark"
+          >
+            <Plus className="size-4" />
+            Шинэ захиалга
+          </Link>
+        }
+      />
 
       <div className="flex flex-col gap-6">
         <div className="grid gap-6 sm:grid-cols-3">
