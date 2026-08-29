@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   ActivityIndicator,
   Dimensions,
@@ -29,7 +29,9 @@ import {
   type ProfileService,
   type ProfileStaff,
 } from "@/lib/business-profile"
+import { ReviewComposer } from "@/components/ReviewComposer"
 import { mnTimeAgo } from "@/lib/mn-date"
+import { fetchReviewEligibility, type ReviewEligibility } from "@/lib/reviews"
 import { publicAssetUrl } from "@/lib/storage"
 
 const GALLERY_TILE = (Dimensions.get("window").width - 40 - 12) / 2
@@ -41,19 +43,26 @@ export default function BusinessDetailScreen() {
   const [loading, setLoading] = useState(true)
   // Галерейн бүтэн дэлгэцийн үзүүлэгч — null бол хаалттай.
   const [viewerIndex, setViewerIndex] = useState<number | null>(null)
+  const [eligibility, setEligibility] = useState<ReviewEligibility | null>(null)
+
+  // Сэтгэгдэл хадгалсны дараа профайл (дундаж оноо ороод) болон эрхийн
+  // төлөвийг хамт дахин татна.
+  const load = useCallback(async () => {
+    const [p, e] = await Promise.all([fetchBusinessProfile(id), fetchReviewEligibility(id)])
+    setProfile(p)
+    setEligibility(e)
+    setLoading(false)
+  }, [id])
 
   useEffect(() => {
     let active = true
-    fetchBusinessProfile(id).then((p) => {
-      if (active) {
-        setProfile(p)
-        setLoading(false)
-      }
+    load().catch(() => {
+      if (active) setLoading(false)
     })
     return () => {
       active = false
     }
-  }, [id])
+  }, [load])
 
   if (loading) {
     return (
@@ -173,12 +182,19 @@ export default function BusinessDetailScreen() {
           </Section>
         )}
 
-        {reviews.length > 0 && (
+        {(reviews.length > 0 || eligibility?.canReview) && (
           <Section
             title="Сэтгэгдэл"
             trailing={rating ? <RatingPill rating={rating} /> : undefined}
           >
             <View style={{ gap: 10 }}>
+              {eligibility && (
+                <ReviewComposer
+                  businessId={business.id}
+                  eligibility={eligibility}
+                  onSaved={() => void load()}
+                />
+              )}
               {reviews.map((r) => (
                 <ReviewCard key={r.id} review={r} />
               ))}
