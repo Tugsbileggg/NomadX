@@ -126,6 +126,12 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        <Pressable style={styles.menuRow} onPress={() => router.push("/favourites")}>
+          <Ionicons name="heart-outline" size={18} color={colors.primary} />
+          <Text style={styles.menuLabel}>Дуртай газрууд</Text>
+          <Ionicons name="chevron-forward" size={16} color={colors.muted} />
+        </Pressable>
+
         <Pressable style={styles.menuRow} onPress={() => router.push("/share")}>
           <Ionicons name="navigate-outline" size={18} color={colors.primary} />
           <Text style={styles.menuLabel}>Байршил хуваалцах (POC)</Text>

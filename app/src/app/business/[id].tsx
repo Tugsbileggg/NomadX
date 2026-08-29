@@ -32,6 +32,7 @@ import {
 import { ReviewComposer } from "@/components/ReviewComposer"
 import { mnTimeAgo } from "@/lib/mn-date"
 import { fetchReviewEligibility, type ReviewEligibility } from "@/lib/reviews"
+import { fetchFavouriteIds, toggleFavourite } from "@/lib/search"
 import { publicAssetUrl } from "@/lib/storage"
 
 const GALLERY_TILE = (Dimensions.get("window").width - 40 - 12) / 2
@@ -44,15 +45,29 @@ export default function BusinessDetailScreen() {
   // Галерейн бүтэн дэлгэцийн үзүүлэгч — null бол хаалттай.
   const [viewerIndex, setViewerIndex] = useState<number | null>(null)
   const [eligibility, setEligibility] = useState<ReviewEligibility | null>(null)
+  const [favourite, setFavourite] = useState(false)
 
   // Сэтгэгдэл хадгалсны дараа профайл (дундаж оноо ороод) болон эрхийн
   // төлөвийг хамт дахин татна.
   const load = useCallback(async () => {
-    const [p, e] = await Promise.all([fetchBusinessProfile(id), fetchReviewEligibility(id)])
+    const [p, e, favourites] = await Promise.all([
+      fetchBusinessProfile(id),
+      fetchReviewEligibility(id),
+      fetchFavouriteIds(),
+    ])
     setProfile(p)
     setEligibility(e)
+    setFavourite(favourites.has(id))
     setLoading(false)
   }, [id])
+
+  /** Хариу ирэхээс өмнө зүрхийг сольж, амжилтгүй бол буцаана. */
+  async function onToggleFavourite() {
+    const next = !favourite
+    setFavourite(next)
+    const failed = await toggleFavourite(id, next)
+    if (failed) setFavourite(!next)
+  }
 
   useEffect(() => {
     let active = true
@@ -210,6 +225,14 @@ export default function BusinessDetailScreen() {
       </ScrollView>
 
       <BackButton onPress={() => router.back()} />
+
+      <Pressable onPress={onToggleFavourite} hitSlop={8} style={styles.favourite}>
+        <Ionicons
+          name={favourite ? "heart" : "heart-outline"}
+          size={20}
+          color={favourite ? Brand.primary : Brand.primaryLight}
+        />
+      </Pressable>
 
       <GalleryViewer items={gallery} index={viewerIndex} onClose={() => setViewerIndex(null)} />
 
@@ -562,6 +585,18 @@ const styles = StyleSheet.create({
   // Доод талын тогтмол товчийг тойрч гарах зай.
   page: { paddingBottom: 120 },
 
+  favourite: {
+    position: "absolute",
+    top: 52,
+    right: 16,
+    zIndex: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   back: {
     position: "absolute",
     top: 52,

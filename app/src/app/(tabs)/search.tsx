@@ -14,6 +14,7 @@ import {
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+import { BusinessCard, BusinessThumb, HeartButton } from "@/components/BusinessCard"
 import { BusinessMap, type MapMarker } from "@/components/BusinessMap"
 import { Brand } from "@/constants/theme"
 import { distanceMeters, formatDistance } from "@/lib/distance"
@@ -226,7 +227,7 @@ export default function SearchScreen() {
               <View style={styles.sheetHandle} />
               <Pressable style={styles.sheetTop} onPress={() => openBusiness(selected.id)}>
                 <View style={styles.sheetThumb}>
-                  <Thumb business={selected} />
+                  <BusinessThumb business={selected} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <View style={styles.sheetTitleRow}>
@@ -280,108 +281,14 @@ export default function SearchScreen() {
 
 /* ------------------------------------------------------------- pieces */
 
-function BusinessCard({
-  business,
-  onPress,
-  onToggleFavourite,
-}: {
-  business: WithDistance
-  onPress: () => void
-  onToggleFavourite: () => void
-}) {
-  return (
-    <Pressable onPress={onPress} style={styles.card}>
-      <View style={styles.cardCover}>
-        <Thumb business={business} />
-
-        {business.rating != null && (
-          <View style={styles.ratingBadge}>
-            <Ionicons name="star" size={11} color={Brand.gold} />
-            <Text style={styles.ratingText}>{business.rating.toFixed(1)}</Text>
-          </View>
-        )}
-
-        <View style={styles.cardHeart}>
-          <HeartButton active={business.isFavourite} onPress={onToggleFavourite} />
-        </View>
-      </View>
-
-      <View style={styles.cardBody}>
-        <Text style={styles.cardName} numberOfLines={1}>
-          {business.name}
-        </Text>
-
-        <View style={styles.metaRow}>
-          <Ionicons name="location-outline" size={12} color={Brand.body} />
-          <Text style={styles.metaText} numberOfLines={1}>
-            {business.address ?? "Хаяг оруулаагүй"}
-            {business.distance != null && ` · ${formatDistance(business.distance)} зайд`}
-          </Text>
-        </View>
-
-        {business.categories.length > 0 && (
-          <View style={styles.tagRow}>
-            {business.categories.slice(0, 2).map((c) => (
-              <View key={c} style={styles.tag}>
-                <Text style={styles.tagText}>{c}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        <View style={styles.cardFooter}>
-          <Text style={styles.price}>
-            {business.minPrice != null ? formatFromPrice(business.minPrice) : "Үнэ тодорхойгүй"}
-          </Text>
-          {business.openUntil && (
-            <View style={styles.openPill}>
-              <Text style={styles.openText}>өнөөдөр нээлттэй</Text>
-            </View>
-          )}
-        </View>
-      </View>
-    </Pressable>
-  )
-}
-
-/** Ковер байхгүй бол лого, тэр ч байхгүй бол эхний үсэг. */
-function Thumb({ business }: { business: SearchBusiness }) {
-  const url = publicAssetUrl(business.coverPath) ?? publicAssetUrl(business.logoPath)
-  const initial = (business.name ?? "L").trim().charAt(0).toUpperCase()
-
-  if (url) {
-    return <Image source={{ uri: url }} style={StyleSheet.absoluteFill} contentFit="cover" />
-  }
-  return (
-    <View style={styles.thumbFallback}>
-      <Text style={styles.thumbInitial}>{initial}</Text>
-    </View>
-  )
-}
-
-function HeartButton({ active, onPress }: { active: boolean; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={(e) => {
-        // Карт дээрх дарах үйлдлийг тасална — үгүй бол профайл нээгдэнэ.
-        e.stopPropagation()
-        onPress()
-      }}
-      hitSlop={8}
-      style={styles.heart}
-    >
-      <Ionicons
-        name={active ? "heart" : "heart-outline"}
-        size={18}
-        color={active ? Brand.primary : Brand.primaryLight}
-      />
-    </Pressable>
-  )
-}
-
 /* -------------------------------------------------------------- styles */
 
 const styles = StyleSheet.create({
+  // Газрын зургийн доод хуудас нь картын жижиг хувилбар — эдгээр гурав
+  // BusinessCard-той хуваалцах хэмжээний биш тул энд үлдээв.
+  ratingText: { fontSize: 12, fontWeight: "700", color: Brand.ink },
+  metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
+  metaText: { flex: 1, fontSize: 12, color: Brand.body },
   safe: { flex: 1, backgroundColor: Brand.surfacePage },
 
   headerRow: {
@@ -458,49 +365,7 @@ const styles = StyleSheet.create({
   list: { padding: 20, paddingTop: 16, gap: 16, paddingBottom: 96 },
   empty: { fontSize: 13, color: Brand.muted, textAlign: "center", marginTop: 32 },
 
-  card: { borderRadius: 20, backgroundColor: "#fff", overflow: "hidden" },
-  cardCover: { height: 170, backgroundColor: Brand.surfaceTint2 },
-  thumbFallback: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Brand.primaryContainer,
-  },
-  thumbInitial: { fontSize: 28, fontWeight: "700", color: Brand.primaryDark },
-  ratingBadge: {
-    position: "absolute",
-    left: 12,
-    bottom: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    borderRadius: 999,
-    backgroundColor: "#fff",
-    paddingHorizontal: 9,
-    paddingVertical: 4,
-  },
-  ratingText: { fontSize: 12, fontWeight: "700", color: Brand.ink },
-  cardHeart: { position: "absolute", right: 12, top: 12 },
-  heart: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "rgba(255,255,255,0.92)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
 
-  cardBody: { padding: 16, gap: 8 },
-  cardName: { fontSize: 17, fontWeight: "700", color: Brand.ink },
-  metaRow: { flexDirection: "row", alignItems: "center", gap: 4 },
-  metaText: { flex: 1, fontSize: 12, color: Brand.body },
-  tagRow: { flexDirection: "row", gap: 8, flexWrap: "wrap" },
-  tag: { borderRadius: 8, backgroundColor: Brand.surfaceTint, paddingHorizontal: 10, paddingVertical: 5 },
-  tagText: { fontSize: 11, fontWeight: "600", color: Brand.primaryDark },
-  cardFooter: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 2 },
-  price: { fontSize: 16, fontWeight: "700", color: Brand.primary },
-  openPill: { borderRadius: 8, backgroundColor: Brand.primaryContainer, paddingHorizontal: 10, paddingVertical: 5 },
-  openText: { fontSize: 11, fontWeight: "700", color: Brand.primaryDark },
 
   mapWrap: { flex: 1, marginTop: 14 },
   sheet: {

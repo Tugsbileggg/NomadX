@@ -69,6 +69,18 @@ export async function fetchSearchBusinesses(): Promise<SearchBusiness[]> {
 }
 
 /** Нэвтэрсэн хэрэглэгчийн дуртай бизнесүүдийн id. */
+/**
+ * Зөвхөн дуртай гэж тэмдэглэсэн бизнесүүд.
+ *
+ * `fetchSearchBusinesses()`-ийг дахин ашиглана: зөвшөөрөгдсөн бизнес нийт
+ * арав орчим тул тусад нь асуулга бичих нь илүү. Карт нь оноо, үнэ,
+ * ажлын цаг зэрэг ижил өгөгдөл шаарддаг ч тул давхардал үүсэхгүй.
+ */
+export async function fetchFavouriteBusinesses(): Promise<SearchBusiness[]> {
+  const all = await fetchSearchBusinesses()
+  return all.filter((b) => b.isFavourite)
+}
+
 export async function fetchFavouriteIds(): Promise<Set<string>> {
   const {
     data: { user },
