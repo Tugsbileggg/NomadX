@@ -5,18 +5,14 @@ import { Badge, Panel } from "@/components/admin/kit";
 import { STATUS_META, StatusSteps } from "@/components/bookings/BookingList";
 import type { PanelBooking } from "@/lib/bookings/queries";
 import { cn } from "@/lib/cn";
+import { dateKey } from "@/lib/ub-time";
 
 const WEEKDAYS = ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"];
 const WEEKDAY_FULL = ["Ням", "Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба"];
 
-/** Огноог "YYYY-MM-DD" түлхүүр болгоно — локал цагийн бүсээр. */
-export function dateKey(value: Date | string) {
-  const d = typeof value === "string" ? new Date(value) : value;
-  return [
-    d.getFullYear(),
-    String(d.getMonth() + 1).padStart(2, "0"),
-    String(d.getDate()).padStart(2, "0"),
-  ].join("-");
+/** ISO мөр эсвэл Date-ийг "YYYY-MM-DD" болгоно. */
+function keyOf(value: Date | string) {
+  return dateKey(typeof value === "string" ? new Date(value) : value);
 }
 
 /** Хаягаас ирсэн "YYYY-MM" — буруу бол өнөөдрийн сар. */
@@ -79,15 +75,15 @@ export function BookingCalendar({
   date?: string;
 }) {
   const { year, monthIdx } = parseMonth(month);
-  const todayKey = dateKey(new Date());
+  const todayKey = keyOf(new Date());
   const selectedKey = date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : todayKey;
 
   // Цуцлагдсан захиалга өдрийг "завгүй" болгохгүй.
   const busyDays = new Set(
-    bookings.filter((b) => b.status !== "cancelled").map((b) => dateKey(b.scheduledAt)),
+    bookings.filter((b) => b.status !== "cancelled").map((b) => keyOf(b.scheduledAt)),
   );
   const dayBookings = bookings
-    .filter((b) => dateKey(b.scheduledAt) === selectedKey)
+    .filter((b) => keyOf(b.scheduledAt) === selectedKey)
     .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
 
   const grid = buildGrid(year, monthIdx);
@@ -127,7 +123,7 @@ export function BookingCalendar({
             </span>
           ))}
           {grid.map((c) => {
-            const key = dateKey(c.date);
+            const key = keyOf(c.date);
             const isToday = key === todayKey && !c.muted;
             const isSelected = key === selectedKey && !c.muted;
             return (
