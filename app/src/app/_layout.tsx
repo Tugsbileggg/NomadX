@@ -8,16 +8,16 @@ import {
 } from '@expo-google-fonts/montserrat';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { View } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
-import { Brand } from '@/constants/theme';
+import { AppThemeProvider, useAppTheme } from '@/lib/theme-context';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
     Montserrat_400Regular,
     Montserrat_500Medium,
@@ -26,11 +26,25 @@ export default function RootLayout() {
   });
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AuthProvider>
-        <AnimatedSplashOverlay />
-        <RootNavigator fontsLoaded={fontsLoaded} />
-      </AuthProvider>
+    <AppThemeProvider>
+      <ThemedNavigation>
+        <AuthProvider>
+          <AnimatedSplashOverlay />
+          <RootNavigator fontsLoaded={fontsLoaded} />
+        </AuthProvider>
+      </ThemedNavigation>
+    </AppThemeProvider>
+  );
+}
+
+/** Хэрэглэгчийн сонгосон (эсвэл системийн) горимоор навигацийн крум, статус бар-ыг тааруулна. */
+function ThemedNavigation({ children }: { children: React.ReactNode }) {
+  const { scheme } = useAppTheme();
+
+  return (
+    <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+      {children}
     </ThemeProvider>
   );
 }
@@ -42,9 +56,10 @@ export default function RootLayout() {
  */
 function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   const { session, loading, passwordRecovery } = useAuth();
+  const { colors } = useAppTheme();
 
   if (loading || !fontsLoaded) {
-    return <View style={{ flex: 1, backgroundColor: Brand.surfacePage }} />;
+    return <View style={{ flex: 1, backgroundColor: colors.surfacePage }} />;
   }
 
   return (

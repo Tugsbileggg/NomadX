@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export type FormState = { error?: string } | null;
@@ -88,4 +89,30 @@ export async function requestMoreInfo(
   const note = String(formData.get("reason") ?? "").trim();
   if (!note) return { error: "Юу дутуу байгааг бичнэ үү." };
   return transition(String(formData.get("business_id")), "needs_info", note);
+}
+
+/** Хэрэглэгчийг хориглох/цуцлах — Supabase Auth Admin API (service role). */
+async function setBan(userId: string, banned: boolean): Promise<FormState> {
+  const { user } = await requireAdmin();
+  if (!user) return { error: "Танд энэ үйлдлийг хийх эрх алга." };
+  if (userId === user.id) return { error: "Өөрийгөө хориглох боломжгүй." };
+
+  const admin = createAdminClient();
+  if (!admin) return { error: "Service role тохируулаагүй байна." };
+
+  const { error } = await admin.auth.admin.updateUserById(userId, {
+    ban_duration: banned ? "876000h" : "none",
+  });
+  if (error) return { error: error.message };
+
+  revalidatePath("/admin/users");
+  return null;
+}
+
+export async function banUser(_prev: FormState, formData: FormData): Promise<FormState> {
+  return setBan(String(formData.get("user_id")), true);
+}
+
+export async function unbanUser(_prev: FormState, formData: FormData): Promise<FormState> {
+  return setBan(String(formData.get("user_id")), false);
 }

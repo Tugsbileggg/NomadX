@@ -5,9 +5,10 @@ import { useEffect, useMemo, useState } from "react"
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { fetchApprovedBusinesses, type BusinessCard } from "@/lib/businesses"
 import { publicAssetUrl } from "@/lib/storage"
+import { useAppTheme } from "@/lib/theme-context"
 
 const CATEGORIES: { label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { label: "Гоо сайхан", icon: "sparkles-outline" },
@@ -19,6 +20,8 @@ const CATEGORIES: { label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
 
 export default function HomeScreen() {
   const router = useRouter()
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const [category, setCategory] = useState<string | null>(null)
   const [businesses, setBusinesses] = useState<BusinessCard[]>([])
   const [loading, setLoading] = useState(true)
@@ -53,15 +56,22 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.page}>
         <View style={styles.headerRow}>
+          <View style={styles.headerSide} />
           <View style={styles.brandRow}>
             <View style={styles.logoBadge}>
-              <Ionicons name="leaf-outline" size={16} color={Brand.primary} />
+              <Image
+                source={require("@/assets/images/lumina-mark.png")}
+                style={styles.logoImage}
+                contentFit="contain"
+              />
             </View>
             <Text style={styles.brandText}>Lumina</Text>
           </View>
-          <Pressable hitSlop={8}>
-            <Ionicons name="notifications-outline" size={20} color={Brand.body} />
-          </Pressable>
+          <View style={styles.headerSideRight}>
+            <Pressable hitSlop={8}>
+              <Ionicons name="notifications-outline" size={20} color={colors.body} />
+            </Pressable>
+          </View>
         </View>
 
         <View style={styles.banner}>
@@ -85,7 +95,7 @@ export default function HomeScreen() {
                 style={styles.categoryItem}
               >
                 <View style={[styles.categoryIcon, active && styles.categoryIconActive]}>
-                  <Ionicons name={c.icon} size={20} color={active ? "#fff" : Brand.primary} />
+                  <Ionicons name={c.icon} size={20} color={active ? colors.onPrimary : colors.primary} />
                 </View>
                 <Text style={styles.categoryLabel}>{c.label}</Text>
               </Pressable>
@@ -95,7 +105,7 @@ export default function HomeScreen() {
 
         <View style={styles.aiCard}>
           <View style={styles.aiIconBox}>
-            <Ionicons name="sparkles" size={18} color="#fff" />
+            <Ionicons name="sparkles" size={18} color={colors.onPrimary} />
           </View>
           <View style={styles.aiTextBox}>
             <Text style={styles.aiTitle}>Хиймэл оюунаар арьсаа оношлуулах уу?</Text>
@@ -104,7 +114,7 @@ export default function HomeScreen() {
         </View>
 
         {loading ? (
-          <ActivityIndicator color={Brand.primary} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={colors.primary} style={{ marginTop: 24 }} />
         ) : (
           <>
             <BusinessSection title="Онцлох артистууд" businesses={artists} onOpen={openBusiness} />
@@ -114,7 +124,7 @@ export default function HomeScreen() {
 
         <Text style={styles.sectionTitle}>Сэтгэгдлүүд</Text>
         <View style={styles.emptyReviews}>
-          <Ionicons name="chatbubble-ellipses-outline" size={20} color={Brand.muted} />
+          <Ionicons name="chatbubble-ellipses-outline" size={20} color={colors.muted} />
           <Text style={styles.emptyReviewsText}>Одоогоор сэтгэгдэл алга.</Text>
         </View>
       </ScrollView>
@@ -131,6 +141,9 @@ function BusinessSection({
   businesses: BusinessCard[]
   onOpen: (id: string) => void
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
+
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -158,6 +171,8 @@ function BusinessCardTile({
   business: BusinessCard
   onPress: () => void
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const logoUrl = publicAssetUrl(business.logoPath)
   const initial = (business.name ?? "L").trim().charAt(0).toUpperCase()
 
@@ -180,7 +195,7 @@ function BusinessCardTile({
       )}
       {business.address && (
         <View style={styles.tileAddressRow}>
-          <Ionicons name="location-outline" size={11} color={Brand.muted} />
+          <Ionicons name="location-outline" size={11} color={colors.muted} />
           <Text style={styles.tileAddress} numberOfLines={1}>
             {business.address}
           </Text>
@@ -190,93 +205,99 @@ function BusinessCardTile({
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { padding: 20, paddingBottom: 96, gap: 18 },
-  headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  brandRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  logoBadge: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  brandText: { fontSize: 18, fontWeight: "700", color: Brand.primary },
-  banner: {
-    borderRadius: 20,
-    backgroundColor: Brand.primary,
-    padding: 20,
-    gap: 4,
-  },
-  bannerTitle: { fontSize: 18, fontWeight: "700", color: "#fff" },
-  bannerSubtitle: { fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 18 },
-  categoryRow: { gap: 20, paddingVertical: 4 },
-  categoryItem: { alignItems: "center", gap: 6, width: 60 },
-  categoryIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  categoryIconActive: { backgroundColor: Brand.primary },
-  categoryLabel: { fontSize: 11, color: Brand.body, textAlign: "center" },
-  aiCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    borderRadius: 18,
-    backgroundColor: Brand.surfaceTint2,
-    padding: 16,
-  },
-  aiIconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: Brand.primary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  aiTextBox: { flex: 1 },
-  aiTitle: { fontSize: 13, fontWeight: "700", color: Brand.ink },
-  aiSubtitle: { fontSize: 11, color: Brand.body, marginTop: 2 },
-  section: { gap: 10 },
-  sectionTitle: { fontSize: 16, fontWeight: "700", color: Brand.ink },
-  emptyText: { fontSize: 12, color: Brand.muted },
-  cardRow: { gap: 12, paddingRight: 8 },
-  tile: {
-    width: 148,
-    borderRadius: 16,
-    backgroundColor: "#fff",
-    padding: 10,
-    gap: 4,
-  },
-  tileImage: {
-    width: "100%",
-    height: 96,
-    borderRadius: 12,
-    backgroundColor: Brand.primaryContainer,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    marginBottom: 4,
-  },
-  tileImageInner: { width: "100%", height: "100%" },
-  tileInitial: { fontSize: 24, fontWeight: "700", color: Brand.primaryDark },
-  tileName: { fontSize: 13, fontWeight: "700", color: Brand.ink },
-  tileCategories: { fontSize: 11, color: Brand.body },
-  tileAddressRow: { flexDirection: "row", alignItems: "center", gap: 3 },
-  tileAddress: { fontSize: 10, color: Brand.muted, flexShrink: 1 },
-  emptyReviews: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    borderRadius: 14,
-    backgroundColor: "#fff",
-    padding: 16,
-  },
-  emptyReviewsText: { fontSize: 12, color: Brand.muted },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    page: { padding: 20, paddingBottom: 96, gap: 18 },
+    headerRow: { flexDirection: "row", alignItems: "center" },
+    headerSide: { flex: 1 },
+    headerSideRight: { flex: 1, alignItems: "flex-end" },
+    brandRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+    logoBadge: {
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: "#fff",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+    },
+    logoImage: { width: "100%", height: "100%" },
+    brandText: { fontSize: 18, fontWeight: "700", color: colors.primary },
+    banner: {
+      borderRadius: 20,
+      backgroundColor: colors.primary,
+      padding: 20,
+      gap: 4,
+    },
+    bannerTitle: { fontSize: 18, fontWeight: "700", color: colors.onPrimary },
+    bannerSubtitle: { fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 18 },
+    categoryRow: { gap: 20, paddingVertical: 4 },
+    categoryItem: { alignItems: "center", gap: 6, width: 60 },
+    categoryIcon: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    categoryIconActive: { backgroundColor: colors.primary },
+    categoryLabel: { fontSize: 11, color: colors.body, textAlign: "center" },
+    aiCard: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      borderRadius: 18,
+      backgroundColor: colors.surfaceTint2,
+      padding: 16,
+    },
+    aiIconBox: {
+      width: 40,
+      height: 40,
+      borderRadius: 12,
+      backgroundColor: colors.primary,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    aiTextBox: { flex: 1 },
+    aiTitle: { fontSize: 13, fontWeight: "700", color: colors.ink },
+    aiSubtitle: { fontSize: 11, color: colors.body, marginTop: 2 },
+    section: { gap: 10 },
+    sectionTitle: { fontSize: 16, fontWeight: "700", color: colors.ink },
+    emptyText: { fontSize: 12, color: colors.muted },
+    cardRow: { gap: 12, paddingRight: 8 },
+    tile: {
+      width: 148,
+      borderRadius: 16,
+      backgroundColor: colors.surface,
+      padding: 10,
+      gap: 4,
+    },
+    tileImage: {
+      width: "100%",
+      height: 96,
+      borderRadius: 12,
+      backgroundColor: colors.primaryContainer,
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      marginBottom: 4,
+    },
+    tileImageInner: { width: "100%", height: "100%" },
+    tileInitial: { fontSize: 24, fontWeight: "700", color: colors.primaryDark },
+    tileName: { fontSize: 13, fontWeight: "700", color: colors.ink },
+    tileCategories: { fontSize: 11, color: colors.body },
+    tileAddressRow: { flexDirection: "row", alignItems: "center", gap: 3 },
+    tileAddress: { fontSize: 10, color: colors.muted, flexShrink: 1 },
+    emptyReviews: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 8,
+      borderRadius: 14,
+      backgroundColor: colors.surface,
+      padding: 16,
+    },
+    emptyReviewsText: { fontSize: 12, color: colors.muted },
+  })
+}

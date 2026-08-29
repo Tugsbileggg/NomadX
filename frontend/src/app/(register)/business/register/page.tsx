@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Flower2, Paintbrush } from "lucide-react";
 import { RegisterTopBar, StepCard, StepTracker } from "@/components/register/shell";
 import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
@@ -10,12 +11,14 @@ const TYPES = [
   {
     id: "salon",
     icon: Flower2,
+    image: "/img/provider-1-cover.jpg",
     title: "Салон",
     body: "Олон ажилтантай, тогтмол байршилтай гоо сайхан, спа үйлчилгээний газар.",
   },
   {
     id: "artist",
     icon: Paintbrush,
+    image: "/img/provider-1-avatar.jpg",
     title: "Хувиараа Артист",
     body: "Бие даан ажилладаг гоо сайханч, нүүр будагч, үсчин гэх мэт мэргэжилтэн.",
   },
@@ -57,22 +60,33 @@ export default async function BusinessTypePage() {
               {TYPES.map((t) => (
                 <label
                   key={t.id}
-                  className="group relative cursor-pointer rounded-4xl border border-white/60 bg-white/70 p-6 shadow-hairline transition-shadow has-checked:border-primary has-checked:shadow-card"
+                  className="group relative cursor-pointer overflow-hidden rounded-4xl border border-white/60 bg-white/70 shadow-hairline transition-shadow has-checked:border-primary has-checked:shadow-card"
                 >
                   <input
                     type="radio"
                     name="business-type"
                     value={t.id}
                     defaultChecked={business?.type === t.id}
-                    className="absolute top-6 right-6 size-5 appearance-none rounded-full border border-outline checked:border-6 checked:border-primary"
+                    className="absolute top-6 right-6 z-10 size-5 appearance-none rounded-full border border-white bg-white/40 checked:border-6 checked:border-primary checked:bg-white"
                   />
-                  <span className="flex size-12 items-center justify-center rounded-2xl bg-surface-tint">
-                    <t.icon className="size-6 text-primary" strokeWidth={1.8} />
-                  </span>
-                  <span className="mt-6 block text-lg leading-6 font-medium text-ink">
-                    {t.title}
-                  </span>
-                  <span className="mt-2 block text-sm leading-5 text-body">{t.body}</span>
+                  <div className="relative h-36 w-full">
+                    <Image
+                      src={t.image}
+                      alt=""
+                      fill
+                      sizes="(min-width: 640px) 360px, 100vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <span className="flex size-12 items-center justify-center rounded-2xl bg-surface-tint">
+                      <t.icon className="size-6 text-primary" strokeWidth={1.8} />
+                    </span>
+                    <span className="mt-6 block text-lg leading-6 font-medium text-ink">
+                      {t.title}
+                    </span>
+                    <span className="mt-2 block text-sm leading-5 text-body">{t.body}</span>
+                  </div>
                 </label>
               ))}
             </fieldset>

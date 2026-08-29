@@ -6,6 +6,16 @@ import type { BookingStatus } from "@/lib/db-types";
 
 export type FormState = { error?: string; success?: string } | null;
 
+/** Захиалгын өгөгдлийг харуулдаг бүх панелийн зам. */
+const PANEL_PATHS = [
+  "/business",
+  "/business/bookings",
+  "/business/calendar",
+  "/artist",
+  "/artist/bookings",
+  "/artist/calendar",
+];
+
 /** Бизнесийн зүгээс хийж болох төлөвийн шилжилтүүд. */
 const ALLOWED: Record<string, { from: BookingStatus[]; label: string }> = {
   confirmed: { from: ["pending"], label: "Захиалгыг баталгаажууллаа." },
@@ -59,8 +69,7 @@ export async function setBookingStatus(
   const { error } = await supabase.from("bookings").update({ status: next }).eq("id", id);
   if (error) return { error: error.message };
 
-  revalidatePath("/business/bookings");
-  revalidatePath("/artist/bookings");
+  for (const path of PANEL_PATHS) revalidatePath(path);
   return { success: rule.label };
 }
 
@@ -118,8 +127,7 @@ export async function saveInvoice(_prev: FormState, formData: FormData): Promise
     .upsert(fields, { onConflict: "booking_id" });
   if (error) return { error: error.message };
 
-  revalidatePath("/business/bookings");
-  revalidatePath("/artist/bookings");
+  for (const path of PANEL_PATHS) revalidatePath(path);
   return { success: "Туршилтын нэхэмжлэхийг хадгаллаа." };
 }
 
@@ -138,7 +146,6 @@ export async function setInvoiceStatus(_prev: FormState, formData: FormData): Pr
     .eq("id", id);
   if (error) return { error: error.message };
 
-  revalidatePath("/business/bookings");
-  revalidatePath("/artist/bookings");
+  for (const path of PANEL_PATHS) revalidatePath(path);
   return { success: "Нэхэмжлэхийн төлөвийг шинэчиллээ." };
 }

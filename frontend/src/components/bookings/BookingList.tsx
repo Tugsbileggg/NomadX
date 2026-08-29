@@ -9,7 +9,8 @@ import type { BookingStatus, InvoiceStatus } from "@/lib/db-types";
 import type { PanelBooking } from "@/lib/bookings/queries";
 import { cn } from "@/lib/cn";
 
-const STATUS: Record<BookingStatus, { label: string; tone: Tone }> = {
+/** Захиалгын төлвийн шошго/өнгө — жагсаалт, календарь хоёуланд нь. */
+export const STATUS_META: Record<BookingStatus, { label: string; tone: Tone }> = {
   pending: { label: "Хүлээгдэж буй", tone: "warning" },
   confirmed: { label: "Баталгаажсан", tone: "success" },
   completed: { label: "Дууссан", tone: "neutral" },
@@ -88,8 +89,7 @@ export function BookingList({ bookings }: { bookings: PanelBooking[] }) {
 }
 
 function BookingCard({ booking }: { booking: PanelBooking }) {
-  const status = STATUS[booking.status];
-  const steps = NEXT_STEPS[booking.status];
+  const status = STATUS_META[booking.status];
   const name = booking.customer?.name?.trim() || "Нэргүй хэрэглэгч";
 
   return (
@@ -154,27 +154,50 @@ function BookingCard({ booking }: { booking: PanelBooking }) {
 
       {booking.status === "completed" && <InvoiceBlock booking={booking} />}
 
-      {steps.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-3 border-t border-surface-tint pt-4">
-          {steps.map((step) => (
-            <ActionForm key={step.status} action={setBookingStatus} className="contents">
-              <input type="hidden" name="booking_id" value={booking.id} />
-              <input type="hidden" name="status" value={step.status} />
-              <SubmitButton
-                className={cn(
-                  "h-9 rounded-full px-5 text-xs font-medium",
-                  step.primary
-                    ? "bg-primary text-white hover:bg-primary-dark"
-                    : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
-                )}
-              >
-                {step.label}
-              </SubmitButton>
-            </ActionForm>
-          ))}
-        </div>
-      )}
+      <StatusSteps
+        bookingId={booking.id}
+        status={booking.status}
+        className="mt-5 border-t border-surface-tint pt-4"
+      />
     </article>
+  );
+}
+
+/**
+ * Тухайн төлвөөс шилжих боломжтой үйлдлүүд. Шилжих зам байхгүй
+ * (дууссан/цуцлагдсан) бол юу ч гаргахгүй.
+ */
+export function StatusSteps({
+  bookingId,
+  status,
+  className,
+}: {
+  bookingId: string;
+  status: BookingStatus;
+  className?: string;
+}) {
+  const steps = NEXT_STEPS[status];
+  if (!steps.length) return null;
+
+  return (
+    <div className={cn("flex flex-wrap gap-3", className)}>
+      {steps.map((step) => (
+        <ActionForm key={step.status} action={setBookingStatus} className="contents">
+          <input type="hidden" name="booking_id" value={bookingId} />
+          <input type="hidden" name="status" value={step.status} />
+          <SubmitButton
+            className={cn(
+              "h-9 rounded-full px-5 text-xs font-medium",
+              step.primary
+                ? "bg-primary text-white hover:bg-primary-dark"
+                : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+            )}
+          >
+            {step.label}
+          </SubmitButton>
+        </ActionForm>
+      ))}
+    </div>
   );
 }
 

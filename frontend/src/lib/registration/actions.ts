@@ -29,6 +29,33 @@ async function requireUser() {
   return { supabase, user };
 }
 
+/**
+ * Нэвтэрсний дараа хаашаа явахыг тодорхойлно: бүртгэлгүй бол wizard-ын
+ * эхлэл рүү, дуусаагүй бол өөрийн орхисон алхам руу, шалгагдаж байгаа бол
+ * төлвийн хуудас руу, баталгаажсан бол өөрийн (business/artist) самбар руу.
+ */
+export async function resolveLandingPath(supabase: SupabaseClient, ownerId: string) {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", ownerId)
+    .maybeSingle();
+  if (profile?.role === "super_admin") return "/admin";
+
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("type, status, current_step")
+    .eq("owner_id", ownerId)
+    .maybeSingle();
+
+  if (!business) return STEP_PATHS[0];
+  if (business.status === "approved") return business.type === "artist" ? "/artist" : "/business";
+  if (business.status === "draft") {
+    return STEP_PATHS[Math.min(Math.max(business.current_step - 1, 0), STEP_PATHS.length - 1)];
+  }
+  return "/status";
+}
+
 /** current_step-ийг зөвхөн урагш ахиулна — буцаж ирээд засахад алхам ухрахгүй. */
 function advance(current: number, completed: number) {
   return Math.max(current, Math.min(completed + 1, STEP_PATHS.length));

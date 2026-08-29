@@ -26,8 +26,33 @@ export const Colors = {
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
-/** LUMINA брэндийн өнгөнүүд — frontend/src/app/globals.css-тэй яг адил. */
-export const Brand = {
+export type BrandPalette = {
+  primary: string;
+  primaryDark: string;
+  primaryLight: string;
+  primaryContainer: string;
+  ink: string;
+  body: string;
+  muted: string;
+  surface: string;
+  surfacePage: string;
+  surfaceTint: string;
+  surfaceTint2: string;
+  outline: string;
+  outlineSoft: string;
+  danger: string;
+  dangerSoft: string;
+  success: string;
+  successSoft: string;
+  warning: string;
+  warningSoft: string;
+  /** Оддын үнэлгээнд ашиглагдах алтан өнгө. */
+  gold: string;
+  onPrimary: string;
+};
+
+/** LUMINA брэндийн өнгөнүүд — frontend/src/app/globals.css-тэй яг адил (цайвар горим). */
+export const LightBrand: BrandPalette = {
   primary: '#8a4853',
   primaryDark: '#70343e',
   primaryLight: '#a6606b',
@@ -42,11 +67,42 @@ export const Brand = {
   outline: '#d7c1c3',
   outlineSoft: '#eedfe0',
   danger: '#ba1a1a',
+  dangerSoft: '#fee2e2',
   success: '#16a34a',
+  successSoft: '#dcfce7',
   warning: '#f59e0b',
+  warningSoft: '#fef3c7',
   gold: '#d4af37',
   onPrimary: '#ffffff',
-} as const;
+};
+
+/** Мөн адил токенууд — бараан горимд зориулав. */
+export const DarkBrand: BrandPalette = {
+  primary: '#c98894',
+  primaryDark: '#a6606b',
+  primaryLight: '#e3aab2',
+  primaryContainer: '#4a2b30',
+  ink: '#f5ecec',
+  body: '#d6c7c8',
+  muted: '#a08e90',
+  surface: '#241a1c',
+  surfacePage: '#160f10',
+  surfaceTint: '#2c2124',
+  surfaceTint2: '#332628',
+  outline: '#4d3a3d',
+  outlineSoft: '#3a2c2e',
+  danger: '#ff8080',
+  dangerSoft: '#4a2323',
+  success: '#4ade80',
+  successSoft: '#1e3a2a',
+  warning: '#fbbf24',
+  warningSoft: '#3d3116',
+  gold: '#e5c158',
+  onPrimary: '#ffffff',
+};
+
+/** Хараахан dark mode-д шилжээгүй дэлгэцүүдэд ашиглах анхны (цайвар) утга. */
+export const Brand = LightBrand;
 
 export const Fonts = Platform.select({
   ios: {
