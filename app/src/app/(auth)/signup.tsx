@@ -10,6 +10,29 @@ import { AuthInput } from "@/components/auth/AuthInput"
 import type { BrandPalette } from "@/constants/theme"
 import { supabase } from "@/lib/supabase"
 
+/**
+ * Аппаар өөрөө сонгож болох эрх.
+ *
+ * `super_admin`, `salon` энд байхгүй нь зориуд: админыг зөвхөн одоо байгаа
+ * админ томилно (0018), салон нь вэб панелаар бүртгүүлдэг хэвээр.
+ * DB тал ч мөн адил хамгаалагдсан — `handle_new_user` зөвшөөрөгдсөн
+ * жагсаалтаас гадуур утгыг үл тоодог.
+ */
+const ACCOUNT_TYPES = [
+  {
+    id: "customer" as const,
+    title: "Үйлчлүүлэгч",
+    body: "Салон, артист хайж цаг захиална.",
+    icon: "person-outline" as const,
+  },
+  {
+    id: "artist" as const,
+    title: "Хувиараа артист",
+    body: "Өөрийн үйлчилгээгээ бүртгэж захиалга авна.",
+    icon: "color-palette-outline" as const,
+  },
+]
+
 const RULES = [
   { label: "8-аас дээш тэмдэгт", test: (v: string) => v.length >= 8 },
   { label: "Том, жижиг үсэг", test: (v: string) => /[a-z]/.test(v) && /[A-Z]/.test(v) },
@@ -26,6 +49,7 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
   const [agreed, setAgreed] = useState(false)
+  const [accountType, setAccountType] = useState<"customer" | "artist">("customer")
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -48,7 +72,7 @@ export default function SignupScreen() {
     const { error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone, role: "customer" } },
+      options: { data: { full_name: fullName, phone, role: accountType } },
     })
     setBusy(false)
 
@@ -68,6 +92,27 @@ export default function SignupScreen() {
 
         <Text style={styles.title}>Шинэ бүртгэл үүсгэх</Text>
         <Text style={styles.subtitle}>Тавтай морил! Мэдээллээ оруулж бүртгэлээ үүсгэнэ үү.</Text>
+
+        <View style={styles.typeRow}>
+          {ACCOUNT_TYPES.map((t) => {
+            const active = accountType === t.id
+            return (
+              <Pressable
+                key={t.id}
+                onPress={() => setAccountType(t.id)}
+                style={[styles.typeCard, active && styles.typeCardActive]}
+              >
+                <Ionicons
+                  name={t.icon}
+                  size={20}
+                  color={active ? colors.onPrimary : colors.primary}
+                />
+                <Text style={[styles.typeTitle, active && styles.typeTitleActive]}>{t.title}</Text>
+                <Text style={[styles.typeBody, active && styles.typeBodyActive]}>{t.body}</Text>
+              </Pressable>
+            )
+          })}
+        </View>
 
         <View style={styles.card}>
           <AuthInput
@@ -168,6 +213,21 @@ function makeStyles(colors: BrandPalette) {
     back: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginLeft: -8 },
     title: { fontSize: 26, fontWeight: "600", color: colors.primary, marginTop: 8 },
     subtitle: { fontSize: 14, color: colors.body, marginBottom: 8 },
+    typeRow: { flexDirection: "row", gap: 10, marginTop: 18 },
+    typeCard: {
+      flex: 1,
+      gap: 4,
+      borderRadius: 16,
+      padding: 14,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.outlineSoft,
+    },
+    typeCardActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+    typeTitle: { fontSize: 13, fontWeight: "700", color: colors.ink },
+    typeTitleActive: { color: colors.onPrimary },
+    typeBody: { fontSize: 11, color: colors.muted, lineHeight: 15 },
+    typeBodyActive: { color: colors.onPrimary, opacity: 0.85 },
     card: {
       borderRadius: 24,
       backgroundColor: colors.surfacePage,

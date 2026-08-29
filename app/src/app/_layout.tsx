@@ -50,31 +50,47 @@ function ThemedNavigation({ children }: { children: React.ReactNode }) {
 }
 
 /**
- * Нэвтэрсэн эсэхээс хамааран (tabs)/(auth) бүлгийг сэлгэнэ. Нууц үг сэргээх
- * кодоор баталгаажуулсны дараа Supabase сешн үүсгэдэг тул passwordRecovery
- * төлөвийг тусад нь шалгаж reset-password дэлгэц рүү оруулна.
+ * Эрхээс хамааран навигацийн бүлгийг сэлгэнэ.
+ *
+ * - нэвтрээгүй → `(auth)`
+ * - артист     → `(artist)` (бүртгэл, хүлээлт, панел бүгд тэнд)
+ * - бусад      → `(tabs)` — харилцагчийн туршлага
+ *
+ * Нууц үг сэргээх кодоор баталгаажуулсны дараа Supabase сешн үүсгэдэг тул
+ * passwordRecovery төлөвийг тусад нь шалгаж reset-password руу оруулна.
  */
 function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
-  const { session, loading, passwordRecovery } = useAuth();
+  const { session, loading, passwordRecovery, account, accountReady } = useAuth();
   const { colors, ready } = useAppTheme();
 
   // `ready`-г хүлээхгүй бол native tab bar эхний удаад буруу байрлана.
-  if (loading || !fontsLoaded || !ready) {
+  // `accountReady`-г хүлээхгүй бол артист эхлээд харилцагчийн дэлгэцийг
+  // хормын зуур хараад дараа нь үсэрч засагдана.
+  if (loading || !fontsLoaded || !ready || (session && !accountReady)) {
     return <View style={{ flex: 1, backgroundColor: colors.surfacePage }} />;
   }
+
+  const signedIn = !!session && !passwordRecovery;
+  const isArtist = account?.role === "artist";
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={passwordRecovery}>
         <Stack.Screen name="reset-password" />
       </Stack.Protected>
-      <Stack.Protected guard={!!session && !passwordRecovery}>
+      <Stack.Protected guard={signedIn && isArtist}>
+        <Stack.Screen name="(artist)" />
+      </Stack.Protected>
+      <Stack.Protected guard={signedIn && !isArtist}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="business/[id]" />
         <Stack.Screen name="book/[id]" />
         <Stack.Screen name="favourites" />
-        <Stack.Screen name="notifications" />
         <Stack.Screen name="share" />
+      </Stack.Protected>
+      <Stack.Protected guard={signedIn}>
+        {/* Мэдэгдэл хоёр талд хоёуланд нь хэрэгтэй. */}
+        <Stack.Screen name="notifications" />
       </Stack.Protected>
       <Stack.Protected guard={!session && !passwordRecovery}>
         <Stack.Screen name="(auth)" />
