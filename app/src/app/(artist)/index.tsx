@@ -6,79 +6,118 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
 import type { BrandPalette } from "@/constants/theme"
+import type { BusinessStatus } from "@/lib/db-types"
 import { useAuth } from "@/lib/auth-context"
 import { supabase } from "@/lib/supabase"
 import { useAppTheme } from "@/lib/theme-context"
 
-/** Бүртгэлийн төлөв бүрт харуулах текст. */
-const STATUS_COPY: Record<string, { title: string; body: string }> = {
+type Panel = {
+  icon: keyof typeof Ionicons.glyphMap
+  title: string
+  body: string
+  /** Товч байвал — бүртгэлээ үргэлжлүүлэх/засах. */
+  action?: string
+}
+
+/**
+ * Бүртгэлийн төлөв бүрт харуулах агуулга.
+ *
+ * `needs_info`, `rejected` хоёрт засах боломж нээгддэг — `businesses_update_own`
+ * (0003) яг эдгээр төлөвт л засварыг зөвшөөрдөг.
+ */
+const BY_STATUS: Record<BusinessStatus, Panel> = {
   draft: {
+    icon: "create-outline",
     title: "Бүртгэлээ дуусгана уу",
-    body: "Та бүртгэлээ эхлүүлсэн ч дуусгаагүй байна. Одоохондоо вэб хуудсаар үргэлжлүүлж болно.",
+    body: "Та бүртгэлээ эхлүүлсэн ч илгээгээгүй байна.",
+    action: "Үргэлжлүүлэх",
   },
   submitted: {
+    icon: "hourglass-outline",
     title: "Хянагдаж байна",
-    body: "Таны бүртгэлийг шалгаж байна. Шийдвэр гармагц мэдэгдэнэ.",
+    body: "Таны бүртгэлийг шалгаж байна. Шийдвэр гармагц мэдэгдэл ирнэ.",
   },
   under_review: {
+    icon: "hourglass-outline",
     title: "Хянагдаж байна",
-    body: "Таны бүртгэлийг шалгаж байна. Шийдвэр гармагц мэдэгдэнэ.",
+    body: "Таны бүртгэлийг шалгаж байна. Шийдвэр гармагц мэдэгдэл ирнэ.",
   },
   needs_info: {
+    icon: "alert-circle-outline",
     title: "Нэмэлт мэдээлэл шаардлагатай",
-    body: "Бүртгэлд тань засах зүйл байна. Дэлгэрэнгүйг вэб хуудаснаас харна уу.",
+    body: "Шалгагч тодруулга хүсжээ. Мэдээллээ засаад дахин илгээнэ үү.",
+    action: "Мэдээллээ засах",
   },
   rejected: {
+    icon: "close-circle-outline",
     title: "Бүртгэл татгалзагдсан",
-    body: "Шалтгааныг вэб хуудаснаас харна уу.",
+    body: "Дараах шалтгаанаар татгалзсан байна.",
+    action: "Дахин илгээх",
   },
   approved: {
+    icon: "checkmark-circle-outline",
     title: "Бүртгэл баталгаажсан",
-    body: "Таны ажлын самбарыг аппад шилжүүлж байна. Одоохондоо вэб хуудсаар ажиллана уу.",
+    body: "Таны профайл үйлчлүүлэгчдэд харагдаж байна.",
   },
 }
 
 /**
- * Артистын түр дэлгэц.
+ * Артистын нүүр — бүртгэлийн төлвөөс хамаарч чиглүүлнэ.
  *
- * ⚠️ 1-р шат: аппад role-оор чиглүүлэх суурийг тавьж байгаа бөгөөд
- * артистын бүртгэл (2-р шат), панел (3-р шат) хараахан бэлэн биш.
- * Тиймээс энд вэб рүү чиглүүлнэ — вэб панелыг 4-р шатанд л хаана.
+ * ⚠️ Ажлын самбар (захиалга, календарь, хуваарь) 3-р шатанд нэмэгдэнэ.
+ * Түүнийг дуустал баталгаажсан артистыг вэб рүү чиглүүлж байна — вэб
+ * панелыг 4-р шатанд л хаана.
  */
 export default function ArtistHomeScreen() {
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
-  const { account } = useAuth()
   const router = useRouter()
+  const { account } = useAuth()
 
-  const status = account?.business?.status
-  const copy = status
-    ? STATUS_COPY[status]
+  const business = account?.business ?? null
+  const panel: Panel = business
+    ? BY_STATUS[business.status]
     : {
-        title: "Артистын бүртгэл эхлээгүй байна",
-        body: "Бүртгэлээ эхлүүлэхийн тулд одоохондоо вэб хуудсыг ашиглана уу.",
+        icon: "rocket-outline",
+        title: "Артистаар бүртгүүлэх",
+        body: "Гурван богино алхмаар бүртгэлээ илгээгээд шалгуулна уу.",
+        action: "Бүртгэл эхлүүлэх",
       }
+
+  /** Хаана зогссоноос нь хамаарч зөв алхам руу буцаана. */
+  function resume() {
+    const step = business?.currentStep ?? 1
+    if (step >= 3) router.push("/(artist)/register/contract")
+    else if (step === 2) router.push("/(artist)/register/documents")
+    else router.push("/(artist)/register/info")
+  }
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView contentContainerStyle={styles.page}>
         <View style={styles.icon}>
-          <Ionicons name="briefcase-outline" size={28} color={colors.primary} />
+          <Ionicons name={panel.icon} size={28} color={colors.primary} />
         </View>
 
-        <Text style={styles.title}>{copy.title}</Text>
-        {account?.business?.name ? (
-          <Text style={styles.business}>{account.business.name}</Text>
-        ) : null}
-        <Text style={styles.body}>{copy.body}</Text>
+        <Text style={styles.title}>{panel.title}</Text>
+        {business?.name ? <Text style={styles.business}>{business.name}</Text> : null}
+        <Text style={styles.body}>{panel.body}</Text>
 
-        <View style={styles.notice}>
-          <Ionicons name="construct-outline" size={16} color={colors.primary} />
-          <Text style={styles.noticeText}>
-            Артистын ажлын самбарыг апп руу шилжүүлж байна. Дуустал вэб хуудас
-            хэвийн ажиллана.
-          </Text>
-        </View>
+        {panel.action && (
+          <View style={styles.action}>
+            <AuthButton label={panel.action} onPress={resume} />
+          </View>
+        )}
+
+        {business?.status === "approved" && (
+          <View style={styles.notice}>
+            <Ionicons name="construct-outline" size={16} color={colors.primary} />
+            <Text style={styles.noticeText}>
+              Захиалга, календарь, хуваарийн дэлгэцийг апп руу шилжүүлж байна.
+              Дуустал вэб хуудсаар ажиллана уу.
+            </Text>
+          </View>
+        )}
 
         <Pressable style={styles.link} onPress={() => router.push("/notifications")}>
           <Ionicons name="notifications-outline" size={18} color={colors.primary} />
@@ -101,7 +140,7 @@ export default function ArtistHomeScreen() {
 function makeStyles(colors: BrandPalette) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: colors.surfaceTint },
-    page: { padding: 24, paddingTop: 60, alignItems: "center", gap: 10 },
+    page: { padding: 24, paddingTop: 60, alignItems: "center", gap: 8 },
     icon: {
       width: 64,
       height: 64,
@@ -113,6 +152,7 @@ function makeStyles(colors: BrandPalette) {
     title: { fontSize: 18, fontWeight: "700", color: colors.ink, marginTop: 8, textAlign: "center" },
     business: { fontSize: 13, fontWeight: "600", color: colors.primary },
     body: { fontSize: 13, color: colors.body, textAlign: "center", lineHeight: 19 },
+    action: { alignSelf: "stretch", marginTop: 16 },
     notice: {
       flexDirection: "row",
       gap: 10,
@@ -132,7 +172,7 @@ function makeStyles(colors: BrandPalette) {
       borderRadius: 14,
       paddingHorizontal: 14,
       paddingVertical: 14,
-      marginTop: 4,
+      marginTop: 12,
     },
     linkText: { flex: 1, fontSize: 13, fontWeight: "600", color: colors.ink },
     signOut: { alignSelf: "stretch", marginTop: 16 },
