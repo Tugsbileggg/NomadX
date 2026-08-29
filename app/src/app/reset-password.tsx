@@ -1,11 +1,12 @@
 import { Ionicons } from "@expo/vector-icons"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
+import { useAppTheme } from "@/lib/theme-context"
 import { AuthInput } from "@/components/auth/AuthInput"
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { useAuth } from "@/lib/auth-context"
 import { supabase } from "@/lib/supabase"
 
@@ -16,6 +17,8 @@ const RULES = [
 ]
 
 export default function ResetPasswordScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const { clearPasswordRecovery } = useAuth()
   const [password, setPassword] = useState("")
   const [confirm, setConfirm] = useState("")
@@ -52,7 +55,7 @@ export default function ResetPasswordScreen() {
       <SafeAreaView style={styles.safe}>
         <View style={styles.center}>
           <View style={styles.successIcon}>
-            <Ionicons name="checkmark" size={32} color="#fff" />
+            <Ionicons name="checkmark" size={32} color={colors.onPrimary} />
           </View>
           <Text style={styles.title}>Нууц үг амжилттай солигдлоо</Text>
           <Text style={styles.subtitle}>Шинэ нууц үгээрээ нэвтэрнэ үү.</Text>
@@ -84,7 +87,7 @@ export default function ResetPasswordScreen() {
                   <Ionicons
                     name={ok ? "checkmark-circle" : "ellipse-outline"}
                     size={14}
-                    color={ok ? Brand.success : Brand.muted}
+                    color={ok ? colors.success : colors.muted}
                   />
                   <Text style={styles.ruleText}>{r.label}</Text>
                 </View>
@@ -110,24 +113,26 @@ export default function ResetPasswordScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { flex: 1, padding: 24, paddingTop: 48, gap: 8 },
-  title: { fontSize: 24, fontWeight: "600", color: Brand.primary, textAlign: "center" },
-  subtitle: { fontSize: 14, color: Brand.body, textAlign: "center", marginBottom: 8 },
-  card: { borderRadius: 24, backgroundColor: Brand.surfacePage, padding: 20, gap: 16, marginTop: 16 },
-  rules: { gap: 6, marginTop: -8 },
-  ruleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  ruleText: { fontSize: 13, color: Brand.body },
-  error: { fontSize: 13, color: Brand.danger, textAlign: "center" },
-  center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
-  successIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: Brand.success,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-  },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    page: { flex: 1, padding: 24, paddingTop: 48, gap: 8 },
+    title: { fontSize: 24, fontWeight: "600", color: colors.primary, textAlign: "center" },
+    subtitle: { fontSize: 14, color: colors.body, textAlign: "center", marginBottom: 8 },
+    card: { borderRadius: 24, backgroundColor: colors.surfacePage, padding: 20, gap: 16, marginTop: 16 },
+    rules: { gap: 6, marginTop: -8 },
+    ruleRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+    ruleText: { fontSize: 13, color: colors.body },
+    error: { fontSize: 13, color: colors.danger, textAlign: "center" },
+    center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12, padding: 24 },
+    successIcon: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      backgroundColor: colors.success,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 8,
+    },
+  })
+}

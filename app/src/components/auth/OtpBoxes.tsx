@@ -1,7 +1,8 @@
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { StyleSheet, TextInput, View } from "react-native"
 
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
+import { useAppTheme } from "@/lib/theme-context"
 
 const LENGTH = 8
 
@@ -12,6 +13,8 @@ type Props = {
 
 /** 4 тусдаа нүд бүхий OTP оруулах хэсэг — бичих бүрд фокус дараагийнхаа руу шилжинэ. */
 export function OtpBoxes({ value, onChange }: Props) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const digits = Array.from({ length: LENGTH }, (_, i) => value[i] ?? "")
   const refs = useRef<(TextInput | null)[]>([])
   const [focused, setFocused] = useState(-1)
@@ -49,19 +52,21 @@ export function OtpBoxes({ value, onChange }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", justifyContent: "space-between", gap: 6 },
-  box: {
-    flex: 1,
-    height: 52,
-    borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: Brand.outline,
-    backgroundColor: "#fff",
-    textAlign: "center",
-    fontSize: 18,
-    fontWeight: "700",
-    color: Brand.ink,
-  },
-  boxFocused: { borderColor: Brand.primary },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    row: { flexDirection: "row", justifyContent: "space-between", gap: 6 },
+    box: {
+      flex: 1,
+      height: 52,
+      borderRadius: 12,
+      borderWidth: 1.5,
+      borderColor: colors.outline,
+      backgroundColor: colors.surface,
+      textAlign: "center",
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.ink,
+    },
+    boxFocused: { borderColor: colors.primary },
+  })
+}

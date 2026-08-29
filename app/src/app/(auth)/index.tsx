@@ -1,12 +1,16 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
+import { useMemo } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
-import { Brand } from "@/constants/theme"
+import { useAppTheme } from "@/lib/theme-context"
+import type { BrandPalette } from "@/constants/theme"
 
 export default function WelcomeScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
 
   return (
@@ -14,7 +18,7 @@ export default function WelcomeScreen() {
       <View style={styles.center}>
         <View style={styles.card}>
           <View style={styles.logoCircle}>
-            <Ionicons name="leaf-outline" size={28} color={Brand.primary} />
+            <Ionicons name="leaf-outline" size={28} color={colors.primary} />
           </View>
 
           <Text style={styles.title}>Lumina</Text>
@@ -34,28 +38,30 @@ export default function WelcomeScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  center: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
-  card: {
-    width: "100%",
-    maxWidth: 360,
-    borderRadius: 28,
-    backgroundColor: Brand.surfacePage,
-    paddingVertical: 40,
-    paddingHorizontal: 28,
-    alignItems: "center",
-  },
-  logoCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
-  title: { fontSize: 32, fontWeight: "600", color: Brand.primary },
-  subtitle: { fontSize: 14, color: Brand.body, marginTop: 4, marginBottom: 32 },
-  actions: { width: "100%", gap: 12 },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    center: { flex: 1, alignItems: "center", justifyContent: "center", padding: 24 },
+    card: {
+      width: "100%",
+      maxWidth: 360,
+      borderRadius: 28,
+      backgroundColor: colors.surfacePage,
+      paddingVertical: 40,
+      paddingHorizontal: 28,
+      alignItems: "center",
+    },
+    logoCircle: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 20,
+    },
+    title: { fontSize: 32, fontWeight: "600", color: colors.primary },
+    subtitle: { fontSize: 14, color: colors.body, marginTop: 4, marginBottom: 32 },
+    actions: { width: "100%", gap: 12 },
+  })
+}

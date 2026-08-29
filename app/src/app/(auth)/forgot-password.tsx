@@ -1,15 +1,18 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
+import { useAppTheme } from "@/lib/theme-context"
 import { AuthInput } from "@/components/auth/AuthInput"
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { supabase } from "@/lib/supabase"
 
 export default function ForgotPasswordScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [error, setError] = useState<string | null>(null)
@@ -35,7 +38,7 @@ export default function ForgotPasswordScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.page}>
         <Pressable onPress={() => router.back()} hitSlop={8} style={styles.back}>
-          <Ionicons name="chevron-back" size={22} color={Brand.primary} />
+          <Ionicons name="chevron-back" size={22} color={colors.primary} />
         </Pressable>
 
         <Text style={styles.title}>Нууц үгээ мартсан уу?</Text>
@@ -64,12 +67,14 @@ export default function ForgotPasswordScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { flex: 1, padding: 24, paddingTop: 16, gap: 8 },
-  back: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginLeft: -8 },
-  title: { fontSize: 24, fontWeight: "600", color: Brand.primary, marginTop: 8 },
-  subtitle: { fontSize: 14, color: Brand.body, lineHeight: 20 },
-  card: { borderRadius: 24, backgroundColor: Brand.surfacePage, padding: 20, gap: 16, marginTop: 16 },
-  error: { fontSize: 13, color: Brand.danger, textAlign: "center" },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    page: { flex: 1, padding: 24, paddingTop: 16, gap: 8 },
+    back: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginLeft: -8 },
+    title: { fontSize: 24, fontWeight: "600", color: colors.primary, marginTop: 8 },
+    subtitle: { fontSize: 14, color: colors.body, lineHeight: 20 },
+    card: { borderRadius: 24, backgroundColor: colors.surfacePage, padding: 20, gap: 16, marginTop: 16 },
+    error: { fontSize: 13, color: colors.danger, textAlign: "center" },
+  })
+}

@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import * as ImagePicker from "expo-image-picker"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -15,7 +15,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
-import { Brand } from "@/constants/theme"
+import { useAppTheme } from "@/lib/theme-context"
+import type { BrandPalette } from "@/constants/theme"
 import { createBooking, uploadBookingImages } from "@/lib/bookings"
 import { fetchBusiness, type BusinessCard } from "@/lib/businesses"
 import { mnWeekdayShort } from "@/lib/mn-date"
@@ -33,6 +34,8 @@ function dayLabel(d: Date, index: number) {
 }
 
 export default function BookScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
   const [business, setBusiness] = useState<BusinessCard | null>(null)
@@ -131,7 +134,7 @@ export default function BookScreen() {
       <SafeAreaView style={styles.safe}>
         <View style={styles.center}>
           <View style={styles.successIcon}>
-            <Ionicons name="checkmark" size={32} color="#fff" />
+            <Ionicons name="checkmark" size={32} color={colors.onPrimary} />
           </View>
           <Text style={styles.successTitle}>Захиалга илгээгдлээ</Text>
           <Text style={styles.successBody}>
@@ -147,11 +150,11 @@ export default function BookScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <Pressable onPress={() => router.back()} hitSlop={8} style={styles.back}>
-        <Ionicons name="chevron-back" size={22} color={Brand.primary} />
+        <Ionicons name="chevron-back" size={22} color={colors.primary} />
       </Pressable>
 
       {loading ? (
-        <ActivityIndicator color={Brand.primary} style={{ marginTop: 48 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginTop: 48 }} />
       ) : (
         <ScrollView contentContainerStyle={styles.page}>
           <Text style={styles.title}>Цаг захиалах</Text>
@@ -232,7 +235,7 @@ export default function BookScreen() {
             value={description}
             onChangeText={setDescription}
             placeholder="Жишээ: Мөрний урттай үсээ 10 см тайруулж, доод талыг нь давхаргатай болгомоор байна. Өнгө өөрчлөхгүй."
-            placeholderTextColor={Brand.muted}
+            placeholderTextColor={colors.muted}
             multiline
             style={styles.noteInput}
           />
@@ -253,14 +256,14 @@ export default function BookScreen() {
                   hitSlop={6}
                   style={styles.thumbRemove}
                 >
-                  <Ionicons name="close" size={12} color="#fff" />
+                  <Ionicons name="close" size={12} color={colors.onPrimary} />
                 </Pressable>
               </View>
             ))}
 
             {images.length < MAX_IMAGES && (
               <Pressable onPress={onPickImages} style={styles.addThumb}>
-                <Ionicons name="add" size={22} color={Brand.primary} />
+                <Ionicons name="add" size={22} color={colors.primary} />
                 <Text style={styles.addThumbText}>Нэмэх</Text>
               </Pressable>
             )}
@@ -277,45 +280,47 @@ export default function BookScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  back: { marginTop: 8, marginLeft: 20, width: 36, height: 36, borderRadius: 18, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" },
-  page: { padding: 20, paddingBottom: 64 },
-  title: { fontSize: 22, fontWeight: "700", color: Brand.ink },
-  subtitle: { fontSize: 13, color: Brand.body, marginTop: 2, marginBottom: 8 },
-  sectionLabel: { fontSize: 13, fontWeight: "700", color: Brand.ink },
-  sectionHint: { fontSize: 11, color: Brand.muted, lineHeight: 16, marginTop: 3 },
-  dayRow: { flexDirection: "row", gap: 8 },
-  dayChip: { paddingHorizontal: 14, height: 40, borderRadius: 12, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" },
-  dayChipActive: { backgroundColor: Brand.primary },
-  dayChipText: { fontSize: 12, fontWeight: "600", color: Brand.ink },
-  dayChipTextActive: { color: "#fff" },
-  dayChipDisabled: { backgroundColor: Brand.surfaceTint, opacity: 0.6 },
-  hourGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 },
-  hourChip: { width: "22%", height: 40, borderRadius: 12, backgroundColor: "#fff", alignItems: "center", justifyContent: "center" },
-  hourChipActive: { backgroundColor: Brand.primary },
-  hourChipText: { fontSize: 12, fontWeight: "600", color: Brand.ink },
-  hourChipTextActive: { color: "#fff" },
-  hourChipFull: { backgroundColor: Brand.surfaceTint2 },
-  hourChipTextFull: { color: Brand.muted, textDecorationLine: "line-through" },
-  emptySlots: {
-    marginTop: 12,
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    fontSize: 12,
-    color: Brand.muted,
-    textAlign: "center",
-  },
-  noteInput: { marginTop: 8, minHeight: 96, borderRadius: 14, backgroundColor: "#fff", padding: 14, fontSize: 13, lineHeight: 19, color: Brand.ink, textAlignVertical: "top" },
-  imageRow: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 10 },
-  thumb: { width: 76, height: 76, borderRadius: 12, overflow: "hidden", backgroundColor: Brand.surfaceTint2 },
-  thumbRemove: { position: "absolute", top: 4, right: 4, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(33,26,27,0.7)", alignItems: "center", justifyContent: "center" },
-  addThumb: { width: 76, height: 76, borderRadius: 12, borderWidth: 1, borderStyle: "dashed", borderColor: Brand.outline, alignItems: "center", justifyContent: "center", gap: 2 },
-  addThumbText: { fontSize: 10, fontWeight: "600", color: Brand.primary },
-  error: { marginTop: 12, fontSize: 12, color: Brand.danger, textAlign: "center" },
-  center: { flex: 1, alignItems: "center", justifyContent: "center", padding: 32, gap: 12 },
-  successIcon: { width: 64, height: 64, borderRadius: 32, backgroundColor: Brand.success, alignItems: "center", justifyContent: "center", marginBottom: 4 },
-  successTitle: { fontSize: 18, fontWeight: "700", color: Brand.ink, textAlign: "center" },
-  successBody: { fontSize: 13, color: Brand.body, textAlign: "center", lineHeight: 19, marginBottom: 12 },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    back: { marginTop: 8, marginLeft: 20, width: 36, height: 36, borderRadius: 18, backgroundColor: colors.surface, alignItems: "center", justifyContent: "center" },
+    page: { padding: 20, paddingBottom: 64 },
+    title: { fontSize: 22, fontWeight: "700", color: colors.ink },
+    subtitle: { fontSize: 13, color: colors.body, marginTop: 2, marginBottom: 8 },
+    sectionLabel: { fontSize: 13, fontWeight: "700", color: colors.ink },
+    sectionHint: { fontSize: 11, color: colors.muted, lineHeight: 16, marginTop: 3 },
+    dayRow: { flexDirection: "row", gap: 8 },
+    dayChip: { paddingHorizontal: 14, height: 40, borderRadius: 12, backgroundColor: colors.surface, alignItems: "center", justifyContent: "center" },
+    dayChipActive: { backgroundColor: colors.primary },
+    dayChipText: { fontSize: 12, fontWeight: "600", color: colors.ink },
+    dayChipTextActive: { color: colors.onPrimary },
+    dayChipDisabled: { backgroundColor: colors.surfaceTint, opacity: 0.6 },
+    hourGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 },
+    hourChip: { width: "22%", height: 40, borderRadius: 12, backgroundColor: colors.surface, alignItems: "center", justifyContent: "center" },
+    hourChipActive: { backgroundColor: colors.primary },
+    hourChipText: { fontSize: 12, fontWeight: "600", color: colors.ink },
+    hourChipTextActive: { color: colors.onPrimary },
+    hourChipFull: { backgroundColor: colors.surfaceTint2 },
+    hourChipTextFull: { color: colors.muted, textDecorationLine: "line-through" },
+    emptySlots: {
+      marginTop: 12,
+      padding: 16,
+      borderRadius: 12,
+      backgroundColor: colors.surface,
+      fontSize: 12,
+      color: colors.muted,
+      textAlign: "center",
+    },
+    noteInput: { marginTop: 8, minHeight: 96, borderRadius: 14, backgroundColor: colors.surface, padding: 14, fontSize: 13, lineHeight: 19, color: colors.ink, textAlignVertical: "top" },
+    imageRow: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 10 },
+    thumb: { width: 76, height: 76, borderRadius: 12, overflow: "hidden", backgroundColor: colors.surfaceTint2 },
+    thumbRemove: { position: "absolute", top: 4, right: 4, width: 20, height: 20, borderRadius: 10, backgroundColor: "rgba(33,26,27,0.7)", alignItems: "center", justifyContent: "center" },
+    addThumb: { width: 76, height: 76, borderRadius: 12, borderWidth: 1, borderStyle: "dashed", borderColor: colors.outline, alignItems: "center", justifyContent: "center", gap: 2 },
+    addThumbText: { fontSize: 10, fontWeight: "600", color: colors.primary },
+    error: { marginTop: 12, fontSize: 12, color: colors.danger, textAlign: "center" },
+    center: { flex: 1, alignItems: "center", justifyContent: "center", padding: 32, gap: 12 },
+    successIcon: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.success, alignItems: "center", justifyContent: "center", marginBottom: 4 },
+    successTitle: { fontSize: 18, fontWeight: "700", color: colors.ink, textAlign: "center" },
+    successBody: { fontSize: 13, color: colors.body, textAlign: "center", lineHeight: 19, marginBottom: 12 },
+  })
+}

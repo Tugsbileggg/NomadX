@@ -5,10 +5,15 @@ import { Dimensions, StyleSheet, View } from 'react-native';
 import Animated, { Easing, Keyframe } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import { useAppTheme } from '@/lib/theme-context';
+
 const INITIAL_SCALE_FACTOR = Dimensions.get('screen').height / 90;
 const DURATION = 600;
 
 export function AnimatedSplashOverlay() {
+  // Дэвсгэр нь app.json-ы splash өнгөтэй таарах ёстой — эс тэгвэл апп
+  // нээхэд native splash-аас энэ давхарга руу шилжихэд өнгө үсэрнэ.
+  const { colors } = useAppTheme();
   const [animate, setAnimate] = useState(false);
   const [visible, setVisible] = useState(true);
 
@@ -33,7 +38,7 @@ export function AnimatedSplashOverlay() {
     },
   });
 
-  const image = <Image style={styles.image} source={require('@/assets/images/expo-logo.png')} />;
+  const image = <Image style={styles.mark} source={require('@/assets/images/lumina-mark.png')} />;
 
   return animate ? (
     <Animated.View
@@ -43,7 +48,7 @@ export function AnimatedSplashOverlay() {
           scheduleOnRN(setVisible, false);
         }
       })}
-      style={styles.splashOverlay}>
+      style={[styles.splashOverlay, { backgroundColor: colors.surfacePage }]}>
       {image}
     </Animated.View>
   ) : (
@@ -53,7 +58,7 @@ export function AnimatedSplashOverlay() {
           setAnimate(true);
         });
       }}
-      style={styles.splashOverlay}>
+      style={[styles.splashOverlay, { backgroundColor: colors.surfacePage }]}>
       {image}
     </View>
   );
@@ -138,9 +143,13 @@ const styles = StyleSheet.create({
     height: 128,
     position: 'absolute',
   },
+  mark: {
+    width: 140,
+    height: 140,
+  },
   splashOverlay: {
+    // Өнгийг render дээр theme-ээс өгнө.
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#208AEF',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,

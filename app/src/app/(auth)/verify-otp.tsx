@@ -1,17 +1,20 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
+import { useAppTheme } from "@/lib/theme-context"
 import { OtpBoxes } from "@/components/auth/OtpBoxes"
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { supabase } from "@/lib/supabase"
 
 const COOLDOWN = 59
 
 export default function VerifyOtpScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const { email } = useLocalSearchParams<{ email: string }>()
   const [code, setCode] = useState("")
@@ -57,12 +60,12 @@ export default function VerifyOtpScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.page}>
         <Pressable onPress={() => router.back()} hitSlop={8} style={styles.back}>
-          <Ionicons name="chevron-back" size={22} color={Brand.primary} />
+          <Ionicons name="chevron-back" size={22} color={colors.primary} />
         </Pressable>
 
         <View style={styles.center}>
           <View style={styles.iconBox}>
-            <Ionicons name="lock-closed" size={26} color="#fff" />
+            <Ionicons name="lock-closed" size={26} color={colors.onPrimary} />
           </View>
 
           <Text style={styles.title}>Баталгаажуулах</Text>
@@ -103,33 +106,35 @@ function translate(message: string) {
   return map[message] ?? message
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { flex: 1, padding: 24, justifyContent: "space-between" },
-  back: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginLeft: -8 },
-  center: { alignItems: "center", gap: 8, marginTop: 12 },
-  iconBox: {
-    width: 64,
-    height: 64,
-    borderRadius: 20,
-    backgroundColor: Brand.primary,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  title: { fontSize: 24, fontWeight: "600", color: Brand.ink },
-  subtitle: { fontSize: 14, color: Brand.body, textAlign: "center", lineHeight: 20, maxWidth: 300 },
-  email: { fontWeight: "700", color: Brand.ink },
-  otpWrap: { width: "100%", marginTop: 24 },
-  timerPill: {
-    marginTop: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 999,
-    backgroundColor: Brand.surfaceTint2,
-  },
-  timerText: { fontSize: 13, fontWeight: "600", color: Brand.primary },
-  resend: { marginTop: 16, fontSize: 14, fontWeight: "600", color: Brand.ink },
-  resendDisabled: { color: Brand.muted },
-  error: { marginTop: 16, fontSize: 13, color: Brand.danger, textAlign: "center" },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    page: { flex: 1, padding: 24, justifyContent: "space-between" },
+    back: { width: 40, height: 40, alignItems: "center", justifyContent: "center", marginLeft: -8 },
+    center: { alignItems: "center", gap: 8, marginTop: 12 },
+    iconBox: {
+      width: 64,
+      height: 64,
+      borderRadius: 20,
+      backgroundColor: colors.primary,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 12,
+    },
+    title: { fontSize: 24, fontWeight: "600", color: colors.ink },
+    subtitle: { fontSize: 14, color: colors.body, textAlign: "center", lineHeight: 20, maxWidth: 300 },
+    email: { fontWeight: "700", color: colors.ink },
+    otpWrap: { width: "100%", marginTop: 24 },
+    timerPill: {
+      marginTop: 20,
+      paddingHorizontal: 16,
+      paddingVertical: 6,
+      borderRadius: 999,
+      backgroundColor: colors.surfaceTint2,
+    },
+    timerText: { fontSize: 13, fontWeight: "600", color: colors.primary },
+    resend: { marginTop: 16, fontSize: 14, fontWeight: "600", color: colors.ink },
+    resendDisabled: { color: colors.muted },
+    error: { marginTop: 16, fontSize: 13, color: colors.danger, textAlign: "center" },
+  })
+}

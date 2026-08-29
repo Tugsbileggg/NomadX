@@ -1,15 +1,18 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Link, useRouter } from "expo-router"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ScrollView, StyleSheet, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
+import { useAppTheme } from "@/lib/theme-context"
 import { AuthInput } from "@/components/auth/AuthInput"
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
 import { supabase } from "@/lib/supabase"
 
 export default function LoginScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -37,7 +40,7 @@ export default function LoginScreen() {
       <ScrollView contentContainerStyle={styles.page}>
         <View style={styles.header}>
           <View style={styles.logoCircle}>
-            <Ionicons name="leaf-outline" size={26} color={Brand.primary} />
+            <Ionicons name="leaf-outline" size={26} color={colors.primary} />
           </View>
           <Text style={styles.title}>Lumina</Text>
           <Text style={styles.subtitle}>Үзэсгэлэнт ертөнцөд дахин тавтай морил</Text>
@@ -76,11 +79,11 @@ export default function LoginScreen() {
 
           <View style={styles.socialRow}>
             <View style={styles.socialButton}>
-              <Ionicons name="logo-google" size={18} color={Brand.body} />
+              <Ionicons name="logo-google" size={18} color={colors.body} />
               <Text style={styles.socialText}>Google</Text>
             </View>
             <View style={styles.socialButton}>
-              <Ionicons name="logo-facebook" size={18} color={Brand.body} />
+              <Ionicons name="logo-facebook" size={18} color={colors.body} />
               <Text style={styles.socialText}>Facebook</Text>
             </View>
           </View>
@@ -105,46 +108,48 @@ function translate(message: string) {
   return map[message] ?? message
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  page: { padding: 24, paddingTop: 48, gap: 24, paddingBottom: 64 },
-  header: { alignItems: "center", gap: 4 },
-  logoCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-  },
-  title: { fontSize: 26, fontWeight: "600", color: Brand.ink },
-  subtitle: { fontSize: 14, color: Brand.body },
-  card: {
-    borderRadius: 24,
-    backgroundColor: Brand.surfacePage,
-    padding: 20,
-    gap: 16,
-  },
-  forgot: { alignSelf: "flex-end", fontSize: 13, color: Brand.primary, fontWeight: "500" },
-  error: { fontSize: 13, color: Brand.danger, textAlign: "center" },
-  dividerRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 4 },
-  dividerLine: { flex: 1, height: 1, backgroundColor: Brand.outlineSoft },
-  dividerText: { fontSize: 12, color: Brand.muted },
-  socialRow: { flexDirection: "row", gap: 12 },
-  socialButton: {
-    flex: 1,
-    height: 48,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: Brand.outlineSoft,
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  socialText: { fontSize: 14, color: Brand.body, fontWeight: "500" },
-  footer: { textAlign: "center", fontSize: 14, color: Brand.body },
-  footerLink: { color: Brand.primary, fontWeight: "600" },
-})
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    page: { padding: 24, paddingTop: 48, gap: 24, paddingBottom: 64 },
+    header: { alignItems: "center", gap: 4 },
+    logoCircle: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 12,
+    },
+    title: { fontSize: 26, fontWeight: "600", color: colors.ink },
+    subtitle: { fontSize: 14, color: colors.body },
+    card: {
+      borderRadius: 24,
+      backgroundColor: colors.surfacePage,
+      padding: 20,
+      gap: 16,
+    },
+    forgot: { alignSelf: "flex-end", fontSize: 13, color: colors.primary, fontWeight: "500" },
+    error: { fontSize: 13, color: colors.danger, textAlign: "center" },
+    dividerRow: { flexDirection: "row", alignItems: "center", gap: 10, marginTop: 4 },
+    dividerLine: { flex: 1, height: 1, backgroundColor: colors.outlineSoft },
+    dividerText: { fontSize: 12, color: colors.muted },
+    socialRow: { flexDirection: "row", gap: 12 },
+    socialButton: {
+      flex: 1,
+      height: 48,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: colors.outlineSoft,
+      backgroundColor: colors.surface,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+    },
+    socialText: { fontSize: 14, color: colors.body, fontWeight: "500" },
+    footer: { textAlign: "center", fontSize: 14, color: colors.body },
+    footerLink: { color: colors.primary, fontWeight: "600" },
+  })
+}

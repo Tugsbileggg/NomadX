@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   ActivityIndicator,
   Dimensions,
@@ -18,7 +18,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { BusinessMap } from "@/components/BusinessMap"
-import { Brand } from "@/constants/theme"
+import { useAppTheme } from "@/lib/theme-context"
+import type { BrandPalette } from "@/constants/theme"
 import {
   fetchBusinessProfile,
   formatDuration,
@@ -38,6 +39,8 @@ import { publicAssetUrl } from "@/lib/storage"
 const GALLERY_TILE = (Dimensions.get("window").width - 40 - 12) / 2
 
 export default function BusinessDetailScreen() {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const { id } = useLocalSearchParams<{ id: string }>()
   const [profile, setProfile] = useState<BusinessProfile | null>(null)
@@ -82,7 +85,7 @@ export default function BusinessDetailScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.safe} edges={["top"]}>
-        <ActivityIndicator color={Brand.primary} style={{ marginTop: 48 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginTop: 48 }} />
       </SafeAreaView>
     )
   }
@@ -182,15 +185,15 @@ export default function BusinessDetailScreen() {
                   onMarkerPress={() => {}}
                 />
                 <View style={styles.mapBadge}>
-                  <Ionicons name="navigate" size={11} color={Brand.primary} />
+                  <Ionicons name="navigate" size={11} color={colors.primary} />
                   <Text style={styles.mapBadgeText}>Замын заавар</Text>
                 </View>
               </View>
               {business.address && (
                 <View style={styles.mapAddress}>
-                  <Ionicons name="location" size={14} color={Brand.primary} />
+                  <Ionicons name="location" size={14} color={colors.primary} />
                   <Text style={styles.mapAddressText}>{business.address}</Text>
-                  <Ionicons name="open-outline" size={13} color={Brand.muted} />
+                  <Ionicons name="open-outline" size={13} color={colors.muted} />
                 </View>
               )}
             </Pressable>
@@ -230,7 +233,7 @@ export default function BusinessDetailScreen() {
         <Ionicons
           name={favourite ? "heart" : "heart-outline"}
           size={20}
-          color={favourite ? Brand.primary : Brand.primaryLight}
+          color={favourite ? colors.primary : colors.primaryLight}
         />
       </Pressable>
 
@@ -242,7 +245,7 @@ export default function BusinessDetailScreen() {
           onPress={() => router.push({ pathname: "/book/[id]", params: { id: business.id } })}
         >
           <Text style={styles.bookButtonText}>Цаг захиалах</Text>
-          <Ionicons name="arrow-forward" size={16} color="#fff" />
+          <Ionicons name="arrow-forward" size={16} color={colors.onPrimary} />
         </Pressable>
       </SafeAreaView>
     </View>
@@ -253,6 +256,8 @@ export default function BusinessDetailScreen() {
 
 /** Салон — өргөн ковер зураг, доор нь лого, оноо, ажлын цаг. */
 function SalonHeader({ profile }: { profile: BusinessProfile }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const { business, rating, todayHours } = profile
   const coverUrl = publicAssetUrl(business.coverPath)
   const logoUrl = publicAssetUrl(business.logoPath)
@@ -283,7 +288,7 @@ function SalonHeader({ profile }: { profile: BusinessProfile }) {
 
         {business.address && (
           <View style={styles.addressRow}>
-            <Ionicons name="location-outline" size={14} color={Brand.primary} />
+            <Ionicons name="location-outline" size={14} color={colors.primary} />
             <Text style={styles.address}>{business.address}</Text>
           </View>
         )}
@@ -292,9 +297,9 @@ function SalonHeader({ profile }: { profile: BusinessProfile }) {
           <Ionicons
             name="time-outline"
             size={13}
-            color={todayHours ? Brand.success : Brand.muted}
+            color={todayHours ? colors.success : colors.muted}
           />
-          <Text style={[styles.hoursText, !todayHours && { color: Brand.muted }]}>
+          <Text style={[styles.hoursText, !todayHours && { color: colors.muted }]}>
             {todayHours ? `Нээлттэй · ${todayHours.close} хүртэл` : "Өнөөдөр амарна"}
           </Text>
         </View>
@@ -305,6 +310,8 @@ function SalonHeader({ profile }: { profile: BusinessProfile }) {
 
 /** Хувиараа артист — төвлөрсөн хөрөг, туршлага, баталгаажсан тэмдэг. */
 function ArtistHeader({ profile }: { profile: BusinessProfile }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const { business, rating } = profile
   const logoUrl = publicAssetUrl(business.logoPath)
 
@@ -321,14 +328,14 @@ function ArtistHeader({ profile }: { profile: BusinessProfile }) {
         {rating && <RatingPill rating={rating} />}
         {/* Зөвшөөрөгдсөн бизнес л энэ дэлгэц хүртэл ирдэг тул үргэлж үнэн. */}
         <View style={styles.verified}>
-          <Ionicons name="checkmark-circle" size={13} color={Brand.success} />
+          <Ionicons name="checkmark-circle" size={13} color={colors.success} />
           <Text style={styles.verifiedText}>БАТАЛГААЖСАН</Text>
         </View>
       </View>
 
       {business.address && (
         <View style={styles.addressRow}>
-          <Ionicons name="location-outline" size={14} color={Brand.primary} />
+          <Ionicons name="location-outline" size={14} color={colors.primary} />
           <Text style={styles.address}>{business.address}</Text>
         </View>
       )}
@@ -347,6 +354,8 @@ function Section({
   trailing?: React.ReactNode
   children: React.ReactNode
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <View style={styles.section}>
       <View style={styles.sectionHead}>
@@ -360,6 +369,8 @@ function Section({
 
 /** Зөвхөн харуулах мөр — үйлчилгээг захиалгын үед сонгодоггүй. */
 function ServiceRow({ service, divider }: { service: ProfileService; divider: boolean }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <View style={[styles.serviceRow, divider && styles.divider]}>
       <View style={{ flex: 1 }}>
@@ -370,7 +381,7 @@ function ServiceRow({ service, divider }: { service: ProfileService; divider: bo
           </Text>
         )}
         <View style={styles.durationRow}>
-          <Ionicons name="time-outline" size={12} color={Brand.muted} />
+          <Ionicons name="time-outline" size={12} color={colors.muted} />
           <Text style={styles.duration}>{formatDuration(service.durationMin)}</Text>
         </View>
       </View>
@@ -380,6 +391,8 @@ function ServiceRow({ service, divider }: { service: ProfileService; divider: bo
 }
 
 function StaffCard({ member }: { member: ProfileStaff }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <View style={styles.staffCard}>
       <Avatar url={publicAssetUrl(member.photoPath)} name={member.name} size={60} />
@@ -396,6 +409,8 @@ function StaffCard({ member }: { member: ProfileStaff }) {
 }
 
 function GalleryTile({ item, onPress }: { item: ProfileMedia; onPress: () => void }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const url = publicAssetUrl(item.path)
   return (
     <Pressable onPress={onPress} style={styles.galleryTile}>
@@ -419,6 +434,8 @@ function GalleryViewer({
   index: number | null
   onClose: () => void
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const { width, height } = useWindowDimensions()
   const scroller = useRef<ScrollView>(null)
 
@@ -492,6 +509,8 @@ async function openInMaps(lat: number, lng: number, label: string) {
 }
 
 function ReviewCard({ review }: { review: ProfileReview }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <View style={styles.card}>
       <View style={styles.reviewHead}>
@@ -515,6 +534,8 @@ function ReviewCard({ review }: { review: ProfileReview }) {
 }
 
 function Stars({ value }: { value: number }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <View style={styles.starsRow}>
       {Array.from({ length: 5 }, (_, i) => (
@@ -522,7 +543,7 @@ function Stars({ value }: { value: number }) {
           key={i}
           name={i < value ? "star" : "star-outline"}
           size={11}
-          color={Brand.gold}
+          color={colors.gold}
         />
       ))}
     </View>
@@ -536,9 +557,11 @@ function RatingPill({
   rating: { average: number; count: number }
   compact?: boolean
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <View style={styles.ratingPill}>
-      <Ionicons name="star" size={12} color={Brand.gold} />
+      <Ionicons name="star" size={12} color={colors.gold} />
       <Text style={styles.ratingValue}>{rating.average.toFixed(1)}</Text>
       {!compact && <Text style={styles.ratingCount}>({rating.count})</Text>}
     </View>
@@ -554,6 +577,8 @@ function Avatar({
   name: string | null
   size: number
 }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   const initial = (name ?? "L").trim().charAt(0).toUpperCase()
   const box = { width: size, height: size, borderRadius: size / 2 }
 
@@ -569,241 +594,247 @@ function Avatar({
 }
 
 function BackButton({ onPress }: { onPress: () => void }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
   return (
     <Pressable onPress={onPress} hitSlop={8} style={styles.back}>
-      <Ionicons name="chevron-back" size={22} color={Brand.primary} />
+      <Ionicons name="chevron-back" size={22} color={colors.primary} />
     </Pressable>
   )
 }
 
 /* -------------------------------------------------------------- styles */
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: Brand.surfaceTint },
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  emptyText: { fontSize: 14, color: Brand.muted },
-  // Доод талын тогтмол товчийг тойрч гарах зай.
-  page: { paddingBottom: 120 },
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: colors.surfaceTint },
+    center: { flex: 1, alignItems: "center", justifyContent: "center" },
+    emptyText: { fontSize: 14, color: colors.muted },
+    // Доод талын тогтмол товчийг тойрч гарах зай.
+    page: { paddingBottom: 120 },
 
-  favourite: {
-    position: "absolute",
-    top: 52,
-    right: 16,
-    zIndex: 10,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  back: {
-    position: "absolute",
-    top: 52,
-    left: 16,
-    zIndex: 10,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-    // Гүйлгэх үед агуулгын дээгүүр хөвдөг тул тусгаарлаж харагдана.
-    ...Platform.select({
-      ios: {
-        shadowColor: Brand.ink,
-        shadowOpacity: 0.18,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 2 },
-      },
-      android: { elevation: 4 },
-      default: { boxShadow: "0 2px 8px rgba(33,26,27,0.18)" },
-    }),
-  },
+    favourite: {
+      position: "absolute",
+      top: 52,
+      right: 16,
+      zIndex: 10,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    back: {
+      position: "absolute",
+      top: 52,
+      left: 16,
+      zIndex: 10,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: colors.surface,
+      alignItems: "center",
+      justifyContent: "center",
+      // Гүйлгэх үед агуулгын дээгүүр хөвдөг тул тусгаарлаж харагдана.
+      ...Platform.select({
+        ios: {
+          shadowColor: colors.ink,
+          shadowOpacity: 0.18,
+          shadowRadius: 6,
+          shadowOffset: { width: 0, height: 2 },
+        },
+        android: { elevation: 4 },
+        default: { boxShadow: "0 2px 8px rgba(33,26,27,0.18)" },
+      }),
+    },
 
-  /* header — салон */
-  cover: { height: 190, backgroundColor: Brand.primaryContainer },
-  salonCard: {
-    marginTop: -28,
-    marginHorizontal: 20,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    padding: 16,
-    gap: 10,
-  },
-  salonTopRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  nameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
-  salonName: { flex: 1, fontSize: 19, fontWeight: "700", color: Brand.ink },
-  hoursPill: {
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 5,
-    borderRadius: 999,
-    backgroundColor: Brand.surfaceTint,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  hoursText: { fontSize: 11, fontWeight: "600", color: Brand.success },
+    /* header — салон */
+    cover: { height: 190, backgroundColor: colors.primaryContainer },
+    salonCard: {
+      marginTop: -28,
+      marginHorizontal: 20,
+      borderRadius: 20,
+      backgroundColor: colors.surface,
+      padding: 16,
+      gap: 10,
+    },
+    salonTopRow: { flexDirection: "row", alignItems: "center", gap: 12 },
+    nameRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+    salonName: { flex: 1, fontSize: 19, fontWeight: "700", color: colors.ink },
+    hoursPill: {
+      alignSelf: "flex-start",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+      borderRadius: 999,
+      backgroundColor: colors.surfaceTint,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+    },
+    hoursText: { fontSize: 11, fontWeight: "600", color: colors.success },
 
-  /* header — артист */
-  artistCard: {
-    marginTop: 88,
-    marginHorizontal: 20,
-    borderRadius: 20,
-    backgroundColor: "#fff",
-    padding: 20,
-    alignItems: "center",
-    gap: 6,
-  },
-  artistName: { fontSize: 21, fontWeight: "700", color: Brand.ink, textAlign: "center" },
-  artistMetaRow: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 2 },
-  verified: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    borderRadius: 999,
-    backgroundColor: "#e9f7ee",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  verifiedText: { fontSize: 10, fontWeight: "700", color: Brand.success },
+    /* header — артист */
+    artistCard: {
+      marginTop: 88,
+      marginHorizontal: 20,
+      borderRadius: 20,
+      backgroundColor: colors.surface,
+      padding: 20,
+      alignItems: "center",
+      gap: 6,
+    },
+    artistName: { fontSize: 21, fontWeight: "700", color: colors.ink, textAlign: "center" },
+    artistMetaRow: { flexDirection: "row", alignItems: "center", gap: 8, marginTop: 2 },
+    verified: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      borderRadius: 999,
+      backgroundColor: "#e9f7ee",
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    verifiedText: { fontSize: 10, fontWeight: "700", color: colors.success },
 
-  categories: { fontSize: 13, color: Brand.body },
-  addressRow: { flexDirection: "row", alignItems: "center", gap: 5 },
-  address: { flex: 1, fontSize: 12, color: Brand.body },
+    categories: { fontSize: 13, color: colors.body },
+    addressRow: { flexDirection: "row", alignItems: "center", gap: 5 },
+    address: { flex: 1, fontSize: 12, color: colors.body },
 
-  /* section */
-  section: { marginTop: 18, marginHorizontal: 20, gap: 10 },
-  sectionHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  sectionTitle: { fontSize: 15, fontWeight: "700", color: Brand.ink },
-  card: { borderRadius: 18, backgroundColor: "#fff", padding: 16 },
-  menuHint: { fontSize: 11, color: Brand.muted, lineHeight: 16, marginTop: -2 },
-  about: { fontSize: 13, lineHeight: 20, color: Brand.body },
+    /* section */
+    section: { marginTop: 18, marginHorizontal: 20, gap: 10 },
+    sectionHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+    sectionTitle: { fontSize: 15, fontWeight: "700", color: colors.ink },
+    card: { borderRadius: 18, backgroundColor: colors.surface, padding: 16 },
+    menuHint: { fontSize: 11, color: colors.muted, lineHeight: 16, marginTop: -2 },
+    about: { fontSize: 13, lineHeight: 20, color: colors.body },
 
-  /* үйлчилгээ */
-  serviceRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12 },
-  divider: { borderTopWidth: 1, borderTopColor: Brand.outlineSoft },
-  serviceName: { fontSize: 14, fontWeight: "600", color: Brand.ink },
-  serviceDesc: { fontSize: 12, color: Brand.body, marginTop: 2, lineHeight: 17 },
-  durationRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 5 },
-  duration: { fontSize: 11, color: Brand.muted },
-  price: { fontSize: 14, fontWeight: "700", color: Brand.primary },
+    /* үйлчилгээ */
+    serviceRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12 },
+    divider: { borderTopWidth: 1, borderTopColor: colors.outlineSoft },
+    serviceName: { fontSize: 14, fontWeight: "600", color: colors.ink },
+    serviceDesc: { fontSize: 12, color: colors.body, marginTop: 2, lineHeight: 17 },
+    durationRow: { flexDirection: "row", alignItems: "center", gap: 4, marginTop: 5 },
+    duration: { fontSize: 11, color: colors.muted },
+    price: { fontSize: 14, fontWeight: "700", color: colors.primary },
 
-  /* мастерууд */
-  staffRow: { gap: 14, paddingRight: 8 },
-  staffCard: { width: 72, alignItems: "center", gap: 5 },
-  staffName: { fontSize: 12, fontWeight: "600", color: Brand.ink },
-  staffRole: { fontSize: 10, color: Brand.muted, textAlign: "center" },
+    /* мастерууд */
+    staffRow: { gap: 14, paddingRight: 8 },
+    staffCard: { width: 72, alignItems: "center", gap: 5 },
+    staffName: { fontSize: 12, fontWeight: "600", color: colors.ink },
+    staffRole: { fontSize: 10, color: colors.muted, textAlign: "center" },
 
-  /* галерей */
-  gallery: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
-  galleryTile: {
-    width: GALLERY_TILE,
-    height: GALLERY_TILE,
-    borderRadius: 14,
-    overflow: "hidden",
-    backgroundColor: Brand.surfaceTint2,
-  },
+    /* галерей */
+    gallery: { flexDirection: "row", flexWrap: "wrap", gap: 12 },
+    galleryTile: {
+      width: GALLERY_TILE,
+      height: GALLERY_TILE,
+      borderRadius: 14,
+      overflow: "hidden",
+      backgroundColor: colors.surfaceTint2,
+    },
 
-  /* байршил */
-  mapWrap: { height: 150, borderRadius: 14, overflow: "hidden" },
-  mapBadge: {
-    position: "absolute",
-    right: 8,
-    top: 8,
-    // Leaflet-ийн pane-ууд 400-800 z-index-тэй тул түүнээс дээгүүр гаргана.
-    zIndex: 900,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.92)",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  mapBadgeText: { fontSize: 10, fontWeight: "700", color: Brand.primary },
-  mapAddress: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12 },
-  mapAddressText: { flex: 1, fontSize: 12, color: Brand.body },
+    /* байршил */
+    mapWrap: { height: 150, borderRadius: 14, overflow: "hidden" },
+    mapBadge: {
+      position: "absolute",
+      right: 8,
+      top: 8,
+      // Leaflet-ийн pane-ууд 400-800 z-index-тэй тул түүнээс дээгүүр гаргана.
+      zIndex: 900,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      borderRadius: 999,
+      backgroundColor: colors.surface, opacity: 0.94,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    mapBadgeText: { fontSize: 10, fontWeight: "700", color: colors.primary },
+    mapAddress: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 12 },
+    mapAddressText: { flex: 1, fontSize: 12, color: colors.body },
 
-  /* сэтгэгдэл */
-  reviewHead: { flexDirection: "row", alignItems: "center", gap: 10 },
-  reviewAuthor: { fontSize: 13, fontWeight: "700", color: Brand.ink },
-  starsRow: { flexDirection: "row", gap: 1, marginTop: 2 },
-  reviewAge: { fontSize: 10, color: Brand.muted },
-  reviewBody: { fontSize: 12, lineHeight: 19, color: Brand.body, marginTop: 10 },
-  replyBox: {
-    marginTop: 10,
-    borderRadius: 12,
-    backgroundColor: Brand.surfaceTint,
-    padding: 10,
-    // Зүүн талын зураас нь хариуг сэтгэгдлээс тусгаарлана.
-    borderLeftWidth: 2,
-    borderLeftColor: Brand.primaryContainer,
-  },
-  replyLabel: { fontSize: 10, fontWeight: "700", color: Brand.primary },
-  replyBody: { fontSize: 12, lineHeight: 18, color: Brand.body, marginTop: 3 },
+    /* сэтгэгдэл */
+    reviewHead: { flexDirection: "row", alignItems: "center", gap: 10 },
+    reviewAuthor: { fontSize: 13, fontWeight: "700", color: colors.ink },
+    starsRow: { flexDirection: "row", gap: 1, marginTop: 2 },
+    reviewAge: { fontSize: 10, color: colors.muted },
+    reviewBody: { fontSize: 12, lineHeight: 19, color: colors.body, marginTop: 10 },
+    replyBox: {
+      marginTop: 10,
+      borderRadius: 12,
+      backgroundColor: colors.surfaceTint,
+      padding: 10,
+      // Зүүн талын зураас нь хариуг сэтгэгдлээс тусгаарлана.
+      borderLeftWidth: 2,
+      borderLeftColor: colors.primaryContainer,
+    },
+    replyLabel: { fontSize: 10, fontWeight: "700", color: colors.primary },
+    replyBody: { fontSize: 12, lineHeight: 18, color: colors.body, marginTop: 3 },
 
-  ratingPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    borderRadius: 999,
-    backgroundColor: Brand.surfaceTint,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  ratingValue: { fontSize: 12, fontWeight: "700", color: Brand.ink },
-  ratingCount: { fontSize: 11, color: Brand.muted },
+    ratingPill: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 3,
+      borderRadius: 999,
+      backgroundColor: colors.surfaceTint,
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+    },
+    ratingValue: { fontSize: 12, fontWeight: "700", color: colors.ink },
+    ratingCount: { fontSize: 11, color: colors.muted },
 
-  viewerBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)" },
-  viewerClose: {
-    position: "absolute",
-    top: 52,
-    right: 20,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.18)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    // Галерейн үзүүлэгч нь хоёр горимд хоёуланд нь бүтэн хар дэвсгэртэй
+    // тул доорх цагаан утгууд зориудаар тогтмол.
+    viewerBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)" },
+    viewerClose: {
+      position: "absolute",
+      top: 52,
+      right: 20,
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: "rgba(255,255,255,0.18)",
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  avatar: {
-    backgroundColor: Brand.primaryContainer,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-  },
-  avatarInitial: { fontWeight: "700", color: Brand.primaryDark },
+    avatar: {
+      backgroundColor: colors.primaryContainer,
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+    },
+    avatarInitial: { fontWeight: "700", color: colors.primaryDark },
 
-  hoursNote: {
-    marginTop: 18,
-    marginHorizontal: 20,
-    fontSize: 11,
-    color: Brand.muted,
-    textAlign: "center",
-  },
+    hoursNote: {
+      marginTop: 18,
+      marginHorizontal: 20,
+      fontSize: 11,
+      color: colors.muted,
+      textAlign: "center",
+    },
 
-  /* доод талын товч */
-  bookBar: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#fff",
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  bookButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    height: 52,
-    borderRadius: 999,
-    backgroundColor: Brand.primary,
-    marginBottom: 10,
-  },
-  bookButtonText: { fontSize: 14, fontWeight: "700", color: "#fff" },
-})
+    /* доод талын товч */
+    bookBar: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: colors.surface,
+      paddingHorizontal: 20,
+      paddingTop: 10,
+    },
+    bookButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      height: 52,
+      borderRadius: 999,
+      backgroundColor: colors.primary,
+      marginBottom: 10,
+    },
+    bookButtonText: { fontSize: 14, fontWeight: "700", color: colors.onPrimary },
+  })
+}
