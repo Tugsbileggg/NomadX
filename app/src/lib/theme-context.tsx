@@ -16,6 +16,16 @@ type ThemeState = {
   /** Бодит хэрэгжиж буй горим (preference "system" бол утасны тохиргоог дагана). */
   scheme: Scheme
   colors: BrandPalette
+  /**
+   * Хадгалсан сонголт AsyncStorage-аас уншигдаж дууссан эсэх.
+   *
+   * Native tab bar (`NativeTabs`) нь өнгөний prop өөрчлөгдөхөд өөрийгөө
+   * дахин тохируулдаг. Уншилт дуусахаас өмнө mount хийвэл tab bar эхлээд
+   * нэг өнгөөр байрлаад дараа нь дахин тохируулагдаж, товчнуудын байршил
+   * алдагддаг (өөр tab дээр дарж л засагдана). Тиймээс уншилт дуустал
+   * навигацийг mount хийхгүй хүлээнэ.
+   */
+  ready: boolean
 }
 
 const ThemeContext = createContext<ThemeState>({
@@ -23,19 +33,24 @@ const ThemeContext = createContext<ThemeState>({
   setPreference: () => {},
   scheme: "light",
   colors: LightBrand,
+  ready: false,
 })
 
 /** Утасны систем тохиргоог дагах эсвэл гараар сонгосон горимыг бүх апп даяар мэдэгддэг болгоно. */
 export function AppThemeProvider({ children }: { children: ReactNode }) {
   const systemScheme = useColorScheme()
   const [preference, setPreferenceState] = useState<ThemePreference>("system")
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY).then((saved) => {
-      if (saved === "light" || saved === "dark" || saved === "system") {
-        setPreferenceState(saved)
-      }
-    })
+    AsyncStorage.getItem(STORAGE_KEY)
+      .then((saved) => {
+        if (saved === "light" || saved === "dark" || saved === "system") {
+          setPreferenceState(saved)
+        }
+      })
+      // Уншилт унасан ч аппыг хаах шалтгаан биш — анхны утгаараа үргэлжилнэ.
+      .finally(() => setReady(true))
   }, [])
 
   function setPreference(next: ThemePreference) {
@@ -47,7 +62,7 @@ export function AppThemeProvider({ children }: { children: ReactNode }) {
   const colors = scheme === "dark" ? DarkBrand : LightBrand
 
   return (
-    <ThemeContext.Provider value={{ preference, setPreference, scheme, colors }}>
+    <ThemeContext.Provider value={{ preference, setPreference, scheme, colors, ready }}>
       {children}
     </ThemeContext.Provider>
   )

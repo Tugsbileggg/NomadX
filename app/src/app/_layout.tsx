@@ -56,9 +56,10 @@ function ThemedNavigation({ children }: { children: React.ReactNode }) {
  */
 function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   const { session, loading, passwordRecovery } = useAuth();
-  const { colors } = useAppTheme();
+  const { colors, ready } = useAppTheme();
 
-  if (loading || !fontsLoaded) {
+  // `ready`-г хүлээхгүй бол native tab bar эхний удаад буруу байрлана.
+  if (loading || !fontsLoaded || !ready) {
     return <View style={{ flex: 1, backgroundColor: colors.surfacePage }} />;
   }
 
