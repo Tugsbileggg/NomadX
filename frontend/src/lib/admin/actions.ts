@@ -116,3 +116,38 @@ export async function banUser(_prev: FormState, formData: FormData): Promise<For
 export async function unbanUser(_prev: FormState, formData: FormData): Promise<FormState> {
   return setBan(String(formData.get("user_id")), false);
 }
+
+/**
+ * Хэрэглэгчийн эрхийг өөрчилнө — админ томилох / чөлөөлөх.
+ *
+ * `profiles`-ийн RLS нь зөвхөн өөрийн мөрийг засуулдаг тул service role
+ * хэрэгтэй. 0018-ийн триггер нь энэ замаас гадуур role солихыг хаадаг:
+ * өмнө нь хэрэглэгч өөрөө өөрийгөө super_admin болгож чаддаг байсан.
+ */
+export async function setUserRole(_prev: FormState, formData: FormData): Promise<FormState> {
+  const { user } = await requireAdmin();
+  if (!user) return { error: "Танд энэ үйлдлийг хийх эрх алга." };
+
+  const userId = String(formData.get("user_id") ?? "");
+  const role = String(formData.get("role") ?? "");
+
+  if (!userId || !["customer", "salon", "artist", "super_admin"].includes(role)) {
+    return { error: "Буруу хүсэлт." };
+  }
+
+  // Сүүлчийн админ өөрийгөө чөлөөлбөл панел руу орох зам үлдэхгүй.
+  if (userId === user.id) return { error: "Өөрийнхөө эрхийг өөрчлөх боломжгүй." };
+
+  const admin = createAdminClient();
+  if (!admin) return { error: "Service role тохируулаагүй байна." };
+
+  const { error } = await admin
+    .from("profiles")
+    .update({ role })
+    .eq("id", userId);
+  if (error) return { error: error.message };
+
+  revalidatePath("/admin/settings");
+  revalidatePath("/admin/users");
+  return null;
+}

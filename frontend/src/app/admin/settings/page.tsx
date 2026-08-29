@@ -1,113 +1,171 @@
-import { ImageUp } from "lucide-react";
+import Link from "next/link";
+import { Bell, Percent, ShieldCheck, Sliders } from "lucide-react";
+
 import { AdminShell } from "@/components/admin/AdminShell";
-import { SUPER_BRAND, SUPER_NAV, SUPER_USER } from "@/components/admin/super-nav";
-import { Panel } from "@/components/admin/kit";
+import { SUPER_BRAND, SUPER_NAV } from "@/components/admin/super-nav";
+import { AdminComingSoon } from "@/components/admin/ComingSoon";
+import { Badge, Monogram, Panel, Table, Td } from "@/components/admin/kit";
+import { fetchAdminUsers, getCurrentAdmin } from "@/lib/admin/data";
+import { cn } from "@/lib/cn";
+import { RoleActions } from "./RoleActions";
 
 export const metadata = { title: "Тохиргоо — Супер админ" };
 
-const TABS = [
-  "Ерөнхий",
-  "Комисс тохиргоо",
-  "Админ эрх",
-  "Мэдэгдэл",
-  "Нууцлал & Аюулгүй байдал",
-];
+const BASE_PATH = "/admin/settings";
 
-export default function SettingsPage() {
+const TABS = [
+  { label: "Админ эрх", value: "admins" },
+  { label: "Ерөнхий", value: "general" },
+  { label: "Комисс", value: "commission" },
+  { label: "Мэдэгдэл", value: "notifications" },
+] as const;
+
+const ROLE_LABEL: Record<string, string> = {
+  customer: "Хэрэглэгч",
+  salon: "Салон",
+  artist: "Артист",
+  super_admin: "Админ",
+};
+
+/** Админаас чөлөөлөхөд буцаах role — бизнестэй эсэхээс хамаарахгүй аюулгүй утга. */
+const DEMOTED_ROLE = "customer";
+
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const { tab } = await searchParams;
+  const active = TABS.some((t) => t.value === tab) ? tab! : "admins";
+
+  const [me, { rows, error }] = await Promise.all([getCurrentAdmin(), fetchAdminUsers()]);
+
+  const admins = rows.filter((r) => r.role === "super_admin");
+  const others = rows.filter((r) => r.role !== "super_admin");
+
   return (
     <AdminShell
       {...SUPER_BRAND}
       nav={SUPER_NAV}
-      user={SUPER_USER}
+      user={me}
       active="/admin/settings"
       title="Тохиргоо"
-      description="Системийн ерөнхий тохиргоо, аюулгүй байдал, админ эрхийг удирдана."
+      description="Админ эрх болон системийн тохиргоо."
     >
       <div className="flex flex-col gap-6">
-        <nav className="flex flex-wrap gap-6 border-b border-surface-variant">
-          {TABS.map((t, i) => (
-            <button
-              key={t}
-              type="button"
-              className={
-                i === 0
-                  ? "border-b-2 border-primary pb-3 text-sm font-medium text-primary"
-                  : "pb-3 text-sm font-medium text-body hover:text-primary"
-              }
+        <div className="flex flex-wrap gap-2">
+          {TABS.map((t) => (
+            <Link
+              key={t.value}
+              href={`${BASE_PATH}?tab=${t.value}`}
+              className={cn(
+                "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
+                t.value === active
+                  ? "bg-primary text-white"
+                  : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+              )}
             >
-              {t}
-            </button>
+              {t.label}
+            </Link>
           ))}
-        </nav>
+        </div>
 
-        <Panel>
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-2">
-              <span className="text-xs leading-4 font-medium text-body">Платформын лого</span>
-              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-primary/40 bg-surface-tint/60 px-6 py-10 text-center hover:border-primary">
-                <ImageUp className="size-7 text-primary" strokeWidth={1.6} />
-                <span className="text-sm font-medium text-primary">
-                  Логогоо энд чирж оруулах эсвэл дарж сонгоно уу
-                </span>
-                <span className="text-xs text-muted">
-                  Тохиромжтой хэмжээ: 512x512px (PNG, SVG)
-                </span>
-                <input type="file" accept="image/*" className="sr-only" />
-              </label>
-            </div>
+        {active === "admins" && (
+          <>
+            <Panel title={`Одоогийн админууд (${admins.length})`}>
+              {error ? (
+                <p className="py-6 text-sm text-[#991b1b]">{error}</p>
+              ) : (
+                <Table headers={["Хэрэглэгч", "И-мэйл", "Эрх", ""]}>
+                  {admins.map((u) => (
+                    <tr key={u.id} className="border-b border-surface-tint last:border-0">
+                      <Td>
+                        <span className="flex items-center gap-3">
+                          <Monogram name={u.fullName} />
+                          <span className="font-medium text-ink">{u.fullName}</span>
+                        </span>
+                      </Td>
+                      <Td>{u.email}</Td>
+                      <Td>
+                        <Badge tone="primary">{ROLE_LABEL[u.role]}</Badge>
+                      </Td>
+                      <Td>
+                        {u.email === me.email ? (
+                          <span className="text-xs text-muted">Та</span>
+                        ) : (
+                          <RoleActions
+                            userId={u.id}
+                            role={u.role}
+                            previousRole={DEMOTED_ROLE}
+                          />
+                        )}
+                      </Td>
+                    </tr>
+                  ))}
+                </Table>
+              )}
+              <p className="mt-4 text-xs leading-4 text-muted">
+                Админ эрх олгох цорын ганц зам энэ хуудас. Хэрэглэгч өөрөө өөрийн
+                эрхийг өөрчлөх боломжгүй.
+              </p>
+            </Panel>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Setting label="Платформын нэр" defaultValue="LUMINA" />
-              <SettingSelect label="Үндсэн хэл" options={["Монгол (MN)", "Англи (EN)"]} />
-              <Setting label="Тусламжийн и-мэйл" type="email" defaultValue="support@lumina.mn" />
-              <Setting label="Тусламжийн утас" type="tel" defaultValue="+976 7700 0000" />
-            </div>
+            <Panel title="Админ томилох">
+              <Table headers={["Хэрэглэгч", "И-мэйл", "Эрх", ""]}>
+                {others.map((u) => (
+                  <tr key={u.id} className="border-b border-surface-tint last:border-0">
+                    <Td>
+                      <span className="flex items-center gap-3">
+                        <Monogram name={u.fullName} />
+                        <span className="font-medium text-ink">{u.fullName}</span>
+                      </span>
+                    </Td>
+                    <Td>{u.email}</Td>
+                    <Td>
+                      <Badge tone="neutral">{ROLE_LABEL[u.role] ?? u.role}</Badge>
+                    </Td>
+                    <Td>
+                      <RoleActions userId={u.id} role={u.role} previousRole={DEMOTED_ROLE} />
+                    </Td>
+                  </tr>
+                ))}
+              </Table>
+            </Panel>
+          </>
+        )}
 
-            <div className="flex justify-end gap-3 border-t border-surface-tint pt-6">
-              <button
-                type="button"
-                className="h-10 rounded-full border border-surface-variant bg-white px-6 text-sm font-medium text-body hover:bg-surface-tint"
-              >
-                Цуцлах
-              </button>
-              <button
-                type="submit"
-                className="h-10 rounded-full bg-primary px-6 text-sm font-medium text-white hover:bg-primary-dark"
-              >
-                Хадгалах
-              </button>
-            </div>
-          </div>
-        </Panel>
+        {active === "general" && (
+          <AdminComingSoon
+            icon={Sliders}
+            title="Платформын ерөнхий тохиргоо"
+            description="Платформын нэр, лого, холбоо барих мэдээллийг хадгалах хүснэгт схемд хараахан байхгүй. Одоогоор эдгээр нь код болон env хувьсагчаар тодорхойлогддог."
+          />
+        )}
+
+        {active === "commission" && (
+          <AdminComingSoon
+            icon={Percent}
+            title="Комисс тохиргоо"
+            description="Комисс тооцоолол нь бодит төлбөр тооцоо дээр тулгуурлана. Одоогийн нэхэмжлэх нь зөвхөн туршилтын бүртгэл тул комиссын хувь хадгалах, тооцоолох схем нэмэгдээгүй байна."
+          />
+        )}
+
+        {active === "notifications" && (
+          <AdminComingSoon
+            icon={Bell}
+            title="Мэдэгдлийн тохиргоо"
+            description="Push болон и-мэйл мэдэгдэл хараахан хийгдээгүй. Мэдэгдлийн загвар, суваг, хэрэглэгчийн сонголтыг хадгалах хүснэгт схемд байхгүй."
+          />
+        )}
+
+        {active === "admins" && (
+          <p className="flex items-start gap-2 rounded-2xl border border-surface-variant bg-white px-5 py-4 text-xs leading-5 text-body shadow-hairline">
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
+            Админаас чөлөөлөгдсөн хэрэглэгч «Хэрэглэгч» эрхтэй болно. Бизнесийн
+            эзэн байсан бол «Салонууд» хуудаснаас эрхийг нь буцааж тааруулна уу.
+          </p>
+        )}
       </div>
     </AdminShell>
-  );
-}
-
-function Setting({
-  label,
-  ...props
-}: { label: string } & React.ComponentProps<"input">) {
-  return (
-    <label className="flex flex-col gap-2">
-      <span className="text-xs leading-4 font-medium text-body">{label}</span>
-      <input
-        className="h-11 w-full rounded-lg border border-surface-variant bg-white px-4 text-sm text-ink focus:border-primary focus:outline-none"
-        {...props}
-      />
-    </label>
-  );
-}
-
-function SettingSelect({ label, options }: { label: string; options: string[] }) {
-  return (
-    <label className="flex flex-col gap-2">
-      <span className="text-xs leading-4 font-medium text-body">{label}</span>
-      <select className="h-11 w-full rounded-lg border border-surface-variant bg-white px-4 text-sm text-ink focus:border-primary focus:outline-none">
-        {options.map((o) => (
-          <option key={o}>{o}</option>
-        ))}
-      </select>
-    </label>
   );
 }
