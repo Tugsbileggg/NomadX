@@ -2,6 +2,7 @@ import {
   CalendarClock,
   CalendarDays,
   ClipboardList,
+  Images,
   LayoutDashboard,
   LifeBuoy,
   MessageSquare,
@@ -21,6 +22,7 @@ export const BIZ_NAV: BizNavItem[] = [
   { href: "/business/availability", label: "Хуваарь", icon: CalendarClock },
   { href: "/business/services", label: "Үйлчилгээнүүд", icon: Sparkles },
   { href: "/business/employees", label: "Ажилтнууд", icon: UserRound },
+  { href: "/business/gallery", label: "Галерей", icon: Images },
   { href: "/business/customers", label: "Харилцагчид", icon: Users },
   { href: "/business/reviews", label: "Сэтгэгдлүүд", icon: MessageSquare },
 ];

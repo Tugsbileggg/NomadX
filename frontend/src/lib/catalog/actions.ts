@@ -13,6 +13,8 @@ function revalidateCatalog() {
   revalidatePath("/business/services");
   revalidatePath("/business/employees");
   revalidatePath("/artist/services");
+  revalidatePath("/business/gallery");
+  revalidatePath("/artist/portfolio");
 }
 
 /** Нэвтэрсэн хэрэглэгчийн бизнесийг олно — бүх үйлдэл үүгээр эхэлнэ. */
@@ -181,4 +183,105 @@ export async function deleteStaff(_prev: FormState, formData: FormData): Promise
 
   revalidateCatalog();
   return { success: "Ажилтныг устгалаа." };
+}
+
+/** Нэг удаад оруулах зургийн дээд тоо — олон файлыг зэрэг илгээхэд. */
+const MAX_MEDIA_PER_UPLOAD = 8;
+
+/**
+ * Галерейд зураг нэмнэ. Олон файлыг нэг дор сонгож болно.
+ *
+ * Зам нь business id-аар эхлэх ёстой — `business-public` bucket-ийн бичих
+ * эрх (0001-ийн `public_assets_write`) үүгээр шийдэгдэнэ.
+ */
+export async function uploadMedia(_prev: FormState, formData: FormData): Promise<FormState> {
+  const owner = await ownedBusiness();
+  if ("error" in owner) return { error: owner.error };
+  const { supabase, businessId } = owner;
+
+  const files = formData
+    .getAll("images")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (!files.length) return { error: "Зураг сонгоно уу." };
+  if (files.length > MAX_MEDIA_PER_UPLOAD) {
+    return { error: `Нэг удаад дээд тал нь ${MAX_MEDIA_PER_UPLOAD} зураг оруулна.` };
+  }
+
+  const oversized = files.find((f) => f.size > MAX_PHOTO_BYTES);
+  if (oversized) return { error: `${oversized.name}: хэмжээ 5MB-аас хэтэрсэн байна.` };
+
+  const notImage = files.find((f) => !f.type.startsWith("image/"));
+  if (notImage) return { error: `${notImage.name}: зөвхөн зураг оруулна.` };
+
+  const caption = String(formData.get("caption") ?? "").trim() || null;
+
+  const { count } = await supabase
+    .from("business_media")
+    .select("id", { count: "exact", head: true })
+    .eq("business_id", businessId);
+
+  const rows = [];
+  for (const [i, file] of files.entries()) {
+    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const path = `${businessId}/media-${randomUUID()}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from("business-public")
+      .upload(path, file, { contentType: file.type || undefined });
+    if (error) return { error: `${file.name}: ${error.message}` };
+
+    rows.push({
+      business_id: businessId,
+      storage_path: path,
+      // Тайлбарыг зөвхөн эхний зурагт — олон зурагт нэг тайлбар давтагдах нь утгагүй.
+      caption: i === 0 ? caption : null,
+      sort_order: (count ?? 0) + i,
+    });
+  }
+
+  const { error } = await supabase.from("business_media").insert(rows);
+  if (error) return { error: error.message };
+
+  revalidateCatalog();
+  return { success: `${rows.length} зураг нэмэгдлээ.` };
+}
+
+/**
+ * Галерейн зургийг устгана.
+ *
+ * Мөрийг устгаад bucket доторх файлыг ч арилгана (0016-ийн delete policy).
+ * Файлыг арилгаж чадаагүй ч мөр нь устсан бол хэрэглэгчид амжилттай гэж
+ * харуулна — галерейд харагдахаа больсон нь гол зорилго, орхигдсон файл нь
+ * нийтэд нээлттэй боловч хаяг нь хаана ч холбоогүй үлдэнэ.
+ */
+export async function deleteMedia(_prev: FormState, formData: FormData): Promise<FormState> {
+  const owner = await ownedBusiness();
+  if ("error" in owner) return { error: owner.error };
+  const { supabase, businessId } = owner;
+
+  const id = String(formData.get("media_id") ?? "");
+  if (!id) return { error: "Буруу хүсэлт." };
+
+  const { data: row } = await supabase
+    .from("business_media")
+    .select("storage_path")
+    .eq("id", id)
+    .eq("business_id", businessId)
+    .maybeSingle();
+
+  const { error } = await supabase
+    .from("business_media")
+    .delete()
+    .eq("id", id)
+    .eq("business_id", businessId);
+  if (error) return { error: error.message };
+
+  // Seed-ийн бүтэн URL-ууд bucket-д байдаггүй тул зөвхөн дотоод замыг арилгана.
+  if (row?.storage_path && !row.storage_path.startsWith("http")) {
+    await supabase.storage.from("business-public").remove([row.storage_path]);
+  }
+
+  revalidateCatalog();
+  return { success: "Зургийг устгалаа." };
 }

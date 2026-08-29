@@ -21,11 +21,19 @@ export type CatalogStaff = {
   isActive: boolean;
 };
 
+export type CatalogMedia = {
+  id: string;
+  url: string | null;
+  caption: string | null;
+};
+
 export type OwnerCatalog = {
   /** Бизнесийн бүртгэл олдоогүй бол null — маягтуудыг харуулах утгагүй. */
   businessId: string | null;
   services: CatalogService[];
   staff: CatalogStaff[];
+  /** Галерей / бүтээлүүд — аппын профайл дээр харагдана. */
+  gallery: CatalogMedia[];
 };
 
 /**
@@ -35,7 +43,7 @@ export type OwnerCatalog = {
  * хараад буцааж асаах боломжтой байх ёстой (аппад зөвхөн идэвхтэй нь очно).
  */
 export async function fetchOwnerCatalog(): Promise<OwnerCatalog> {
-  const empty: OwnerCatalog = { businessId: null, services: [], staff: [] };
+  const empty: OwnerCatalog = { businessId: null, services: [], staff: [], gallery: [] };
 
   const supabase = await createClient();
   const {
@@ -50,7 +58,7 @@ export async function fetchOwnerCatalog(): Promise<OwnerCatalog> {
     .maybeSingle();
   if (!business) return empty;
 
-  const [services, staff] = await Promise.all([
+  const [services, staff, media] = await Promise.all([
     supabase
       .from("services")
       .select("id, name, description, price, duration_min, category, is_active")
@@ -59,6 +67,11 @@ export async function fetchOwnerCatalog(): Promise<OwnerCatalog> {
     supabase
       .from("business_staff")
       .select("id, name, role, bio, photo_path, is_active")
+      .eq("business_id", business.id)
+      .order("sort_order"),
+    supabase
+      .from("business_media")
+      .select("id, storage_path, caption")
       .eq("business_id", business.id)
       .order("sort_order"),
   ]);
@@ -81,6 +94,14 @@ export async function fetchOwnerCatalog(): Promise<OwnerCatalog> {
       bio: m.bio,
       photoUrl: publicAssetUrl(supabase, m.photo_path),
       isActive: m.is_active,
+    })),
+    gallery: (media.data ?? []).map((g) => ({
+      id: g.id,
+      // Seed нь бүтэн URL хадгалдаг, панелаас орсон нь bucket доторх зам.
+      url: g.storage_path.startsWith("http")
+        ? g.storage_path
+        : publicAssetUrl(supabase, g.storage_path),
+      caption: g.caption,
     })),
   };
 }
