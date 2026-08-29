@@ -2,13 +2,13 @@ import "leaflet/dist/leaflet.css"
 
 import { useEffect, useRef, useState } from "react"
 
-import { Brand } from "@/constants/theme"
+import { useAppTheme } from "@/lib/theme-context"
 import {
   MARKER_RING,
   MARKER_SIZE,
   TILE_ATTRIBUTION,
   TILE_MAX_ZOOM,
-  TILE_URL,
+  tileUrlFor,
 } from "@/lib/map-style"
 
 export type MapMarker = {
@@ -39,7 +39,9 @@ type Leaflet = typeof import("leaflet")
  * native хувилбартай ижил харагдана.
  */
 export function BusinessMap({ center, markers, onMarkerPress }: Props) {
+  const { scheme, colors } = useAppTheme()
   const containerRef = useRef<HTMLDivElement>(null)
+  const tileRef = useRef<import("leaflet").TileLayer | null>(null)
   const mapRef = useRef<import("leaflet").Map | null>(null)
   const layerRef = useRef<import("leaflet").LayerGroup | null>(null)
   const leafletRef = useRef<Leaflet | null>(null)
@@ -54,6 +56,14 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
     pressRef.current = onMarkerPress
   }, [onMarkerPress])
 
+  // Зураг үүсгэх effect нь `scheme`-ийг хамааралдаа авбал горим солигдоход
+  // бүхэл зураг дахин үүсэж, харагдац нь тэглэгдэнэ — ref-ээр уншина.
+  const schemeRef = useRef(scheme)
+  useEffect(() => {
+    schemeRef.current = scheme
+    tileRef.current?.setUrl(tileUrlFor(scheme))
+  }, [scheme])
+
   useEffect(() => {
     let cancelled = false
 
@@ -61,8 +71,11 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
       if (cancelled || !containerRef.current || mapRef.current) return
 
       const map = leaflet.map(containerRef.current).setView([center.lat, center.lng], 12)
-      leaflet
-        .tileLayer(TILE_URL, { attribution: TILE_ATTRIBUTION, maxZoom: TILE_MAX_ZOOM })
+      tileRef.current = leaflet
+        .tileLayer(tileUrlFor(schemeRef.current), {
+          attribution: TILE_ATTRIBUTION,
+          maxZoom: TILE_MAX_ZOOM,
+        })
         .addTo(map)
 
       leafletRef.current = leaflet
@@ -102,8 +115,8 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
         width:${size}px;
         height:${size}px;
         border-radius:50%;
-        background:${Brand.primary};
-        border:${MARKER_RING}px solid #fff;
+        background:${colors.primary};
+        border:${MARKER_RING}px solid ${colors.surface};
         box-shadow:0 2px 6px rgba(138,72,83,0.45);
       "></div>`
 
@@ -112,8 +125,8 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
         ? `<div style="
              position:absolute; bottom:${outer + 4}px; left:50%; transform:translateX(-50%);
              max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-             background:#fff; border-radius:999px; padding:4px 10px;
-             font-size:11px; font-weight:700; color:${Brand.ink};
+             background:${colors.surface}; border-radius:999px; padding:4px 10px;
+             font-size:11px; font-weight:700; color:${colors.ink};
              box-shadow:0 2px 8px rgba(33,26,27,0.18);
            ">${escapeHtml(m.title)}</div>`
         : ""
@@ -132,7 +145,7 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
         .addTo(layer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, markerKey])
+  }, [ready, markerKey, colors])
 
   return <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
 }

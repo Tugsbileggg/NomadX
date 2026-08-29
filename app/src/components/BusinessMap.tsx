@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Platform, StyleSheet, Text, View } from "react-native"
 import MapView, { Marker, PROVIDER_DEFAULT, UrlTile } from "react-native-maps"
 
-import { Brand } from "@/constants/theme"
+import type { BrandPalette } from "@/constants/theme"
+import { useAppTheme } from "@/lib/theme-context"
 import {
   MARKER_RING,
   MARKER_SIZE,
   TILE_ATTRIBUTION,
   TILE_MAX_ZOOM,
   TILE_SIZE_PX,
-  TILE_URL,
+  tileUrlFor,
 } from "@/lib/map-style"
 
 export type MapMarker = {
@@ -37,6 +38,9 @@ type Props = {
  * харагдана.
  */
 export function BusinessMap({ center, markers, onMarkerPress }: Props) {
+  const { scheme, colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
+
   return (
     <View style={styles.fill}>
       <MapView
@@ -54,7 +58,8 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
         }}
       >
         <UrlTile
-          urlTemplate={TILE_URL}
+          key={scheme}
+          urlTemplate={tileUrlFor(scheme)}
           tileSize={TILE_SIZE_PX}
           maximumZ={TILE_MAX_ZOOM}
           shouldReplaceMapContent
@@ -78,6 +83,9 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
  * хоосон гарч ирдэг.
  */
 function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => void }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
+
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
 
   // Сонгогдсон цэг өөрчлөгдөхөд зургаа дахин авах ёстой тул `selected`-ийг
@@ -114,19 +122,20 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
 
 const PIN_OUTER = MARKER_SIZE + MARKER_RING * 2
 
-const styles = StyleSheet.create({
+function makeStyles(colors: BrandPalette) {
+  return StyleSheet.create({
   fill: { flex: 1 },
   pinWrap: { padding: 4, alignItems: "center" },
   pin: {
     width: PIN_OUTER,
     height: PIN_OUTER,
     borderRadius: PIN_OUTER / 2,
-    backgroundColor: Brand.primary,
+    backgroundColor: colors.primary,
     borderWidth: MARKER_RING,
     borderColor: "#fff",
     ...Platform.select({
       ios: {
-        shadowColor: Brand.primary,
+        shadowColor: colors.primary,
         shadowOpacity: 0.45,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
@@ -149,7 +158,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     ...Platform.select({
       ios: {
-        shadowColor: Brand.ink,
+        shadowColor: colors.ink,
         shadowOpacity: 0.18,
         shadowRadius: 5,
         shadowOffset: { width: 0, height: 2 },
@@ -158,16 +167,17 @@ const styles = StyleSheet.create({
       default: {},
     }),
   },
-  pinLabelText: { fontSize: 11, fontWeight: "700", color: Brand.ink },
+  pinLabelText: { fontSize: 11, fontWeight: "700", color: colors.ink },
   attribution: {
     position: "absolute",
     right: 6,
     bottom: 6,
     fontSize: 9,
-    color: Brand.muted,
+    color: colors.muted,
     backgroundColor: "rgba(255,255,255,0.75)",
     borderRadius: 4,
     paddingHorizontal: 4,
     paddingVertical: 1,
   },
 })
+}

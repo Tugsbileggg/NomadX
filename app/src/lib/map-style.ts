@@ -30,17 +30,29 @@
  */
 const CARTO_KEY = process.env.EXPO_PUBLIC_CARTO_KEY
 
+export type MapScheme = "light" | "dark"
+
 /**
  * `light_all` (Positron) нь бараг өнгөгүй, саарал суурьтай тул брэндийн
- * улбар ягаан marker тодроод харагдана. Өнгөлөг суурь хүсвэл `voyager`
- * (`dark_all` нь харанхуй хувилбар).
+ * улбар ягаан marker тодроод харагдана. `dark_all` нь түүний харанхуй хос.
  */
-const BASEMAP = "light_all"
+const BASEMAP: Record<MapScheme, string> = {
+  light: "light_all",
+  dark: "dark_all",
+}
 
-/** Retina (`@2x`) tile нь зөвхөн CARTO дээр — OSM нь 256px өгдөг. */
-export const TILE_URL = CARTO_KEY
-  ? `https://basemaps.cartocdn.com/rastertiles/${BASEMAP}/{z}/{x}/{y}@2x.png?key=${CARTO_KEY}`
-  : "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+/**
+ * Тухайн горимд тохирох tile хаяг. Retina (`@2x`) нь зөвхөн CARTO дээр —
+ * OSM нь 256px өгдөг.
+ *
+ * ⚠️ OSM-д харанхуй хувилбар байхгүй тул түлхүүргүй үед бараан горимд ч
+ * цайвар зураг гарна. Энэ нь ус тэмдэгтэй зургаас дээр.
+ */
+export function tileUrlFor(scheme: MapScheme): string {
+  return CARTO_KEY
+    ? `https://basemaps.cartocdn.com/rastertiles/${BASEMAP[scheme]}/{z}/{x}/{y}@2x.png?key=${CARTO_KEY}`
+    : "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+}
 
 /**
  * `react-native-maps`-ийн `tileSize` нь зургийн **пикселийн** хэмжээ.
