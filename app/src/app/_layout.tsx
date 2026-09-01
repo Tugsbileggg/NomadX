@@ -6,10 +6,12 @@ import {
   Montserrat_700Bold,
   useFonts,
 } from '@expo-google-fonts/montserrat';
-import { Stack } from 'expo-router';
+import * as Notifications from 'expo-notifications';
+import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { View } from 'react-native';
+import { useEffect } from 'react';
+import { Platform, View } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
@@ -62,6 +64,19 @@ function ThemedNavigation({ children }: { children: React.ReactNode }) {
 function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   const { session, loading, passwordRecovery, account, accountReady } = useAuth();
   const { colors, ready } = useAppTheme();
+  const router = useRouter();
+
+  // Push мэдэгдэл дээр дарахад мэдэгдлийн төв рүү оруулна. Тухайн
+  // захиалга руу шууд орох нь илүү боловч мэдэгдэл нь захиалгынх ч
+  // байж болно, бүртгэлийнх ч байж болно — төв нь бүх төрлийг зөв
+  // харуулдаг цорын ганц дэлгэц.
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const sub = Notifications.addNotificationResponseReceivedListener(() => {
+      router.push('/notifications');
+    });
+    return () => sub.remove();
+  }, [router]);
 
   // `ready`-г хүлээхгүй бол native tab bar эхний удаад буруу байрлана.
   // `accountReady`-г хүлээхгүй бол артист эхлээд харилцагчийн дэлгэцийг

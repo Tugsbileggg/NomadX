@@ -195,6 +195,22 @@ export type Notification = {
   created_at: string
 }
 
+/**
+ * Push мэдэгдэл хүлээж авах төхөөрөмж (0021).
+ *
+ * Түлхүүр нь token өөрөө: нэг хүн олон төхөөрөмжтэй, нэг төхөөрөмж
+ * олон хүнд ээлжлэн харьяалагдаж болно. Бүртгэлийг зөвхөн
+ * `register_push_token()` хийнэ — INSERT/UPDATE policy байхгүй.
+ */
+export type PushToken = {
+  token: string
+  profile_id: string
+  /** 'ios' | 'android' — оношлоход. */
+  platform: string | null
+  created_at: string
+  updated_at: string
+}
+
 /** Хэрэглэгчийн дуртай бизнес — зөвхөн эзэн нь харна. */
 export type Favourite = {
   customer_id: string
@@ -304,6 +320,7 @@ export type Database = {
       invoices: Row<Invoice>
       favourites: Row<Favourite>
       notifications: Row<Notification>
+      push_tokens: Row<PushToken>
     }
     Views: {
       // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
@@ -318,6 +335,13 @@ export type Database = {
       owns_booking: { Args: { bid: string }; Returns: boolean }
       can_read_booking: { Args: { bid: string }; Returns: boolean }
       reply_to_review: { Args: { rid: string; body: string }; Returns: undefined }
+      /** Төхөөрөмжийг мэдэгдэл хүлээн авахаар бүртгэнэ (0021). */
+      register_push_token: {
+        Args: { p_token: string; p_platform?: string | null }
+        Returns: undefined
+      }
+      /** Гарахад тухайн төхөөрөмжийг салгана (0021). */
+      unregister_push_token: { Args: { p_token: string }; Returns: undefined }
       /** Эзэлсэн цагууд — зөвхөн цаг, тоо (0014). */
       booking_slot_load: {
         Args: { bid: string; from_ts: string; to_ts: string }

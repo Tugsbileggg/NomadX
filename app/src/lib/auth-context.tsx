@@ -10,6 +10,7 @@ import {
 } from "react"
 
 import { fetchAccount, type Account } from "@/lib/account"
+import { registerForPush, unregisterFromPush } from "@/lib/push"
 import { supabase } from "@/lib/supabase"
 
 type AuthState = {
@@ -86,6 +87,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.subscription.unsubscribe()
   }, [load])
 
+  // Нэвтэрсэн хэрэглэгч бүрд нэг л удаа бүртгэнэ — token сэргээх бүрд
+  // дахин дуудвал зөвшөөрлийн шалгалт, сүлжээний хүсэлт дэмий давтагдана.
+  const pushedFor = useRef<string | null>(null)
+  useEffect(() => {
+    const uid = session?.user.id ?? null
+    if (!uid || pushedFor.current === uid) return
+    pushedFor.current = uid
+    void registerForPush()
+  }, [session])
+
   const refreshAccount = useCallback(async () => {
     await load(true)
   }, [load])
@@ -109,4 +120,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   return useContext(AuthContext)
+}
+
+/**
+ * Гарах.
+ *
+ * Дараалал чухал: `unregister_push_token()` нь `auth.uid()`-ээр эзнийг
+ * тогтоодог тул сешнийг хаасны ДАРАА дуудвал юу ч устгахгүй бөгөөд
+ * энэ утас өмнөх эзнийхээ мэдэгдлийг хүлээж авсаар байна.
+ */
+export async function signOut() {
+  await unregisterFromPush()
+  await supabase.auth.signOut()
 }

@@ -6,9 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
 import type { BrandPalette } from "@/constants/theme"
-import { useAuth } from "@/lib/auth-context"
+import { useAuth, signOut } from "@/lib/auth-context"
 import { fetchMyProfile, updateMyProfile } from "@/lib/profile"
-import { supabase } from "@/lib/supabase"
 import { useAppTheme, type ThemePreference } from "@/lib/theme-context"
 
 const ROLE_LABEL: Record<string, string> = {
@@ -60,7 +59,7 @@ export default function ProfileScreen() {
 
   async function onSignOut() {
     setSigningOut(true)
-    await supabase.auth.signOut()
+    await signOut()
     setSigningOut(false)
   }
 

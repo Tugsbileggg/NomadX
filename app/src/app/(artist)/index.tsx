@@ -7,8 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { AuthButton } from "@/components/auth/AuthButton"
 import type { BrandPalette } from "@/constants/theme"
 import type { BusinessStatus } from "@/lib/db-types"
-import { useAuth } from "@/lib/auth-context"
-import { supabase } from "@/lib/supabase"
+import { useAuth, signOut } from "@/lib/auth-context"
 import { useAppTheme } from "@/lib/theme-context"
 
 type Panel = {
@@ -129,7 +128,7 @@ export default function ArtistHomeScreen() {
           <AuthButton
             label="Гарах"
             variant="outline"
-            onPress={() => void supabase.auth.signOut()}
+            onPress={() => void signOut()}
           />
         </View>
       </ScrollView>

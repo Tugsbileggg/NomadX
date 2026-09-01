@@ -6,8 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
 import type { BrandPalette } from "@/constants/theme"
-import { useAuth } from "@/lib/auth-context"
-import { supabase } from "@/lib/supabase"
+import { useAuth, signOut } from "@/lib/auth-context"
 import { useAppTheme } from "@/lib/theme-context"
 import type { ThemePreference } from "@/lib/theme-context"
 
@@ -47,7 +46,7 @@ export default function ArtistProfileScreen() {
 
   async function onSignOut() {
     setSigningOut(true)
-    await supabase.auth.signOut()
+    await signOut()
     setSigningOut(false)
   }
 
