@@ -11,6 +11,18 @@ import { dateKey, weekdayIndex } from "@/lib/ub-time"
 import { useAppTheme } from "@/lib/theme-context"
 
 const WEEKDAYS = ["Да", "Мя", "Лх", "Пү", "Ба", "Бя", "Ня"]
+
+/**
+ * Сүлжээний хэмжээ.
+ *
+ * Өргөнийг яг `100 / 7`%-иар өгвөл бутархай нь нийлээд 100%-иас хэтэрч,
+ * долоо дахь нүд нь дараагийн мөр рүү үсэрч болзошгүй — бага зэрэг
+ * дутуугаар нь бөөрөнхийлөв.
+ */
+const CELL_WIDTH = "14.28%"
+const CELL_HEIGHT = 42
+/** Тодотголын хайрцаг — нүднээсээ багахан байж мөрөө сунгахгүй. */
+const PILL_SIZE = 34
 const WEEKDAY_FULL = ["Даваа", "Мягмар", "Лхагва", "Пүрэв", "Баасан", "Бямба", "Ням"]
 
 /** Даваагаар эхэлсэн, 7-гийн үржвэр урттай сарын нүднүүд. */
@@ -107,20 +119,27 @@ export default function ArtistCalendarScreen() {
               const isToday = key === todayKey && !c.muted
               const isSelected = key === selected && !c.muted
               return (
-                <Pressable
-                  key={key}
-                  onPress={() => !c.muted && setSelected(key)}
-                  style={[styles.cell, isToday && styles.cellToday, isSelected && !isToday && styles.cellSelected]}
-                >
-                  <Text
+                <Pressable key={key} onPress={() => !c.muted && setSelected(key)} style={styles.cell}>
+                  {/* Тодотгол нь нүдэн дотор тогтмол хэмжээтэй хайрцаг.
+                      Нүд дээр нь шууд тавибал хүрээ/дэвсгэр нүдийг сунгаж,
+                      мөрүүд харилцан адилгүй өндөртэй болоод хөршөө дарна. */}
+                  <View
                     style={[
-                      styles.cellText,
-                      c.muted && styles.cellTextMuted,
-                      isToday && styles.cellTextToday,
+                      styles.pill,
+                      isToday && styles.pillToday,
+                      isSelected && !isToday && styles.pillSelected,
                     ]}
                   >
-                    {c.date.getDate()}
-                  </Text>
+                    <Text
+                      style={[
+                        styles.cellText,
+                        c.muted && styles.cellTextMuted,
+                        isToday && styles.cellTextToday,
+                      ]}
+                    >
+                      {c.date.getDate()}
+                    </Text>
+                  </View>
                   {!c.muted && busy.has(key) && !isToday && <View style={styles.dot} />}
                 </Pressable>
               )
@@ -177,26 +196,35 @@ function makeStyles(colors: BrandPalette) {
     monthText: { fontSize: 14, fontWeight: "700", color: colors.ink },
     grid: { flexDirection: "row", flexWrap: "wrap", marginTop: 12 },
     weekday: {
-      width: `${100 / 7}%`,
+      width: CELL_WIDTH,
       textAlign: "center",
       fontSize: 10,
       fontWeight: "600",
       color: colors.muted,
       paddingVertical: 6,
     },
+    // `aspectRatio` нь хувиар өгсөн өргөнөөс өндрөө тооцдог тул нүд бүр
+    // бутархай пикселээр зөрж, мөрүүд харилцан адилгүй өндөртэй болдог
+    // байв. Тогтмол өндөр нь сүлжээг жигд байлгана.
     cell: {
-      width: `${100 / 7}%`,
-      aspectRatio: 1,
+      width: CELL_WIDTH,
+      height: CELL_HEIGHT,
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: 10,
     },
-    cellToday: { backgroundColor: colors.primary },
-    cellSelected: { borderWidth: 1.5, borderColor: colors.primary },
+    pill: {
+      width: PILL_SIZE,
+      height: PILL_SIZE,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    pillToday: { backgroundColor: colors.primary },
+    pillSelected: { borderWidth: 1.5, borderColor: colors.primary },
     cellText: { fontSize: 12, color: colors.ink },
     cellTextMuted: { color: colors.muted, opacity: 0.5 },
     cellTextToday: { color: colors.onPrimary, fontWeight: "700" },
-    dot: { position: "absolute", bottom: 6, width: 4, height: 4, borderRadius: 2, backgroundColor: colors.primary },
+    dot: { position: "absolute", bottom: 4, width: 4, height: 4, borderRadius: 2, backgroundColor: colors.primary },
 
     dayTitle: { fontSize: 13, fontWeight: "700", color: colors.ink, marginTop: 20 },
     empty: { fontSize: 12, color: colors.muted, marginTop: 14, textAlign: "center" },
