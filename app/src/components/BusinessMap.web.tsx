@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from "react"
 
 import { useAppTheme } from "@/lib/theme-context"
 import {
+  MAP_ZOOM_OVERVIEW,
+  ME_DOT_COLOR,
+  ME_DOT_SIZE,
   MARKER_RING,
   MARKER_SIZE,
   TILE_ATTRIBUTION,
@@ -22,8 +25,26 @@ export type MapMarker = {
 
 type Props = {
   center: { lat: number; lng: number }
+  /**
+   * Ойртолтыг ЭНЭ түвшинд тогтооно. Орхивол одоогийн ойртолтыг хэвээр
+   * үлдээгээд зөвхөн зөөнө — сонгосон салон руу төвлөрөхөд бусад цэгүүд
+   * дэлгэцээс гарч алга болохгүйн тулд.
+   */
+  zoom?: number
   markers: MapMarker[]
+  /** Байршлын зөвшөөрөл өгөөгүй бол null — цэг нь зурагдахгүй. */
+  myLocation?: { lat: number; lng: number } | null
+  /**
+   * Төв нь өөрчлөгдөөгүй ч дахин голлуулах шаардлагатай үед нэмэгдэх тоо
+   * (хэрэглэгч зургийг чирсний дараа "миний байршил" дарах гэх мэт).
+   */
+  recenterKey?: number
   onMarkerPress: (id: string) => void
+  /**
+   * Хоосон газар дарахад дарсан цэгийн координатыг өгнө — сонголт цуцлах,
+   * эсвэл байршил сонгуулахад хоёуланд нь тохирно.
+   */
+  onMapPress?: (coords: { lat: number; lng: number }) => void
 }
 
 type Leaflet = typeof import("leaflet")
@@ -38,7 +59,15 @@ type Leaflet = typeof import("leaflet")
  * Суурь tile болон marker-ийн төрх нь `lib/map-style.ts`-ээс ирэх тул
  * native хувилбартай ижил харагдана.
  */
-export function BusinessMap({ center, markers, onMarkerPress }: Props) {
+export function BusinessMap({
+  center,
+  zoom,
+  markers,
+  myLocation,
+  recenterKey = 0,
+  onMarkerPress,
+  onMapPress,
+}: Props) {
   const { scheme, colors } = useAppTheme()
   const containerRef = useRef<HTMLDivElement>(null)
   const tileRef = useRef<import("leaflet").TileLayer | null>(null)
@@ -56,6 +85,11 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
     pressRef.current = onMarkerPress
   }, [onMarkerPress])
 
+  const mapPressRef = useRef(onMapPress)
+  useEffect(() => {
+    mapPressRef.current = onMapPress
+  }, [onMapPress])
+
   // Зураг үүсгэх effect нь `scheme`-ийг хамааралдаа авбал горим солигдоход
   // бүхэл зураг дахин үүсэж, харагдац нь тэглэгдэнэ — ref-ээр уншина.
   const schemeRef = useRef(scheme)
@@ -70,7 +104,10 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
     void import("leaflet").then((leaflet) => {
       if (cancelled || !containerRef.current || mapRef.current) return
 
-      const map = leaflet.map(containerRef.current).setView([center.lat, center.lng], 12)
+      const map = leaflet
+        .map(containerRef.current)
+        .setView([center.lat, center.lng], zoom ?? MAP_ZOOM_OVERVIEW)
+      map.on("click", (e) => mapPressRef.current?.({ lat: e.latlng.lat, lng: e.latlng.lng }))
       tileRef.current = leaflet
         .tileLayer(tileUrlFor(schemeRef.current), {
           attribution: TILE_ATTRIBUTION,
@@ -95,10 +132,25 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Эхний `setView` нь зөвхөн үүсгэх үед ажилладаг тул төв, ойртолт
+  // солигдоход тусад нь зөөнө.
+  useEffect(() => {
+    if (!ready) return
+    const map = mapRef.current
+    if (!map) return
+
+    // Ойртолт заагаагүй бол зөвхөн зөөнө — бусад цэгүүд хэвээр харагдана.
+    if (zoom == null) map.panTo([center.lat, center.lng], { duration: 0.6 })
+    else map.flyTo([center.lat, center.lng], zoom, { duration: 0.6 })
+  }, [ready, center.lat, center.lng, zoom, recenterKey])
+
   // Хайлтын үр дүн шүүгдэхэд marker-ууд өөрчлөгддөг тул тусад нь
   // тааруулна. `markers` нь дуудагдах бүрд шинэ массив ирдэг учир
   // жинхэнэ агуулга нь өөрчлөгдсөн үед л ажиллахаар түлхүүр болгов.
-  const markerKey = markers.map((m) => `${m.id}:${m.lat}:${m.lng}:${m.selected ?? 0}`).join("|")
+  const markerKey = [
+    ...markers.map((m) => `${m.id}:${m.lat}:${m.lng}:${m.selected ?? 0}`),
+    `me:${myLocation?.lat ?? ""}:${myLocation?.lng ?? ""}`,
+  ].join("|")
 
   useEffect(() => {
     const leaflet = leafletRef.current
@@ -106,6 +158,31 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
     if (!leaflet || !layer) return
 
     layer.clearLayers()
+
+    if (myLocation) {
+      const outer = ME_DOT_SIZE + MARKER_RING * 2
+      leaflet
+        .marker([myLocation.lat, myLocation.lng], {
+          icon: leaflet.divIcon({
+            className: "",
+            html: `<div style="
+              width:${ME_DOT_SIZE}px;
+              height:${ME_DOT_SIZE}px;
+              border-radius:50%;
+              background:${ME_DOT_COLOR};
+              border:${MARKER_RING}px solid ${colors.surface};
+              box-shadow:0 2px 6px rgba(26,115,232,0.45);
+            "></div>`,
+            iconSize: [outer, outer],
+            iconAnchor: [outer / 2, outer / 2],
+          }),
+          // Салоны цэгүүдийн доогуур — дарахад саад болохгүй.
+          zIndexOffset: -1000,
+          interactive: false,
+          keyboard: false,
+        })
+        .addTo(layer)
+    }
 
     for (const m of markers) {
       const size = m.selected ? MARKER_SIZE + 10 : MARKER_SIZE

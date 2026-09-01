@@ -18,6 +18,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { BusinessMap } from "@/components/BusinessMap"
+import { MAP_ZOOM_OVERVIEW } from "@/lib/map-style"
 import { useAppTheme } from "@/lib/theme-context"
 import type { BrandPalette } from "@/constants/theme"
 import {
@@ -174,6 +175,7 @@ export default function BusinessDetailScreen() {
               <View style={styles.mapWrap} pointerEvents="none">
                 <BusinessMap
                   center={{ lat: business.lat as number, lng: business.lng as number }}
+                  zoom={MAP_ZOOM_OVERVIEW}
                   markers={[
                     {
                       id: business.id,

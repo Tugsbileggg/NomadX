@@ -1,15 +1,24 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Platform, StyleSheet, Text, View } from "react-native"
-import MapView, { Marker, PROVIDER_DEFAULT, UrlTile } from "react-native-maps"
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  UrlTile,
+  type MapPressEvent,
+} from "react-native-maps"
 
 import type { BrandPalette } from "@/constants/theme"
 import { useAppTheme } from "@/lib/theme-context"
 import {
+  MAP_ZOOM_OVERVIEW,
+  ME_DOT_COLOR,
+  ME_DOT_SIZE,
   MARKER_RING,
   MARKER_SIZE,
   TILE_ATTRIBUTION,
   TILE_MAX_ZOOM,
   TILE_SIZE_PX,
+  deltaForZoom,
   tileUrlFor,
 } from "@/lib/map-style"
 
@@ -24,8 +33,26 @@ export type MapMarker = {
 
 type Props = {
   center: { lat: number; lng: number }
+  /**
+   * Ойртолтыг ЭНЭ түвшинд тогтооно. Орхивол одоогийн ойртолтыг хэвээр
+   * үлдээгээд зөвхөн зөөнө — сонгосон салон руу төвлөрөхөд бусад цэгүүд
+   * дэлгэцээс гарч алга болохгүйн тулд.
+   */
+  zoom?: number
   markers: MapMarker[]
+  /** Байршлын зөвшөөрөл өгөөгүй бол null — цэг нь зурагдахгүй. */
+  myLocation?: { lat: number; lng: number } | null
+  /**
+   * Төв нь өөрчлөгдөөгүй ч дахин голлуулах шаардлагатай үед нэмэгдэх тоо
+   * (хэрэглэгч зургийг чирсний дараа "миний байршил" дарах гэх мэт).
+   */
+  recenterKey?: number
   onMarkerPress: (id: string) => void
+  /**
+   * Хоосон газар дарахад дарсан цэгийн координатыг өгнө — сонголт цуцлах,
+   * эсвэл байршил сонгуулахад хоёуланд нь тохирно.
+   */
+  onMapPress?: (coords: { lat: number; lng: number }) => void
 }
 
 /**
@@ -37,24 +64,66 @@ type Props = {
  * Аль нэгийг нь орхивол тухайн платформ дээр хоёр зураг давхарлаж
  * харагдана.
  */
-export function BusinessMap({ center, markers, onMarkerPress }: Props) {
+export function BusinessMap({
+  center,
+  zoom,
+  markers,
+  myLocation,
+  recenterKey = 0,
+  onMarkerPress,
+  onMapPress,
+}: Props) {
   const { scheme, colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
+  const mapRef = useRef<MapView>(null)
+
+  // `initialRegion` нь зөвхөн эхний зураглалд үйлчилдэг тул төв солигдоход
+  // гараар шилжүүлэхээс өөр аргагүй. `center` объект нь дуудалт бүрд шинээр
+  // ирдэг учир координатыг нь тусад нь хамааралд өгөв.
+  useEffect(() => {
+    if (zoom == null) {
+      // `animateCamera` нь ойртолтод хүрэхгүй тул зөвхөн зөөнө.
+      mapRef.current?.animateCamera(
+        { center: { latitude: center.lat, longitude: center.lng } },
+        { duration: 400 },
+      )
+      return
+    }
+
+    const delta = deltaForZoom(zoom)
+    mapRef.current?.animateToRegion(
+      {
+        latitude: center.lat,
+        longitude: center.lng,
+        latitudeDelta: delta,
+        longitudeDelta: delta,
+      },
+      400,
+    )
+  }, [center.lat, center.lng, zoom, recenterKey])
 
   return (
     <View style={styles.fill}>
       <MapView
+        ref={mapRef}
         provider={PROVIDER_DEFAULT}
         mapType={Platform.OS === "android" ? "none" : "standard"}
         style={styles.fill}
         // Растер tile нь эргүүлэх/налуулахад муухай сунадаг тул хаав.
         rotateEnabled={false}
         pitchEnabled={false}
+        onPress={(e: MapPressEvent) => {
+          // Android дээр marker дарахад газрын зургийн `onPress` мөн
+          // дуудагддаг — тэр үед сонголтыг шууд цуцалж болохгүй.
+          if (e.nativeEvent.action === "marker-press") return
+          const c = e.nativeEvent.coordinate
+          onMapPress?.({ lat: c.latitude, lng: c.longitude })
+        }}
         initialRegion={{
           latitude: center.lat,
           longitude: center.lng,
-          latitudeDelta: 0.08,
-          longitudeDelta: 0.08,
+          latitudeDelta: deltaForZoom(zoom ?? MAP_ZOOM_OVERVIEW),
+          longitudeDelta: deltaForZoom(zoom ?? MAP_ZOOM_OVERVIEW),
         }}
       >
         <UrlTile
@@ -65,6 +134,8 @@ export function BusinessMap({ center, markers, onMarkerPress }: Props) {
           shouldReplaceMapContent
           zIndex={-1}
         />
+
+        {myLocation && <MeMarker lat={myLocation.lat} lng={myLocation.lng} />}
 
         {markers.map((m) => (
           <BrandMarker key={m.id} marker={m} onPress={() => onMarkerPress(m.id)} />
@@ -120,7 +191,40 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
   )
 }
 
+/**
+ * Хэрэглэгчийн байршил. Салоны marker-аас өөр өнгө, өөр хэлбэртэй бөгөөд
+ * дарагдахгүй — зөвхөн "би энд байна" гэдгийг заана.
+ */
+function MeMarker({ lat, lng }: { lat: number; lng: number }) {
+  const { colors } = useAppTheme()
+  const styles = useMemo(() => makeStyles(colors), [colors])
+
+  // BrandMarker-тэй ижил шалтгаан: шууд `false`-ээр эхлүүлбэл iOS дээр
+  // marker хоосон гарч ирдэг.
+  const [tracksViewChanges, setTracksViewChanges] = useState(true)
+  useEffect(() => {
+    const id = setTimeout(() => setTracksViewChanges(false), 300)
+    return () => clearTimeout(id)
+  }, [])
+
+  return (
+    <Marker
+      coordinate={{ latitude: lat, longitude: lng }}
+      anchor={{ x: 0.5, y: 0.5 }}
+      tracksViewChanges={tracksViewChanges}
+      // Дарах боломжгүй — зөвхөн "би энд байна" гэдгийг заана.
+      accessibilityLabel="Миний байршил"
+    >
+      <View style={styles.pinWrap}>
+        <View style={styles.meDot} />
+      </View>
+    </Marker>
+  )
+}
+
 const PIN_OUTER = MARKER_SIZE + MARKER_RING * 2
+
+const ME_OUTER = ME_DOT_SIZE + MARKER_RING * 2
 
 function makeStyles(colors: BrandPalette) {
   return StyleSheet.create({
@@ -168,6 +272,24 @@ function makeStyles(colors: BrandPalette) {
     }),
   },
   pinLabelText: { fontSize: 11, fontWeight: "700", color: colors.ink },
+  meDot: {
+    width: ME_OUTER,
+    height: ME_OUTER,
+    borderRadius: ME_OUTER / 2,
+    backgroundColor: ME_DOT_COLOR,
+    borderWidth: MARKER_RING,
+    borderColor: "#fff",
+    ...Platform.select({
+      ios: {
+        shadowColor: ME_DOT_COLOR,
+        shadowOpacity: 0.45,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+      },
+      android: { elevation: 4 },
+      default: {},
+    }),
+  },
   attribution: {
     position: "absolute",
     right: 6,

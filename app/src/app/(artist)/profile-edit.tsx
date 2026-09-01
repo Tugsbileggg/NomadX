@@ -8,7 +8,9 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
 import { AuthInput } from "@/components/auth/AuthInput"
+import { BusinessMap } from "@/components/BusinessMap"
 import type { BrandPalette } from "@/constants/theme"
+import { MAP_ZOOM_OVERVIEW, MAP_ZOOM_PIN, UB_CENTER } from "@/lib/map-style"
 import {
   ARTIST_CATEGORIES,
   fetchArtistProfile,
@@ -33,6 +35,18 @@ export default function ArtistProfileEditScreen() {
   const [categories, setCategories] = useState<string[]>([])
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [coverUrl, setCoverUrl] = useState<string | null>(null)
+  // Газрын зураг дээрх цэг. `pinMoved` нь энэ удаагийн засварт эзэн нь
+  // өөрөө хөдөлгөсөн эсэхийг заана — хөдөлгөөгүй бол хаяг өөрчлөгдөхөд
+  // geocode-д даатгана.
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [pinMoved, setPinMoved] = useState(false)
+  // Зургийн харагдацыг ачаалах үед нэг л удаа тогтооно — цэг тавих бүрд
+  // төвлөрүүлбэл зураг үсэрч, ажиллахад эвгүй болно. Хадгалсан цэгтэй бол
+  // түүн дээр ойртоно, үгүй бол хот бүхэлдээ харагдаж хайх боломж өгнө.
+  const [mapView, setMapView] = useState<{
+    center: { lat: number; lng: number }
+    zoom: number
+  } | null>(null)
 
   const [busy, setBusy] = useState(false)
   const [uploading, setUploading] = useState<"logo" | "cover" | null>(null)
@@ -52,6 +66,14 @@ export default function ArtistProfileEditScreen() {
       setCategories(p.categories)
       setLogoUrl(p.logoUrl)
       setCoverUrl(p.coverUrl)
+
+      const saved = p.lat != null && p.lng != null ? { lat: p.lat, lng: p.lng } : null
+      setCoords(saved)
+      setMapView(
+        saved
+          ? { center: saved, zoom: MAP_ZOOM_PIN }
+          : { center: UB_CENTER, zoom: MAP_ZOOM_OVERVIEW },
+      )
     }
     setLoading(false)
   }
@@ -103,7 +125,14 @@ export default function ArtistProfileEditScreen() {
   async function onSave() {
     setBusy(true)
     setMessage(null)
-    const failed = await saveArtistProfile({ name, phone, address, about, categories })
+    const failed = await saveArtistProfile({
+      name,
+      phone,
+      address,
+      about,
+      categories,
+      coords: pinMoved ? coords : null,
+    })
     setBusy(false)
     if (failed) {
       setMessage({ text: failed, isError: true })
@@ -180,8 +209,28 @@ export default function ArtistProfileEditScreen() {
               onChangeText={setAddress}
             />
           </View>
+          <Text style={styles.label}>Байршил</Text>
+          <View style={styles.mapBox}>
+            <BusinessMap
+              center={mapView?.center ?? UB_CENTER}
+              zoom={mapView?.zoom ?? MAP_ZOOM_OVERVIEW}
+              markers={
+                coords
+                  ? [{ id: "pin", lat: coords.lat, lng: coords.lng, title: name || "Байршил", selected: true }]
+                  : []
+              }
+              onMarkerPress={() => {}}
+              onMapPress={(c) => {
+                setCoords(c)
+                setPinMoved(true)
+              }}
+            />
+          </View>
           <Text style={styles.subHint}>
-            Хаягаа өөрчилбөл газрын зураг дээрх байршил чинь автоматаар шинэчлэгдэнэ.
+            {coords
+              ? `Газрын зураг дээр дарж цэгээ зөөнө. Одоогийн цэг: ${coords.lat.toFixed(5)}, ${coords.lng.toFixed(5)}`
+              : "Газрын зураг дээр дарж байршлаа тэмдэглэнэ үү."}
+            {"\n"}Тэмдэглээгүй бол хаягаас чинь хайхыг оролдох бөгөөд олдохгүй байж болно.
           </Text>
 
           <Text style={styles.label}>Чиглэл</Text>
@@ -276,6 +325,13 @@ function makeStyles(colors: BrandPalette) {
     logoHint: { fontSize: 12, fontWeight: "600", color: colors.primary },
 
     card: { backgroundColor: colors.surface, borderRadius: 16, padding: 16, gap: 12, marginTop: 18 },
+    mapBox: {
+      height: 220,
+      marginTop: 8,
+      borderRadius: 16,
+      overflow: "hidden",
+      backgroundColor: colors.surfaceTint2,
+    },
     subHint: { fontSize: 11, color: colors.muted, lineHeight: 16, marginTop: 8 },
     label: { fontSize: 12, fontWeight: "600", color: colors.body, marginTop: 20 },
     chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginTop: 8 },

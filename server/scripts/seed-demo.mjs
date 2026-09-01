@@ -8,6 +8,11 @@
  * дарж бичнэ. Тиймээс demo өгөгдлөө шинэчлэхэд дахин ажиллуулахад л хангалттай.
  *
  *   cd server && npm run seed:demo
+ *
+ * Координатууд нь хаягийн дүүрэг/хорооны ойролцоо төв цэг — үзүүлэх
+ * зорилготой тул нарийвчилсан барилгын байрлал биш. Тавихгүй орхивол
+ * бизнесүүд газрын зурагт огт гарахгүй, эсвэл өмнөх утгаа хадгалж
+ * хоорондоо давхцана.
  */
 import { createClient } from "@supabase/supabase-js"
 import { readFileSync } from "node:fs"
@@ -50,6 +55,8 @@ const USERS = [
       phone: "77112233",
       email: "contact@goosalkhin.demo",
       address: "Хан-Уул дүүрэг, 3-р хороо, Зайсан",
+      lat: 47.8895,
+      lng: 106.9145,
       about: "Байгалийн гаралтай бүтээгдэхүүн ашигладаг гоо сайхны төв.",
       staff_size: "1-5",
       status: "approved",
@@ -68,6 +75,8 @@ const USERS = [
       phone: "77223300",
       email: "info@miragespa.demo",
       address: "Баянзүрх дүүрэг, 4-р хороо, Мишээл town",
+      lat: 47.9088,
+      lng: 106.9635,
       about: "Тайвшрал, арьс арчилгаа, массажийн иж бүрэн спа төв.",
       staff_size: "6-15",
       status: "approved",
@@ -86,6 +95,8 @@ const USERS = [
       phone: "77334400",
       email: "hello@nominbeauty.demo",
       address: "Сүхбаатар дүүрэг, 1-р хороо, Их сургуулийн гудамж",
+      lat: 47.9232,
+      lng: 106.9195,
       about: "Орчин үеийн загварын үсчин, гоо сайхны lounge.",
       staff_size: "6-15",
       status: "approved",
@@ -104,6 +115,8 @@ const USERS = [
       phone: "77445500",
       email: "oyu.beauty@lumina.demo",
       address: "Сонгинохайрхан дүүрэг, 20-р хороо",
+      lat: 47.9175,
+      lng: 106.806,
       about: "Дүүргийн түвшний тав тухтай гоо сайхны төв.",
       staff_size: "1-5",
       status: "submitted",
@@ -122,6 +135,8 @@ const USERS = [
       phone: "77556600",
       email: "newstyle@lumina.demo",
       address: "Багануур дүүрэг, 2-р хороо",
+      lat: 47.825,
+      lng: 108.345,
       about: "Шинээр нээгдэж буй, залуучуудад чиглэсэн салон.",
       staff_size: "1-5",
       status: "draft",
@@ -142,6 +157,8 @@ const USERS = [
       phone: "77223344",
       email: "sarangoo.artist@lumina.demo",
       address: "Баянгол дүүрэг, 5-р хороо",
+      lat: 47.9145,
+      lng: 106.862,
       about: "Хувиараа ажилладаг гэрлэн болон өдөр тутмын нүүр будалтын мастер.",
       staff_size: "1-5",
       status: "approved",
@@ -160,6 +177,8 @@ const USERS = [
       phone: "77334455",
       email: "uyanga.artist@lumina.demo",
       address: "Чингэлтэй дүүрэг, 1-р хороо",
+      lat: 47.928,
+      lng: 106.9145,
       about: "Хумсны дизайны хувиараа мастер.",
       staff_size: "1-5",
       status: "approved",
@@ -178,6 +197,8 @@ const USERS = [
       phone: "77445566",
       email: "otgonbayar.hair@lumina.demo",
       address: "Сүхбаатар дүүрэг, 6-р хороо",
+      lat: 47.933,
+      lng: 106.93,
       about: "10 гаруй жилийн туршлагатай үсчин мастер.",
       staff_size: "1-5",
       status: "approved",
@@ -196,6 +217,8 @@ const USERS = [
       phone: "77556677",
       email: "tsetsegmaa.lash@lumina.demo",
       address: "Хан-Уул дүүрэг, 2-р хороо",
+      lat: 47.8985,
+      lng: 106.889,
       about: "Сормуусны extension, laminating мэргэшсэн мастер.",
       staff_size: "1-5",
       status: "under_review",
@@ -214,6 +237,8 @@ const USERS = [
       phone: "77667788",
       email: "bolormaa.brows@lumina.demo",
       address: "Баянзүрх дүүрэг, 11-р хороо",
+      lat: 47.9165,
+      lng: 106.976,
       about: "Хөмсөг татуулга, микроблэйдингийн мастер.",
       staff_size: "1-5",
       status: "draft",
@@ -406,6 +431,8 @@ async function main() {
       phone: b.phone,
       email: b.email,
       address: b.address,
+      lat: b.lat,
+      lng: b.lng,
       about: b.about,
       staff_size: b.staff_size,
       status: b.status,

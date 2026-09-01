@@ -26,6 +26,9 @@ export type ArtistProfile = {
   categories: string[]
   logoUrl: string | null
   coverUrl: string | null
+  /** Газрын зураг дээрх байршил — хэзээ ч тавиагүй бол null. */
+  lat: number | null
+  lng: number | null
 }
 
 export async function fetchArtistProfile(): Promise<ArtistProfile | null> {
@@ -36,7 +39,7 @@ export async function fetchArtistProfile(): Promise<ArtistProfile | null> {
 
   const { data: business } = await supabase
     .from("businesses")
-    .select("id, name, phone, address, about, logo_path, cover_path")
+    .select("id, name, phone, address, about, logo_path, cover_path, lat, lng")
     .eq("owner_id", user.id)
     .maybeSingle()
   if (!business) return null
@@ -55,16 +58,24 @@ export async function fetchArtistProfile(): Promise<ArtistProfile | null> {
     categories: (categories ?? []).map((c) => c.category),
     logoUrl: publicAssetUrl(business.logo_path),
     coverUrl: publicAssetUrl(business.cover_path),
+    lat: business.lat,
+    lng: business.lng,
   }
 }
 
 /**
  * Профайлын мэдээллийг хадгална.
  *
- * Хаяг өөрчлөгдсөн үед л дахин geocode хийнэ — Nominatim-ийг дэмий
- * дуудахгүй. Geocode амжилтгүй бол хуучин координат хэвээр үлдэнэ:
- * хаяг шинэчлэгдсэн ч газрын зураг дээр хуучин цэг дээр харагдана,
- * гэхдээ хадгалалт саатахгүй.
+ * Байршлыг хоёр эх сурвалжаас авна:
+ *
+ * 1. `coords` — эзэн нь газрын зураг дээр гараар тавьсан цэг. Үргэлж
+ *    давуу эрхтэй: хаягийн бичвэрээс таасан цэгээс эзний өөрийнх нь
+ *    тэмдэглэсэн байршил үргэлж зөв.
+ * 2. Үгүй бол хаяг өөрчлөгдсөн тохиолдолд geocode. Nominatim-ийг дэмий
+ *    дуудахгүйн тулд зөвхөн өөрчлөгдсөн үед.
+ *
+ * Аль нь ч гарахгүй бол хуучин координат хэвээр үлдэнэ — хадгалалт
+ * geocoding-оос болж саатах ёсгүй.
  */
 export async function saveArtistProfile(input: {
   name: string
@@ -72,6 +83,8 @@ export async function saveArtistProfile(input: {
   address: string
   about: string
   categories: string[]
+  /** Газрын зураг дээр гараар тавьсан цэг. */
+  coords?: { lat: number; lng: number } | null
 }): Promise<string | null> {
   const {
     data: { user },
@@ -90,7 +103,9 @@ export async function saveArtistProfile(input: {
   if (!business) return "Бизнесийн бүртгэл олдсонгүй."
 
   const address = input.address.trim()
-  const coords = address && address !== business.address ? await geocodeAddress(address) : null
+  const coords =
+    input.coords ??
+    (address && address !== business.address ? await geocodeAddress(address) : null)
 
   const { error } = await supabase
     .from("businesses")

@@ -19,6 +19,11 @@ export default function ArtistPanelTabs() {
     <NativeTabs
       backgroundColor={colors.background}
       indicatorColor={colors.backgroundElement}
+      // iOS дээр гүйлгэлт ирмэгтээ хүрэхэд tab bar-ын `backgroundColor` нь
+      // `null`, blur нь `none` болж бүрэн тунгалаг болдог — тэгэхээр ард
+      // байгаа агуулга цэсний бичгээр дамжин харагдана. Хуудас бүр өөр
+      // өөрөөр харагдахгүйн тулд хаав.
+      disableTransparentOnScrollEdge
       labelStyle={{ color: colors.text }}>
       <NativeTabs.Trigger name="bookings">
         <Label>Захиалга</Label>
