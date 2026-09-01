@@ -19,6 +19,8 @@ export type ArtistBooking = {
   id: string
   status: BookingStatus
   scheduledAt: string
+  /** Захиалга ирсэн мөч — жагсаалт үүгээр эрэмбэлэгдэнэ. */
+  createdAt: string
   note: string | null
   /** Бүртгэлтэй хэрэглэгч, эсвэл панелаас бүртгэсэн зочин (0019). */
   customer: { name: string; phone: string | null; isGuest: boolean } | null
@@ -56,9 +58,11 @@ export async function fetchArtistBookings(): Promise<ArtistBookings> {
 
   const { data: rows } = await supabase
     .from("bookings")
-    .select("id, status, scheduled_at, note, customer_id, guest_name, guest_phone")
+    .select("id, status, scheduled_at, created_at, note, customer_id, guest_name, guest_phone")
     .eq("business_id", business.id)
-    .order("scheduled_at", { ascending: false })
+    // Хамгийн сүүлд ИРСЭН нь дээрээ. Үйлчилгээний цагаар (`scheduled_at`)
+    // эрэмбэлбэл шинэ захиалга жагсаалтын дунд ороод анзаарагдахгүй өнгөрдөг.
+    .order("created_at", { ascending: false })
 
   if (!rows?.length) return { ...EMPTY, businessId: business.id }
 
@@ -105,6 +109,7 @@ export async function fetchArtistBookings(): Promise<ArtistBookings> {
         id: r.id,
         status: r.status,
         scheduledAt: r.scheduled_at,
+        createdAt: r.created_at,
         note: r.note,
         customer: p
           ? { name: p.full_name, phone: p.phone, isGuest: false }

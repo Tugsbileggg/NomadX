@@ -14,6 +14,7 @@ import {
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+import { NotificationBell } from "@/components/NotificationBell"
 import type { BrandPalette } from "@/constants/theme"
 import type { BookingStatus } from "@/lib/db-types"
 import {
@@ -24,7 +25,7 @@ import {
   STATUS_LABEL,
   type ArtistBooking,
 } from "@/lib/artist-bookings"
-import { mnDateLabel, mnTimeLabel } from "@/lib/mn-date"
+import { mnDateLabel, mnTimeAgo, mnTimeLabel } from "@/lib/mn-date"
 import { useAppTheme } from "@/lib/theme-context"
 
 const FILTERS: { label: string; value: BookingStatus | "all" }[] = [
@@ -32,6 +33,7 @@ const FILTERS: { label: string; value: BookingStatus | "all" }[] = [
   { label: "Хүлээгдэж буй", value: "pending" },
   { label: "Баталгаажсан", value: "confirmed" },
   { label: "Дууссан", value: "completed" },
+  { label: "Цуцлагдсан", value: "cancelled" },
 ]
 
 /** Артистын захиалгууд — баталгаажуулах, дуусгах, нэхэмжлэх. */
@@ -77,7 +79,10 @@ export default function ArtistBookingsScreen() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <Text style={styles.title}>Захиалга</Text>
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>Захиалга</Text>
+        <NotificationBell />
+      </View>
       <View style={styles.statRow}>
         <Stat label="Өнөөдөр" value={counts.today} styles={styles} />
         <Stat label="Хүлээгдэж буй" value={counts.pending} styles={styles} />
@@ -192,6 +197,8 @@ function BookingCard({
           <Text style={styles.when}>
             {mnDateLabel(at)} · {mnTimeLabel(at)}
           </Text>
+          {/* Жагсаалт ирсэн дарааллаар эрэмбэлэгддэг тул хэзээ ирснийг заана. */}
+          <Text style={styles.arrived}>{mnTimeAgo(booking.createdAt)} ирсэн</Text>
         </View>
         <View style={[styles.pill, statusStyle(booking.status, colors)]}>
           <Text style={styles.pillText}>{STATUS_LABEL[booking.status]}</Text>
@@ -292,7 +299,14 @@ function statusStyle(status: BookingStatus, colors: BrandPalette) {
 function makeStyles(colors: BrandPalette) {
   return StyleSheet.create({
     safe: { flex: 1, backgroundColor: colors.surfaceTint },
-    title: { fontSize: 20, fontWeight: "700", color: colors.ink, marginTop: 12, marginHorizontal: 20 },
+    titleRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: 12,
+      marginHorizontal: 20,
+    },
+    title: { fontSize: 20, fontWeight: "700", color: colors.ink },
 
     statRow: { flexDirection: "row", gap: 10, marginHorizontal: 20, marginTop: 14 },
     stat: { flex: 1, backgroundColor: colors.surface, borderRadius: 14, padding: 12, gap: 2 },
@@ -337,6 +351,7 @@ function makeStyles(colors: BrandPalette) {
       paddingVertical: 2,
     },
     when: { fontSize: 12, color: colors.body, marginTop: 2 },
+    arrived: { fontSize: 11, color: colors.muted, marginTop: 1 },
     pill: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
     pillText: { fontSize: 10, fontWeight: "700", color: colors.ink },
 

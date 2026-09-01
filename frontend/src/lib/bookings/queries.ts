@@ -61,7 +61,8 @@ export async function fetchPanelBookings(status?: BookingStatus): Promise<PanelB
     .from("bookings")
     .select("id, status, scheduled_at, note, created_at, customer_id, guest_name, guest_phone")
     .eq("business_id", business.id)
-    .order("scheduled_at", { ascending: false });
+    // Хамгийн сүүлд ИРСЭН нь дээрээ — аппын artist-bookings.ts-тэй ижил.
+    .order("created_at", { ascending: false });
 
   if (status) query = query.eq("status", status);
 
