@@ -14,6 +14,7 @@ import { useEffect } from 'react';
 import { Platform, View } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { InAppNotice } from '@/components/InAppNotice';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
 import { AppThemeProvider, useAppTheme } from '@/lib/theme-context';
 
@@ -89,27 +90,32 @@ function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
   const isArtist = account?.role === "artist";
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={passwordRecovery}>
-        <Stack.Screen name="reset-password" />
-      </Stack.Protected>
-      <Stack.Protected guard={signedIn && isArtist}>
-        <Stack.Screen name="(artist)" />
-      </Stack.Protected>
-      <Stack.Protected guard={signedIn && !isArtist}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="business/[id]" />
-        <Stack.Screen name="book/[id]" />
-        <Stack.Screen name="favourites" />
-        <Stack.Screen name="share" />
-      </Stack.Protected>
-      <Stack.Protected guard={signedIn}>
-        {/* Мэдэгдэл хоёр талд хоёуланд нь хэрэгтэй. */}
-        <Stack.Screen name="notifications" />
-      </Stack.Protected>
-      <Stack.Protected guard={!session && !passwordRecovery}>
-        <Stack.Screen name="(auth)" />
-      </Stack.Protected>
-    </Stack>
+    <View style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={passwordRecovery}>
+          <Stack.Screen name="reset-password" />
+        </Stack.Protected>
+        <Stack.Protected guard={signedIn && isArtist}>
+          <Stack.Screen name="(artist)" />
+        </Stack.Protected>
+        <Stack.Protected guard={signedIn && !isArtist}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="business/[id]" />
+          <Stack.Screen name="book/[id]" />
+          <Stack.Screen name="favourites" />
+          <Stack.Screen name="share" />
+        </Stack.Protected>
+        <Stack.Protected guard={signedIn}>
+          {/* Мэдэгдэл хоёр талд хоёуланд нь хэрэгтэй. */}
+          <Stack.Screen name="notifications" />
+        </Stack.Protected>
+        <Stack.Protected guard={!session && !passwordRecovery}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+      </Stack>
+      {/* Мэдэгдлийн самбар бүх дэлгэцийн дээгүүр гарах ёстой тул
+          Stack-ийн гадна, түүний дараа байрлана. */}
+      <InAppNotice />
+    </View>
   );
 }

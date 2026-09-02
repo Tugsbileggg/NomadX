@@ -66,6 +66,78 @@ export async function deleteNotification(id: string): Promise<void> {
   await supabase.from("notifications").delete().eq("id", id)
 }
 
+/* ------------------------------------------------------- шууд дамжуулалт */
+
+type Listener = (n: AppNotification) => void
+const listeners = new Set<Listener>()
+
+/**
+ * Шинэ мэдэгдэл ирэхэд дуудагдана. Салгах функц буцаана.
+ *
+ * Хэд хэдэн газар сонсож болно (дэлгэц дээрх самбар, хонхны тоолуур) —
+ * тэд бүгд НЭГ Realtime сувгийг хуваалцана.
+ */
+export function onNotification(fn: Listener): () => void {
+  listeners.add(fn)
+  return () => {
+    listeners.delete(fn)
+  }
+}
+
+/**
+ * Өөрийн мэдэгдлийг Realtime-аар сонсоно.
+ *
+ * Зөвхөн НЭГ газраас дуудна (`InAppNotice`) — суваг тус бүр вэб сокет
+ * эзэлдэг тул хэрэглэгч бүрд нэгээс илүү нээх нь илүүц.
+ *
+ * `filter` нь серверийн талд шүүнэ. RLS давхар хамгаална (0020-ийн
+ * `notifications_select_own`) тул бусдын мөр энд хэзээ ч ирэхгүй.
+ * Хүснэгт нь Realtime-ийн publication-д байх ёстой (0022).
+ */
+export function subscribeToNotifications(profileId: string): () => void {
+  const channel = supabase
+    .channel(`notifications:${profileId}`)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `profile_id=eq.${profileId}`,
+      },
+      (payload) => {
+        const row = payload.new as {
+          id: string
+          kind: NotificationKind
+          title: string
+          body: string | null
+          booking_id: string | null
+          business_id: string | null
+          read_at: string | null
+          created_at: string
+        }
+
+        const notification: AppNotification = {
+          id: row.id,
+          kind: row.kind,
+          title: row.title,
+          body: row.body,
+          bookingId: row.booking_id,
+          businessId: row.business_id,
+          isRead: row.read_at !== null,
+          createdAt: row.created_at,
+        }
+
+        for (const fn of listeners) fn(notification)
+      },
+    )
+    .subscribe()
+
+  return () => {
+    void supabase.removeChannel(channel)
+  }
+}
+
 /** Төрөл бүрийн дүрс — жагсаалтад хурдан ялгахад. */
 export const NOTIFICATION_ICON: Record<NotificationKind, string> = {
   booking_created: "calendar-outline",

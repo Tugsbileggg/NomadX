@@ -1,10 +1,10 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect, useRouter } from "expo-router"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 
 import type { BrandPalette } from "@/constants/theme"
-import { fetchUnreadCount } from "@/lib/notifications"
+import { fetchUnreadCount, onNotification } from "@/lib/notifications"
 import { useAppTheme } from "@/lib/theme-context"
 
 /**
@@ -33,6 +33,11 @@ export function NotificationBell({ size = 20 }: { size?: number }) {
       }
     }, []),
   )
+
+  // Апп нээлттэй байхад шинэ мэдэгдэл ирвэл дэлгэцээ дахин нээх хүртэл
+  // хүлээлгүй тоолуур шууд өснө — самбар гарч ирээд хонх хөдөлгөөнгүй
+  // байвал хоёр нь зөрчилдөнө.
+  useEffect(() => onNotification(() => setUnread((n) => n + 1)), [])
 
   return (
     <Pressable hitSlop={8} onPress={() => router.push("/notifications")}>
