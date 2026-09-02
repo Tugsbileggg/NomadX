@@ -68,12 +68,11 @@ export default function BookScreen() {
     const remaining = MAX_IMAGES - images.length
     if (remaining <= 0) return
 
-    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!granted) {
-      setError("Зураг хавсаргахын тулд зургийн сангийн зөвшөөрөл өгнө үү.")
-      return
-    }
-
+    // Зургийн сангаас сонгоход зөвшөөрөл ШААРДЛАГАГҮЙ — iOS нь системийн
+    // сонгогчийг ашигладаг тул апп зургийн санд хандахгүй. Урьд нь энд
+    // `requestMediaLibraryPermissionsAsync()` дуудаж байсан нь эсрэгээрээ
+    // хааж байв: нэг удаа татгалзсан хэрэглэгчид iOS дахин асуухгүй, шууд
+    // `granted: false` буцаадаг тул сонгогч хэзээ ч нээгдэхгүй болдог.
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsMultipleSelection: true,
@@ -141,7 +140,12 @@ export default function BookScreen() {
             {business?.name} таны хүсэлтийг хараад баталгаажуулна. Үнийн дүнг үйлчилгээ
             дууссаны дараа тэд оруулна. &ldquo;Захиалга&rdquo; tab-аас хянана.
           </Text>
-          <AuthButton label="Захиалгууд руу очих" onPress={() => router.replace("/(tabs)/bookings")} />
+          <View style={styles.successAction}>
+            <AuthButton
+              label="Захиалгууд руу очих"
+              onPress={() => router.replace("/(tabs)/bookings")}
+            />
+          </View>
         </View>
       </SafeAreaView>
     )
@@ -322,5 +326,8 @@ function makeStyles(colors: BrandPalette) {
     successIcon: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.success, alignItems: "center", justifyContent: "center", marginBottom: 4 },
     successTitle: { fontSize: 18, fontWeight: "700", color: colors.ink, textAlign: "center" },
     successBody: { fontSize: 13, color: colors.body, textAlign: "center", lineHeight: 19, marginBottom: 12 },
+    // Эцэг нь агуулгаа голлуулдаг тул товчийг тусад нь сунгана — аппын
+    // бусад үндсэн товчнуудтай ижил бүтэн өргөнтэй болно.
+    successAction: { alignSelf: "stretch" },
   })
 }

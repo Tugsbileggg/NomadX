@@ -45,6 +45,11 @@ function makeStyles(colors: BrandPalette) {
       backgroundColor: colors.primary,
       alignItems: "center",
       justifyContent: "center",
+      // Ихэнх дэлгэц дээр товч бүтэн өргөнөөр сунадаг тул энэ зай
+      // мэдэгддэггүй. Харин голлуулсан (`alignItems: "center"`) эцэг дотор
+      // товч нь текстийнхээ яг өргөнөөр агшдаг — тэр үед 999-ийн радиус
+      // хоёр үзүүрээсээ текст рүү орж, бичиг таслагдсан мэт харагдана.
+      paddingHorizontal: 28,
     },
     buttonOutline: {
       backgroundColor: "transparent",

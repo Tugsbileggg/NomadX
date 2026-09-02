@@ -46,12 +46,11 @@ export default function ArtistDocumentsScreen() {
   async function onPick(kind: DocumentKind) {
     if (!businessId) return
 
-    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!granted) {
-      setError("Зураг сонгохын тулд зургийн сангийн зөвшөөрөл өгнө үү.")
-      return
-    }
-
+    // Зургийн сангаас сонгоход зөвшөөрөл ШААРДЛАГАГҮЙ — iOS нь системийн
+    // сонгогчийг ашигладаг тул апп зургийн санд хандахгүй. Урьд нь энд
+    // `requestMediaLibraryPermissionsAsync()` дуудаж байсан нь эсрэгээрээ
+    // хааж байв: нэг удаа татгалзсан хэрэглэгчид iOS дахин асуухгүй, шууд
+    // `granted: false` буцаадаг тул сонгогч хэзээ ч нээгдэхгүй болдог.
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       // Баримт бичиг тод байх ёстой тул чанарыг захиалгын зургаас өндөр авав.

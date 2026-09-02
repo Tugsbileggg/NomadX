@@ -85,12 +85,11 @@ export default function ArtistProfileEditScreen() {
   }
 
   async function onPickImage(kind: "logo" | "cover") {
-    const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!granted) {
-      setMessage({ text: "Зургийн сангийн зөвшөөрөл өгнө үү.", isError: true })
-      return
-    }
-
+    // Зургийн сангаас сонгоход зөвшөөрөл ШААРДЛАГАГҮЙ — iOS нь системийн
+    // сонгогчийг ашигладаг тул апп зургийн санд хандахгүй. Урьд нь энд
+    // `requestMediaLibraryPermissionsAsync()` дуудаж байсан нь эсрэгээрээ
+    // хааж байв: нэг удаа татгалзсан хэрэглэгчид iOS дахин асуухгүй, шууд
+    // `granted: false` буцаадаг тул сонгогч хэзээ ч нээгдэхгүй болдог.
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       // Лого дөрвөлжин, ковер өргөн — хэрэглэгч өөрөө тайрна.
