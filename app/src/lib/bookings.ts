@@ -22,7 +22,7 @@ export type BookingWithBusiness = {
     logoPath: string | null
   } | null
   /** ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */
-  invoice: { amount: number; note: string | null; status: InvoiceStatus } | null
+  invoice: { id: string; amount: number; note: string | null; status: InvoiceStatus } | null
 }
 
 /** Нэвтэрсэн хэрэглэгчийн бүх захиалгыг (шинэ нь эхэндээ) бизнесийн мэдээлэлтэй нь татна. */
@@ -50,7 +50,7 @@ export async function fetchMyBookings(): Promise<BookingWithBusiness[]> {
 
   const { data: invoices } = await supabase
     .from("invoices")
-    .select("booking_id, amount, note, status")
+    .select("id, booking_id, amount, note, status")
     .in(
       "booking_id",
       rows.map((r) => r.id),
@@ -171,5 +171,21 @@ export async function bookingImageUrls(bookingId: string): Promise<string[]> {
 /** Захиалгаа цуцлана (зөвхөн pending/confirmed үед боломжтой). */
 export async function cancelBooking(id: string): Promise<string | null> {
   const { error } = await supabase.from("bookings").update({ status: "cancelled" }).eq("id", id)
+  return error ? error.message : null
+}
+
+/**
+ * Нэхэмжлэхийг төлөгдсөн гэж тэмдэглэнэ.
+ *
+ * ⚠️ Мөнгө шилжүүлэхгүй. Энэ систем ямар ч төлбөрийн системтэй
+ * холбогдоогүй бөгөөд энэ дуудлага нь зөвхөн `invoices.status`-ыг
+ * `paid` болгоно (0023).
+ *
+ * Шалгалт нь өгөгдлийн сан дээр: `mark_invoice_paid()` нь захиалгын
+ * эзэн эсэхийг, нэхэмжлэх `issued` төлөвтэй эсэхийг өөрөө шалгадаг тул
+ * энд давхардуулж бичихгүй.
+ */
+export async function payInvoice(invoiceId: string): Promise<string | null> {
+  const { error } = await supabase.rpc("mark_invoice_paid", { p_invoice_id: invoiceId })
   return error ? error.message : null
 }

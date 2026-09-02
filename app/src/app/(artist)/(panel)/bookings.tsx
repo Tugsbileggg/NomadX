@@ -170,6 +170,7 @@ function BookingCard({
   const [error, setError] = useState<string | null>(null)
 
   const at = new Date(booking.scheduledAt)
+  const isPending = booking.status === "pending"
   const steps = NEXT_STEPS[booking.status]
   const name = booking.customer?.name?.trim() || "Нэргүй хэрэглэгч"
 
@@ -187,7 +188,7 @@ function BookingCard({
   }
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isPending && styles.cardPending]}>
       <View style={styles.cardTop}>
         <View style={{ flex: 1 }}>
           <View style={styles.nameRow}>
@@ -338,6 +339,13 @@ function makeStyles(colors: BrandPalette) {
     list: { padding: 20, gap: 12, paddingBottom: 110 },
 
     card: { backgroundColor: colors.surface, borderRadius: 16, padding: 14 },
+    // Хүлээгдэж буй захиалга бусдаасаа ялгарна: артистаас хариу хүлээж
+    // байгаа цорын ганц төлөв тул жагсаалтаас шууд олдох ёстой.
+    cardPending: {
+      borderLeftWidth: 4,
+      borderLeftColor: colors.warning,
+      backgroundColor: colors.warningSoft,
+    },
     cardTop: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
     nameRow: { flexDirection: "row", alignItems: "center", gap: 6 },
     name: { fontSize: 14, fontWeight: "700", color: colors.ink },

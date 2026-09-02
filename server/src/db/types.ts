@@ -335,6 +335,12 @@ export type Database = {
       owns_booking: { Args: { bid: string }; Returns: boolean }
       can_read_booking: { Args: { bid: string }; Returns: boolean }
       reply_to_review: { Args: { rid: string; body: string }; Returns: undefined }
+      /**
+       * Нэхэмжлэхийг төлөгдсөн гэж тэмдэглэнэ (0023).
+       *
+       * ⚠️ Бодит төлбөр тооцоо хийгддэггүй — зөвхөн тэмдэглэл.
+       */
+      mark_invoice_paid: { Args: { p_invoice_id: string }; Returns: undefined }
       /** Төхөөрөмжийг мэдэгдэл хүлээн авахаар бүртгэнэ (0021). */
       register_push_token: {
         Args: { p_token: string; p_platform?: string | null }
