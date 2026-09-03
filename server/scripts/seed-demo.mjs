@@ -52,6 +52,7 @@ const USERS = [
     business: {
       type: "salon",
       name: "Гоо Салхин",
+      demoImages: true,
       phone: "77112233",
       email: "contact@goosalkhin.demo",
       address: "Хан-Уул дүүрэг, 3-р хороо, Зайсан",
@@ -72,6 +73,7 @@ const USERS = [
     business: {
       type: "salon",
       name: "Mirage Spa",
+      demoImages: true,
       phone: "77223300",
       email: "info@miragespa.demo",
       address: "Баянзүрх дүүрэг, 4-р хороо, Мишээл town",
@@ -92,6 +94,7 @@ const USERS = [
     business: {
       type: "salon",
       name: "Nomin Beauty Lounge",
+      demoImages: true,
       phone: "77334400",
       email: "hello@nominbeauty.demo",
       address: "Сүхбаатар дүүрэг, 1-р хороо, Их сургуулийн гудамж",
@@ -154,6 +157,7 @@ const USERS = [
     business: {
       type: "artist",
       name: "A. Sarangoo Makeup",
+      demoImages: true,
       phone: "77223344",
       email: "sarangoo.artist@lumina.demo",
       address: "Баянгол дүүрэг, 5-р хороо",
@@ -174,6 +178,7 @@ const USERS = [
     business: {
       type: "artist",
       name: "M. Уянга Nails",
+      demoImages: true,
       phone: "77334455",
       email: "uyanga.artist@lumina.demo",
       address: "Чингэлтэй дүүрэг, 1-р хороо",
@@ -194,6 +199,7 @@ const USERS = [
     business: {
       type: "artist",
       name: "Б. Отгонбаяр Hair Studio",
+      demoImages: true,
       phone: "77445566",
       email: "otgonbayar.hair@lumina.demo",
       address: "Сүхбаатар дүүрэг, 6-р хороо",
@@ -466,6 +472,28 @@ async function main() {
         continue
       }
       businessId = data.id
+    }
+
+    // Демо зургууд нь `business-public` bucket дотор аль хэдийн байгаа
+    // (нэг удаа гараар байршуулсан). Зам нь bucket доторх нэрлэлтийн
+    // дүрмийг дагадаг — `<business_id>/<kind>-demo.jpg` — тул энд зөвхөн
+    // холбоосыг нь сэргээнэ. Файл байхгүй бол ХОЛБОХГҮЙ: эвдэрсэн зам
+    // бичих нь зурагны оронд хоосон дөрвөлжин үлдээх тул хамгийн эхний
+    // үсэг рүү унах fallback-аас дор.
+    if (b.demoImages) {
+      const { data: found } = await supabase.storage
+        .from("business-public")
+        .list(businessId, { search: "logo-demo.jpg" })
+
+      if (found?.length) {
+        await supabase
+          .from("businesses")
+          .update({
+            logo_path: `${businessId}/logo-demo.jpg`,
+            cover_path: `${businessId}/cover-demo.jpg`,
+          })
+          .eq("id", businessId)
+      }
     }
 
     await replaceRows(

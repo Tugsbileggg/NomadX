@@ -1,61 +1,71 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Icon, Label, NativeTabs, VectorIcon } from 'expo-router/unstable-native-tabs';
-import { Platform } from 'react-native';
+import { Tabs } from 'expo-router';
 
-import { Colors } from '@/constants/theme';
-import { useAppTheme } from '@/lib/theme-context';
+import { FloatingTabBar } from '@/components/FloatingTabBar';
 
 /**
- * Вэб дээр таб-ын дүрсийг зурахгүй.
+ * Харилцагчийн доод цэс.
  *
- * `NativeTabs` нь дүрсээ зурахдаа `@expo/vector-icons`-ийн
- * `getImageSource()`-ийг дуудах ба тэр нь `expo-font.renderToImageAsync`
- * дээр тулдаг — энэ арга вэбэд байхгүй тул хөгжүүлэлтийн горимд
- * "not available on web" гэсэн алдаа таб бүрд давтагдан гарна.
+ * `NativeTabs` (платформын өөрийн цэс) -ийг орлуулав: тэр нь өнгө, дүрс,
+ * гарчгийг л тохируулах боломж өгдөг бөгөөд хөвөгч бие, ховил, өргөгдсөн
+ * идэвхтэй таб зэрэг хэлбэрийг огт зөвшөөрдөггүй. Цэсний бүх зураглал
+ * одоо `FloatingTabBar` дотор.
  *
- * iOS/Android дээр таб бар нь жинхэнэ native тул дүрснүүд хэвээрээ.
- * Вэб нь зөвхөн урьдчилан харах гадаргуу учир тэнд бичиг үлдэнэ.
+ * ⚠️ Гарчиг нь дэлгэц дээр харагдахгүй — дизайн нь зөвхөн дүрстэй.
+ * `title` нь дэлгэц уншигчид (accessibility) хэвээр хэрэгтэй тул үлдээв.
  */
-const SHOW_TAB_ICONS = Platform.OS !== 'web';
-
 export default function AppTabs() {
-  const { scheme } = useAppTheme();
-  const colors = Colors[scheme];
-
   return (
-    <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      // iOS дээр гүйлгэлт ирмэгтээ хүрэхэд tab bar-ын `backgroundColor` нь
-      // `null`, blur нь `none` болж бүрэн тунгалаг болдог — тэгэхээр ард
-      // байгаа агуулга цэсний бичгээр дамжин харагдана. Хуудас бүр өөр
-      // өөрөөр харагдахгүйн тулд хаав.
-      disableTransparentOnScrollEdge
-      labelStyle={{ color: colors.text }}>
-      <NativeTabs.Trigger name="index">
-        <Label>Нүүр</Label>
-        {SHOW_TAB_ICONS && <Icon src={<VectorIcon family={Ionicons} name="home-outline" />} />}
-      </NativeTabs.Trigger>
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => <FloatingTabBar {...props} />}>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Нүүр',
+          tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" size={size} color={color} />,
+        }}
+      />
 
-      <NativeTabs.Trigger name="search">
-        <Label>Хайх</Label>
-        {SHOW_TAB_ICONS && <Icon src={<VectorIcon family={Ionicons} name="search-outline" />} />}
-      </NativeTabs.Trigger>
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Хайх',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search-outline" size={size} color={color} />
+          ),
+        }}
+      />
 
-      <NativeTabs.Trigger name="ai-advisor">
-        <Label>AI</Label>
-        {SHOW_TAB_ICONS && <Icon src={<VectorIcon family={Ionicons} name="sparkles-outline" />} />}
-      </NativeTabs.Trigger>
+      <Tabs.Screen
+        name="ai-advisor"
+        options={{
+          title: 'AI Зөвлөгөө',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="sparkles-outline" size={size} color={color} />
+          ),
+        }}
+      />
 
-      <NativeTabs.Trigger name="bookings">
-        <Label>Цаг</Label>
-        {SHOW_TAB_ICONS && <Icon src={<VectorIcon family={Ionicons} name="calendar-outline" />} />}
-      </NativeTabs.Trigger>
+      <Tabs.Screen
+        name="bookings"
+        options={{
+          title: 'Захиалга',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar-outline" size={size} color={color} />
+          ),
+        }}
+      />
 
-      <NativeTabs.Trigger name="profile">
-        <Label>Хувийн</Label>
-        {SHOW_TAB_ICONS && <Icon src={<VectorIcon family={Ionicons} name="person-outline" />} />}
-      </NativeTabs.Trigger>
-    </NativeTabs>
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Профайл',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-outline" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
