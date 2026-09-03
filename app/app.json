@@ -56,7 +56,11 @@
           "photosPermission": "Захиалга өгөхдөө ямар үйлчилгээ авахаа тайлбарлах жишээ зураг хавсаргахад ашиглана.",
           "cameraPermission": "Захиалгадаа жишээ зураг шууд авахад ашиглана."
         }
-      ]
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

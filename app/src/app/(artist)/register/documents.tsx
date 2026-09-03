@@ -28,18 +28,20 @@ export default function ArtistDocumentsScreen() {
   const businessId = account?.business?.id
 
   const [uploaded, setUploaded] = useState<Set<DocumentKind>>(new Set())
-  const [loading, setLoading] = useState(true)
+  const [loaded, setLoaded] = useState(false)
   const [busyKind, setBusyKind] = useState<DocumentKind | null>(null)
   const [error, setError] = useState<string | null>(null)
 
+  // Ачаалж буй эсэхийг ХАДГАЛАХГҮЙ, тооцно: бизнес мэдэгдээгүй бол татах
+  // юм ч алга. Эс тэгвэл effect дотор синхрон `setLoading(false)` дуудаж,
+  // нэмэлт render дуудна (react-hooks/set-state-in-effect).
+  const loading = !loaded && businessId != null
+
   useEffect(() => {
-    if (!businessId) {
-      setLoading(false)
-      return
-    }
+    if (!businessId) return
     fetchArtistDocuments(businessId).then((set) => {
       setUploaded(set)
-      setLoading(false)
+      setLoaded(true)
     })
   }, [businessId])
 

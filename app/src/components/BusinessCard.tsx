@@ -129,7 +129,7 @@ function makeStyles(colors: BrandPalette) {
     card: { borderRadius: 20, backgroundColor: colors.surface, overflow: "hidden" },
     cardCover: { height: 170, backgroundColor: colors.surfaceTint2 },
     thumbFallback: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: colors.primaryContainer,

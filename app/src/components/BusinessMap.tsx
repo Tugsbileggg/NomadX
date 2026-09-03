@@ -138,7 +138,11 @@ export function BusinessMap({
         {myLocation && <MeMarker lat={myLocation.lat} lng={myLocation.lng} />}
 
         {markers.map((m) => (
-          <BrandMarker key={m.id} marker={m} onPress={() => onMarkerPress(m.id)} />
+          <BrandMarker
+            key={`${m.id}:${m.selected ? 1 : 0}`}
+            marker={m}
+            onPress={() => onMarkerPress(m.id)}
+          />
         ))}
       </MapView>
 
@@ -159,13 +163,14 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
 
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
 
-  // Сонгогдсон цэг өөрчлөгдөхөд зургаа дахин авах ёстой тул `selected`-ийг
-  // хамааралд оруулав.
+  // Сонгогдсон цэг өөрчлөгдөхөд зургаа дахин авах ёстой. Урьд нь энд
+  // `setTracksViewChanges(true)` гэж синхроноор буцаадаг байсныг эцэг нь
+  // `key`-д `selected`-ийг оруулснаар сольсон: бүрэлдэхүүн дахин mount
+  // хийгдэж төлөв нь өөрөө `true` болно (react-hooks/set-state-in-effect).
   useEffect(() => {
-    setTracksViewChanges(true)
     const id = setTimeout(() => setTracksViewChanges(false), 300)
     return () => clearTimeout(id)
-  }, [marker.selected])
+  }, [])
 
   return (
     <Marker

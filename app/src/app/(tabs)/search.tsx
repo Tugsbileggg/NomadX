@@ -70,6 +70,10 @@ export default function SearchScreen() {
   }, [])
 
   useEffect(() => {
+    // `locate` нь эхний мөрөндөө `await` хийдэг тул setState нь синхроноор
+    // биш, зөвшөөрөл ирсний дараа л дуудагдана. Дүрэм функцийн дотор харж
+    // чаддаггүй тул энд худал дохио өгнө.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void locate()
   }, [locate])
 

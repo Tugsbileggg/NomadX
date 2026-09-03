@@ -316,7 +316,7 @@ function makeStyles(colors: BrandPalette) {
       justifyContent: "center",
     },
     logoBusy: {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       backgroundColor: "rgba(0,0,0,0.35)",
       alignItems: "center",
       justifyContent: "center",

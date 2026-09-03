@@ -19,13 +19,11 @@ type ThemeState = {
   /**
    * Хадгалсан сонголт AsyncStorage-аас уншигдаж дууссан эсэх.
    *
-   * Уншилт дуусахаас өмнө навигацийг mount хийвэл апп эхлээд буруу
-   * горимоор зурагдаад дараа нь солигдож, эхний хормын зуур өнгө нь
-   * анивчина. Тиймээс уншилт дуустал хүлээнэ.
-   *
-   * (Урьд нь энэ хүлээлт нь `NativeTabs`-ын алдаанаас ч бас хамгаалдаг
-   * байсан — тэр цэс өнгө солигдоход товчнуудынхаа байрлалыг алддаг байв.
-   * Цэсийг `FloatingTabBar`-аар сольсон тул тэр шалтгаан арилсан.)
+   * Native tab bar (`NativeTabs`) нь өнгөний prop өөрчлөгдөхөд өөрийгөө
+   * дахин тохируулдаг. Уншилт дуусахаас өмнө mount хийвэл tab bar эхлээд
+   * нэг өнгөөр байрлаад дараа нь дахин тохируулагдаж, товчнуудын байршил
+   * алдагддаг (өөр tab дээр дарж л засагдана). Тиймээс уншилт дуустал
+   * навигацийг mount хийхгүй хүлээнэ.
    */
   ready: boolean
 }
@@ -60,7 +58,11 @@ export function AppThemeProvider({ children }: { children: ReactNode }) {
     AsyncStorage.setItem(STORAGE_KEY, next)
   }
 
-  const scheme: Scheme = preference === "system" ? (systemScheme ?? "light") : preference
+  // RN-ий `ColorSchemeName` нь "unspecified"-ыг ч агуулдаг (утас тодорхой
+  // хариу өгөөгүй үе) тул null шалгалт хангалтгүй — бараанаас өөр бүхнийг
+  // цайвар гэж үзнэ.
+  const scheme: Scheme =
+    preference === "system" ? (systemScheme === "dark" ? "dark" : "light") : preference
   const colors = scheme === "dark" ? DarkBrand : LightBrand
 
   return (

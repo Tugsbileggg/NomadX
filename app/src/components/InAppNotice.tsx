@@ -56,7 +56,10 @@ export function InAppNotice() {
   const { session } = useAuth()
 
   const [notice, setNotice] = useState<AppNotification | null>(null)
-  const slide = useRef(new Animated.Value(0)).current
+  // `useRef(...).current`-ийг render дотор уншиж болохгүй (react-hooks/refs).
+  // Тогтмол утга үүсгэхэд зориулагдсан хэлбэр нь `useState`-ийн залхуу
+  // эхлүүлэгч — нэг л удаа дуудагдана.
+  const [slide] = useState(() => new Animated.Value(0))
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Нэвтэрсэн үед л сонсоно. Хэрэглэгч солигдвол суваг дахин нээгдэнэ.

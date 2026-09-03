@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   splashOverlay: {
     // Өнгийг render дээр theme-ээс өгнө.
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1000,

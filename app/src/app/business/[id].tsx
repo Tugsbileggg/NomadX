@@ -75,6 +75,10 @@ export default function BusinessDetailScreen() {
 
   useEffect(() => {
     let active = true
+    // `load` нь эхлээд `await Promise.all([...])` хийдэг тул бүх setState
+    // нь асинхроноор явна. Дүрэм функцийн дотор харж чаддаггүй тул энд
+    // худал дохио өгнө.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load().catch(() => {
       if (active) setLoading(false)
     })

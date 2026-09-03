@@ -43,10 +43,15 @@ export default function BookingsScreen() {
   const [bookings, setBookings] = useState<BookingWithBusiness[]>([])
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<"upcoming" | "history">("upcoming")
+  const [now, setNow] = useState(0)
 
   const load = useCallback(() => {
     fetchMyBookings().then((rows) => {
       setBookings(rows)
+      // Цагийг өгөгдөлтэй хамт тэмдэглэнэ. Render дотор `Date.now()`
+      // дуудвал бүрэлдэхүүн цэвэр бус болно (react-hooks/purity) — мөн
+      // жагсаалт татсан агшны цаг нь утгын хувьд ч илүү зөв.
+      setNow(Date.now())
       setLoading(false)
     })
   }, [])
@@ -57,7 +62,6 @@ export default function BookingsScreen() {
     }, [load]),
   )
 
-  const now = Date.now()
   const upcoming = useMemo(
     () =>
       bookings.filter((b) => b.status !== "cancelled" && new Date(b.scheduledAt).getTime() >= now),
