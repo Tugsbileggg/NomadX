@@ -1,65 +1,44 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { Platform } from 'react-native';
+import { Tabs, TabList, TabSlot, TabTrigger } from 'expo-router/ui';
 
-import { Colors } from '@/constants/theme';
-import { useAppTheme } from '@/lib/theme-context';
+import { FloatingTabBar, TabButton } from '@/components/FloatingTabBar';
 
 /**
- * Вэб дээр таб-ын дүрсийг зурахгүй.
+ * Харилцагчийн доод цэс.
  *
- * `NativeTabs` нь дүрсээ зурахдаа `@expo/vector-icons`-ийн
- * `getImageSource()`-ийг дуудах ба тэр нь `expo-font.renderToImageAsync`
- * дээр тулдаг — энэ арга вэбэд байхгүй тул хөгжүүлэлтийн горимд
- * "not available on web" гэсэн алдаа таб бүрд давтагдан гарна.
+ * `expo-router/ui`-ийн headless tabs дээр бүтээв: expo-router нь зөвхөн
+ * навигацийг хариуцаж, зураглалыг бүхэлд нь `FloatingTabBar` хийнэ.
  *
- * iOS/Android дээр таб бар нь жинхэнэ native тул дүрснүүд хэвээрээ.
- * Вэб нь зөвхөн урьдчилан харах гадаргуу учир тэнд бичиг үлдэнэ.
+ * ⚠️ Дизайны дагуу шошго байхгүй — зөвхөн дүрс. `TabTrigger`-ийн `name`
+ * нь замын нэр, `href` нь очих хаяг.
  */
-const SHOW_TAB_ICONS = Platform.OS !== 'web';
-
-// SDK 57-д Icon/Label/VectorIcon нь тусдаа экспорт байхаа больж,
-// `NativeTabs.Trigger`-ийн доорх бүрэлдэхүүн болсон.
-const { Trigger } = NativeTabs;
-
 export default function AppTabs() {
-  const { scheme } = useAppTheme();
-  const colors = Colors[scheme];
-
   return (
-    <NativeTabs
-      backgroundColor={colors.background}
-      indicatorColor={colors.backgroundElement}
-      // iOS дээр гүйлгэлт ирмэгтээ хүрэхэд tab bar-ын `backgroundColor` нь
-      // `null`, blur нь `none` болж бүрэн тунгалаг болдог — тэгэхээр ард
-      // байгаа агуулга цэсний бичгээр дамжин харагдана. Хуудас бүр өөр
-      // өөрөөр харагдахгүйн тулд хаав.
-      disableTransparentOnScrollEdge
-      labelStyle={{ color: colors.text }}>
-      <Trigger name="index">
-        <Trigger.Label>Нүүр</Trigger.Label>
-        {SHOW_TAB_ICONS && <Trigger.Icon src={<Trigger.VectorIcon family={Ionicons} name="home-outline" />} />}
-      </Trigger>
+    <Tabs>
+      <TabSlot />
 
-      <Trigger name="search">
-        <Trigger.Label>Хайх</Trigger.Label>
-        {SHOW_TAB_ICONS && <Trigger.Icon src={<Trigger.VectorIcon family={Ionicons} name="search-outline" />} />}
-      </Trigger>
+      <TabList asChild>
+        <FloatingTabBar>
+          <TabTrigger name="index" href="/" asChild>
+            <TabButton icon="home-outline" />
+          </TabTrigger>
 
-      <Trigger name="ai-advisor">
-        <Trigger.Label>AI</Trigger.Label>
-        {SHOW_TAB_ICONS && <Trigger.Icon src={<Trigger.VectorIcon family={Ionicons} name="sparkles-outline" />} />}
-      </Trigger>
+          <TabTrigger name="search" href="/search" asChild>
+            <TabButton icon="search-outline" />
+          </TabTrigger>
 
-      <Trigger name="bookings">
-        <Trigger.Label>Цаг</Trigger.Label>
-        {SHOW_TAB_ICONS && <Trigger.Icon src={<Trigger.VectorIcon family={Ionicons} name="calendar-outline" />} />}
-      </Trigger>
+          <TabTrigger name="ai-advisor" href="/ai-advisor" asChild>
+            <TabButton icon="sparkles-outline" />
+          </TabTrigger>
 
-      <Trigger name="profile">
-        <Trigger.Label>Хувийн</Trigger.Label>
-        {SHOW_TAB_ICONS && <Trigger.Icon src={<Trigger.VectorIcon family={Ionicons} name="person-outline" />} />}
-      </Trigger>
-    </NativeTabs>
+          <TabTrigger name="bookings" href="/bookings" asChild>
+            <TabButton icon="calendar-outline" />
+          </TabTrigger>
+
+          <TabTrigger name="profile" href="/profile" asChild>
+            <TabButton icon="person-outline" />
+          </TabTrigger>
+        </FloatingTabBar>
+      </TabList>
+    </Tabs>
   );
 }

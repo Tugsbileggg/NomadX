@@ -49,6 +49,15 @@ export type BrandPalette = {
   /** Оддын үнэлгээнд ашиглагдах алтан өнгө. */
   gold: string;
   onPrimary: string;
+  /**
+   * Хөвөгч доод цэсний бие. Хоёр горимд ч БАРААН — цэс нь хуудаснаас
+   * тусдаа, дээгүүр нь хөвж буй гадаргуу мэт харагдах ёстой. Тиймээс
+   * `ink` эсвэл `surface`-ийг ашиглаж болохгүй: `ink` нь бараан горимд
+   * цайвар (бичгийн өнгө), `surface` нь цайвар горимд бараг цагаан.
+   */
+  tabBar: string;
+  /** Идэвхгүй таб-ын дүрс — бараан биен дээр байх тул цайвар. */
+  tabBarMuted: string;
 };
 
 /** LUMINA брэндийн өнгөнүүд — frontend/src/app/globals.css-тэй яг адил (цайвар горим). */
@@ -74,6 +83,8 @@ export const LightBrand: BrandPalette = {
   warningSoft: '#fef3c7',
   gold: '#d4af37',
   onPrimary: '#ffffff',
+  tabBar: '#211a1b',
+  tabBarMuted: 'rgba(255, 255, 255, 0.55)',
 };
 
 /** Мөн адил токенууд — бараан горимд зориулав. */
@@ -99,6 +110,8 @@ export const DarkBrand: BrandPalette = {
   warningSoft: '#3d3116',
   gold: '#e5c158',
   onPrimary: '#ffffff',
+  tabBar: '#2b2023',
+  tabBarMuted: 'rgba(255, 255, 255, 0.5)',
 };
 
 /** Хараахан dark mode-д шилжээгүй дэлгэцүүдэд ашиглах анхны (цайвар) утга. */
