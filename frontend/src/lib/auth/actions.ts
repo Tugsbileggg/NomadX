@@ -7,14 +7,19 @@ import { resolveLandingPath } from "@/lib/registration/actions";
 
 export type FormState = { error?: string } | null;
 
-/** Бүртгүүлэх — role нь салон эсвэл хувиараа артист. */
+/**
+ * Бүртгүүлэх — вэб дээр зөвхөн САЛОН.
+ *
+ * Хувиараа ажилладаг артист апп руу шилжсэн тул энд артистын бүртгэл
+ * үүсгэхгүй. Урьд нь маягтад Салон/Артист радио сонголт байсныг хаав.
+ */
 export async function signUp(_prev: FormState, formData: FormData): Promise<FormState> {
   const fullName = String(formData.get("full_name") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const confirm = String(formData.get("confirm") ?? "");
-  const role = formData.get("role") === "artist" ? "artist" : "salon";
+  const role = "salon";
 
   if (!fullName || !email || !password) {
     return { error: "Овог нэр, и-мэйл, нууц үгээ бөглөнө үү." };

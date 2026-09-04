@@ -51,42 +51,6 @@ export function AuthCard({
   );
 }
 
-/**
- * Салон / Хувь Артист сонголт. Радио товч тул маягттай хамт `role` талбараар
- * илгээгдэнэ.
- */
-export function RolePicker({ defaultValue = "salon" }: { defaultValue?: "salon" | "artist" }) {
-  const options = [
-    { id: "salon", label: "Салон" },
-    { id: "artist", label: "Хувь Артист" },
-  ] as const;
-
-  return (
-    <fieldset className="flex flex-col items-center gap-2 pb-10">
-      <legend className="text-xs leading-4 font-medium text-body">
-        Хэрэглэгчийн бүртгэлийн төрлийг сонгоно уу?
-      </legend>
-      <div className="mt-2 flex gap-2 rounded-full bg-surface-variant p-1">
-        {options.map((o) => (
-          <label
-            key={o.id}
-            className="flex h-8 w-[132px] cursor-pointer items-center justify-center rounded-full text-xs leading-4 font-medium text-body transition-colors has-checked:bg-primary has-checked:text-white"
-          >
-            <input
-              type="radio"
-              name="role"
-              value={o.id}
-              defaultChecked={defaultValue === o.id}
-              className="sr-only"
-            />
-            {o.label}
-          </label>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
 /** Google / phone sign-in row shared by login and register. */
 export function SocialRow() {
   return (

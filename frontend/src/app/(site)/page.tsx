@@ -51,15 +51,13 @@ async function Hero() {
           </h1>
 
           <p className="text-lg leading-7 text-body">
-            Шилдэг гоо сайхны мэргэжилтнүүдийг олж, хиймэл оюун ухааны
-            тусламжтайгаар өөрт тохирох үйлчилгээг сонгон, цагаа хялбархан
-            захиалаарай.
+            Өөртөө гаргах хамгийн чухал цаг хугацааг эндээс эхлүүлээрэй.
           </p>
 
           <div className="flex flex-wrap gap-4 pt-4">
             <DownloadAppButton qrSvg={qrSvg} url={MOBILE_APP_URL} />
             <ButtonLink href="/business/register" variant="white" size="lg">
-              Салон/Артист болох
+              Салон болох
             </ButtonLink>
           </div>
 

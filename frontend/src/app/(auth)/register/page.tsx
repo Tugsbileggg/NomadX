@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AuthCard, RolePicker, SocialRow } from "@/components/auth/AuthCard";
+import { AuthCard, SocialRow } from "@/components/auth/AuthCard";
 import { ActionForm, SubmitButton } from "@/components/form/ActionForm";
 import { Checkbox, Divider, TextInput } from "@/components/ui/Field";
 import { signUp } from "@/lib/auth/actions";
@@ -19,8 +19,6 @@ export default function RegisterPage() {
       }
     >
       <ActionForm action={signUp} className="flex flex-col gap-4">
-        <RolePicker />
-
         <h1 className="text-[28px] leading-9 font-semibold text-primary">Бүртгүүлэх</h1>
 
         <TextInput name="full_name" placeholder="Овог нэр" autoComplete="name" required />
