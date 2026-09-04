@@ -1,49 +1,57 @@
 import { Ionicons } from "@expo/vector-icons"
 import { TabsStateContext, type TabTriggerSlotProps } from "expo-router/ui"
-import { forwardRef, useContext, useMemo, useState, type ReactNode } from "react"
-import { Platform, Pressable, StyleSheet, View } from "react-native"
+import { forwardRef, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import { Pressable, StyleSheet, View } from "react-native"
+import Animated, {
+  SnappySpringConfig,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import Svg, { Path } from "react-native-svg"
 
 import type { BrandPalette } from "@/constants/theme"
 import { useAppTheme } from "@/lib/theme-context"
 
-/** Цэсний биеийн өндөр — өргөгдсөн тойргийг оруулаагүй. */
-const BAR_HEIGHT = 64
-
-/** Биеийн булангийн радиус. */
-const BAR_RADIUS = 24
+/** Цэсний өндөр. Булангийн радиус нь үүний яг хагас — бүтэн капсул. */
+const BAR_HEIGHT = 62
 
 /** Дэлгэцийн хажуу талаас хөвөх зай. */
-const SIDE_MARGIN = 14
+const SIDE_MARGIN = 16
 
-/** Идэвхтэй таб-ын өргөгдсөн тойргийн диаметр. */
-const LIFT_SIZE = 50
+/** Идэвхтэй табын доор гүйх дугуй тэмдэглэгээний хэмжээ. */
+const INDICATOR_SIZE = 44
 
 /**
- * Тойргийн доор сийлэгдэх ховилын хэмжээ.
+ * Тэмдэглэгээний гулсалт — Reanimated-ийн өөрийнх нь тохируулсан хувилбар
+ * (ζ≈0.92, `overshootClamping`), ойролцоогоор 300мс-д тогтоно.
  *
- * Тойргоос арай том байх ёстой — эс тэгвэл тойрог ховилын хананд наалдаж,
- * хооронд нь хуудасны өнгө харагдахгүй. Гэхдээ хэт өргөн байж ч болохгүй:
- * харилцагчийн цэс 5 табтай тул нэг табд ноогдох өргөн ~69px.
+ * ⚠️ Гараар тоо бичихээс болгоомжил: Reanimated 4-ийн пүршний масштаб 3-аас
+ * тэс өөр (анхдагч нь mass 4 / damping 120 / stiffness 900, өмнө нь
+ * 1 / 10 / 100). RN3-ын зуршлаар бичсэн тоо энд савлаж унана.
  */
-const NOTCH_HALF_WIDTH = 33
-const NOTCH_DEPTH = 26
+const SLIDE = SnappySpringConfig
 
-/** Тойргийн төв биений дээд ирмэгээс хэр дээш байх. */
-const LIFT_OFFSET = -6
+/** Дүрсний өнгө солигдох хугацаа. Гулсалттай ойролцоо байх ёстой. */
+const FADE = { duration: 180 }
 
 /**
- * Аппын доод цэс — хөвөгч бараан бие, идэвхтэй таб нь дээш өргөгдсөн
- * тойрог дотор сууна.
+ * Аппын доод цэс — хөвөгч бараан капсул, идэвхтэй таб нь доогуураа
+ * гулсдаг дугуй тэмдэглэгээгээр тэмдэглэгдэнэ.
  *
  * `<TabList asChild>`-ийн хүүхэд болж ажиллана: expo-router нь табуудынхаа
  * төлөвийг `TabsStateContext`-ээр дамжуулдаг тул идэвхтэй индексийг эндээс
- * шууд уншиж ховилоо байрлуулна.
+ * шууд уншиж тэмдэглэгээгээ байрлуулна.
  *
  * ⚠️ Яагаад `Tabs`-ийн `tabBar` prop-ыг ашиглаагүй вэ: SDK 57-д тэр prop
- * үйлчлэхээ больсон (энгийн хайрцаг буцаадаг tabBar-аар туршиж баталсан).
- * Өөрийн цэс зурах албан ёсны зам нь `expo-router/ui`-ийн headless tabs.
+ * үйлчлэхээ больсон. Өөрийн цэс зурах албан ёсны зам нь `expo-router/ui`-ийн
+ * headless tabs.
+ *
+ * Тэмдэглэгээ нь биенээс ГАДАГШ цухуйхгүй — өмнө нь өргөгдсөн тойрог
+ * ховилтойгоо таарахгүй завсар үлдээж, дундуур нь хуудасны дэвсгэр
+ * харагддаг байв. Одоо капсул дотроо бүрэн багтах тул тийм завсар
+ * үүсэх боломжгүй.
  */
 export const FloatingTabBar = forwardRef<View, { children?: ReactNode }>(
   function FloatingTabBar({ children }, ref) {
@@ -52,24 +60,44 @@ export const FloatingTabBar = forwardRef<View, { children?: ReactNode }>(
     const insets = useSafeAreaInsets()
     const state = useContext(TabsStateContext)
 
-    // Ховилын байрлалыг тооцоход биений бодит өргөн хэрэгтэй.
+    // Тэмдэглэгээг байрлуулахад биений бодит өргөн хэрэгтэй.
     const [width, setWidth] = useState(0)
 
     const count = state.routes.length
-    const activeCenter = count > 0 ? (width / count) * (state.index + 0.5) : 0
+    const slot = count > 0 ? width / count : 0
+
+    // Пикселээр биш ИНДЕКСЭЭР хөдөлгөнө: дэлгэц эргэх зэргээр өргөн
+    // өөрчлөгдөхөд тэмдэглэгээ хажуу тийш харайлгүй шинэ байрандаа шууд
+    // тохирно.
+    //
+    // React-ийн prop-оос анимаци хөтлөх тодорхой хэлбэр нь shared value +
+    // effect. `useDerivedValue` ч ажиллах боловч түүний хамаарлыг Babel
+    // plugin таамаглаж илрүүлдэг тул энд илүү шууд хэлбэрийг сонгов.
+    const progress = useSharedValue(state.index)
+
+    useEffect(() => {
+      progress.value = withSpring(state.index, SLIDE)
+    }, [state.index, progress])
+
+    const indicator = useAnimatedStyle(
+      () => ({
+        // Хэмжилт хийгдэх хүртэл нуугдана — эс тэгвэл зүүн ирмэг дээр
+        // нэг агшин анивчина.
+        opacity: slot > 0 ? 1 : 0,
+        transform: [{ translateX: progress.value * slot + (slot - INDICATOR_SIZE) / 2 }],
+      }),
+      [slot],
+    )
 
     return (
       <View
         ref={ref}
-        pointerEvents="box-none"
-        style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, 12) }]}
+        // Home indicator-тай утсан дээр бүтэн inset нь цэсийг хэт өндөрт
+        // өргөж, доогуураа хоосон зай үлдээдэг тул бага зэрэг татав.
+        style={[styles.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}
       >
         <View style={styles.bar} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-          {width > 0 && (
-            <Svg width={width} height={BAR_HEIGHT} style={StyleSheet.absoluteFill}>
-              <Path d={barPath(width, activeCenter)} fill={colors.tabBar} />
-            </Svg>
-          )}
+          <Animated.View style={[styles.indicator, indicator]} />
 
           <View style={styles.row}>{children}</View>
         </View>
@@ -89,6 +117,16 @@ export const TabButton = forwardRef<
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
 
+  // Дээрхтэй адил хэлбэр: prop-оос хөтлөх тул shared value + effect.
+  const active = useSharedValue(isFocused ? 1 : 0)
+
+  useEffect(() => {
+    active.value = withTiming(isFocused ? 1 : 0, FADE)
+  }, [isFocused, active])
+
+  const lift = useAnimatedStyle(() => ({ transform: [{ scale: 1 + active.value * 0.1 }] }))
+  const overlay = useAnimatedStyle(() => ({ opacity: active.value }))
+
   return (
     <Pressable
       ref={ref}
@@ -96,49 +134,22 @@ export const TabButton = forwardRef<
       accessibilityState={{ selected: isFocused }}
       style={styles.item}
     >
-      {isFocused ? (
-        <View style={styles.lift}>
-          <Ionicons name={icon} size={24} color={colors.onPrimary} />
-        </View>
-      ) : (
-        <Ionicons name={icon} size={22} color={colors.tabBarMuted} />
-      )}
+      {/*
+        Өнгийг шууд солихын оронд хоёр дүрсийг давхарлаж бүдгэрүүлнэ.
+        Vector icon нь эцсийн дүндээ Text тул өнгийг нь worklet-ээс
+        хөдөлгөх найдваргүй; давхарлах нь хямд бөгөөд гулсалттай яг
+        зэрэгцэж өнгө нь ормогцоо цагаан болно.
+      */}
+      <Animated.View style={[styles.iconStack, lift]}>
+        <Ionicons name={icon} size={23} color={colors.tabBarMuted} />
+
+        <Animated.View style={[StyleSheet.absoluteFill, styles.iconStack, overlay]}>
+          <Ionicons name={icon} size={23} color={colors.onPrimary} />
+        </Animated.View>
+      </Animated.View>
     </Pressable>
   )
 })
-
-/**
- * Биений хэлбэр: булан нь бөөрөнхий тэгш өнцөгт, идэвхтэй таб-ын дээр
- * доош сийлэгдсэн ховилтой.
- *
- * Ховилын ГҮНИЙ цэг тойргийн яг доор байх ёстой тул төвийг нь шилжүүлэхгүй
- * — зөвхөн хоёр үзүүрийг булангийн нумын дотор оруулахгүйгээр хязгаарлана.
- * Захын табууд дээр ховил нэг талдаа арай эгц болох ч тойргоосоо салахгүй.
- */
-function barPath(width: number, center: number): string {
-  const h = BAR_HEIGHT
-  const r = BAR_RADIUS
-  const cx = Math.min(Math.max(center, r), width - r)
-  const startX = Math.max(cx - NOTCH_HALF_WIDTH, r)
-  const endX = Math.min(cx + NOTCH_HALF_WIDTH, width - r)
-  const nd = NOTCH_DEPTH
-
-  return [
-    `M ${r} 0`,
-    `L ${startX} 0`,
-    `C ${cx - (cx - startX) * 0.45} 0 ${cx - (cx - startX) * 0.62} ${nd} ${cx} ${nd}`,
-    `C ${cx + (endX - cx) * 0.62} ${nd} ${cx + (endX - cx) * 0.45} 0 ${endX} 0`,
-    `L ${width - r} 0`,
-    `A ${r} ${r} 0 0 1 ${width} ${r}`,
-    `L ${width} ${h - r}`,
-    `A ${r} ${r} 0 0 1 ${width - r} ${h}`,
-    `L ${r} ${h}`,
-    `A ${r} ${r} 0 0 1 0 ${h - r}`,
-    `L 0 ${r}`,
-    `A ${r} ${r} 0 0 1 ${r} 0`,
-    "Z",
-  ].join(" ")
-}
 
 function makeStyles(colors: BrandPalette) {
   return StyleSheet.create({
@@ -148,33 +159,30 @@ function makeStyles(colors: BrandPalette) {
       right: 0,
       bottom: 0,
       paddingHorizontal: SIDE_MARGIN,
+      // Цэсний хажуугийн хоосон зай доорх хуудсыг даралгүй өнгөрөөнө.
+      pointerEvents: "box-none",
     },
     bar: {
       height: BAR_HEIGHT,
-      // Өргөгдсөн тойрог биенээс дээш гардаг тул хайрцгаа тайрахгүй.
-      overflow: "visible",
+      borderRadius: BAR_HEIGHT / 2,
+      backgroundColor: colors.tabBar,
+      // Тэмдэглэгээ капсулын нумаас гадагш гарахгүй.
+      overflow: "hidden",
+      // RN 0.86-д `shadow*` хуучирсан — `boxShadow` нь гурван талдаа нэг
+      // адил ажиллана.
+      boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",
     },
     row: { flexDirection: "row", height: BAR_HEIGHT },
     item: { flex: 1, alignItems: "center", justifyContent: "center" },
-    lift: {
+    iconStack: { alignItems: "center", justifyContent: "center" },
+    indicator: {
       position: "absolute",
-      top: LIFT_OFFSET - LIFT_SIZE / 2,
-      width: LIFT_SIZE,
-      height: LIFT_SIZE,
-      borderRadius: LIFT_SIZE / 2,
+      top: (BAR_HEIGHT - INDICATOR_SIZE) / 2,
+      left: 0,
+      width: INDICATOR_SIZE,
+      height: INDICATOR_SIZE,
+      borderRadius: INDICATOR_SIZE / 2,
       backgroundColor: colors.primary,
-      alignItems: "center",
-      justifyContent: "center",
-      ...Platform.select({
-        ios: {
-          shadowColor: colors.primary,
-          shadowOpacity: 0.4,
-          shadowRadius: 10,
-          shadowOffset: { width: 0, height: 4 },
-        },
-        android: { elevation: 6 },
-        default: {},
-      }),
     },
   })
 }
