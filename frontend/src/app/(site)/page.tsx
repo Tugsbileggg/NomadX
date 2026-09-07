@@ -85,7 +85,7 @@ async function Hero() {
         <div className="relative flex flex-1 items-center justify-center">
           <Image
             src="/img/hero-phone.png"
-            alt="LUMINA аппликейшны дэлгэц"
+            alt="LUMINA аппын дэлгэц"
             width={746}
             height={746}
             priority

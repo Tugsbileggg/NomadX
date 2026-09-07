@@ -47,7 +47,7 @@ export default function ArtistMovedPage() {
         <p className="mt-6 text-xs leading-4 text-muted">
           Салон эрхэлдэг бол{" "}
           <Link href="/business" className="text-primary hover:underline">
-            салоны панел
+            салоны самбар
           </Link>{" "}
           руу орно уу.
         </p>

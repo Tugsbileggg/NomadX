@@ -35,9 +35,9 @@ export const CONCERN_LABEL: Record<SkinConcern, string> = {
 }
 
 export const CONFIDENCE_LABEL: Record<ConfidenceLevel, string> = {
-  low: "бага итгэлцэлтэй",
-  moderate: "дунд итгэлцэлтэй",
-  high: "өндөр итгэлцэлтэй",
+  low: "бага итгэлтэй",
+  moderate: "дунд итгэлтэй",
+  high: "өндөр итгэлтэй",
 }
 
 export type AnalyzeSkinResult =
