@@ -29,7 +29,7 @@ const VIEW = {
   rejected: {
     icon: XCircle,
     tone: "bg-[#fee2e2] text-danger-dark",
-    title: "Бүртгэл татгалзагдсан",
+    title: "Бүртгэл татгалзсан",
     body: "Шалтгаан:",
   },
 } as const;

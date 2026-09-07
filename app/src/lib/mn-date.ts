@@ -2,7 +2,7 @@
  * `toLocaleDateString("mn-MN", …)` энэ орчинд бүрэн дэмжигдэхгүй (англи
  * нэрээр буцаадаг) тул огноо/цагийг гараар Монгол хэлээр форматлана.
  */
-const WEEKDAYS_SHORT = ["Ням", "Дав", "Мяг", "Лха", "Пүр", "Баа", "Бям"]
+const WEEKDAYS_SHORT = ["Ня", "Да", "Мя", "Лх", "Пү", "Ба", "Бя"]
 
 export function mnWeekdayShort(d: Date): string {
   return WEEKDAYS_SHORT[d.getDay()]

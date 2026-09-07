@@ -13,8 +13,8 @@ afterEach(() => {
 
 describe("mnWeekdayShort", () => {
   it("гаригийг монголоор буцаана", () => {
-    expect(mnWeekdayShort(new Date(2026, 7, 31))).toBe("Дав")
-    expect(mnWeekdayShort(new Date(2026, 8, 6))).toBe("Ням")
+    expect(mnWeekdayShort(new Date(2026, 7, 31))).toBe("Да")
+    expect(mnWeekdayShort(new Date(2026, 8, 6))).toBe("Ня")
   })
 })
 

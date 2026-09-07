@@ -49,7 +49,7 @@ const BY_STATUS: Record<BusinessStatus, Panel> = {
   },
   rejected: {
     icon: "close-circle-outline",
-    title: "Бүртгэл татгалзагдсан",
+    title: "Бүртгэл татгалзсан",
     body: "Дараах шалтгаанаар татгалзсан байна.",
     action: "Дахин илгээх",
   },

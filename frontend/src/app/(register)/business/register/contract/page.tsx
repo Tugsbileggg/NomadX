@@ -38,7 +38,7 @@ export default function ContractPage() {
         <section className="mt-10 rounded-2xl border border-white/60 bg-white/70 p-8 shadow-soft backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-surface-tint pb-4">
             <h2 className="text-base font-medium text-ink">
-              Серэн платформын үйлчилгээний нөхцөл
+              LUMINA платформын үйлчилгээний нөхцөл
             </h2>
             <a
               href="#"
@@ -54,7 +54,7 @@ export default function ContractPage() {
               Үйлчилгээний гэрээ
             </h3>
             <p className="mt-4">
-              Энэхүү үйлчилгээний гэрээ нь нэг талаас Серэн платформ (цаашид “Үйлчилгээ
+              Энэхүү үйлчилгээний гэрээ нь нэг талаас LUMINA платформ (цаашид “Үйлчилгээ
               үзүүлэгч” гэх), нөгөө талаас системд бүртгүүлж буй байгууллага, хувь хүн (цаашид
               “Хэрэглэгч” гэх) нарын хооронд үйлчилгээ үзүүлэх, ашиглахтай холбоотой харилцааг
               зохицуулна.
@@ -62,7 +62,7 @@ export default function ContractPage() {
 
             <h4 className="mt-6 font-semibold text-ink">1. Нийтлэг үндэслэл</h4>
             <p className="mt-2">
-              1.1. Энэхүү гэрээ нь хэрэглэгч Серэн платформд бүртгүүлж, үйлчилгээний нөхцөлийг
+              1.1. Энэхүү гэрээ нь хэрэглэгч LUMINA платформд бүртгүүлж, үйлчилгээний нөхцөлийг
               хүлээн зөвшөөрснөөр хүчин төгөлдөр болно.
             </p>
             <p className="mt-2">
