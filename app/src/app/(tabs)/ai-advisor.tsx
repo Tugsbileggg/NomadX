@@ -35,7 +35,16 @@ import { useAppTheme } from "@/lib/theme-context"
 const CONSENT_KEY = "ai_advisor_consent_seen"
 
 type Step = "intro" | "loading" | "result" | "error"
-type PickedImage = { base64: string; mime: string; uri: string }
+/**
+ * `mirrored` — урд камерын урьдчилсан дүрс толь шиг эргэсэн байдаг ч
+ * хадгалагдах файл нь эргээгүй жинхэнэ дүрс байдаг. Хэрэглэгчийн хувьд
+ * энэ нь "баруун нүд минь зүүн тийшээ үсэрлээ" гэж харагддаг тул
+ * ХАРУУЛАХДАА буцааж эргүүлнэ (доорх `mirror` style).
+ *
+ * Пикселийг нь өөрчлөхгүй: Gemini-д эргэлт огт хамаагүй бөгөөд зургийг
+ * хаана ч хадгалдаггүй тул харагдацыг засахад л хангалттай.
+ */
+type PickedImage = { base64: string; mime: string; uri: string; mirrored: boolean }
 
 const TIPS = [
   "Гэрэл сайтай, нүүрэн рүү чиглэсэн орчинд авна уу",
@@ -125,6 +134,8 @@ export default function AiAdvisorScreen() {
       base64: asset.base64,
       mime: asset.mimeType ?? "image/jpeg",
       uri: asset.uri,
+      // Сангаас сонгосон зураг аль хэдийн зөв чиглэлтэй тул хөндөхгүй.
+      mirrored: source === "camera",
     }
     setImage(picked)
     await runAnalysis(picked)
@@ -213,7 +224,11 @@ export default function AiAdvisorScreen() {
         {step === "loading" && (
           <View style={styles.center}>
             {image && (
-              <Image source={{ uri: image.uri }} style={styles.previewLarge} contentFit="cover" />
+              <Image
+                source={{ uri: image.uri }}
+                style={[styles.previewLarge, image.mirrored && styles.mirror]}
+                contentFit="cover"
+              />
             )}
             <ActivityIndicator color={colors.primary} size="large" style={{ marginTop: 20 }} />
             <Text style={styles.loadingText}>Шинжилж байна…</Text>
@@ -231,7 +246,11 @@ export default function AiAdvisorScreen() {
         {step === "result" && analysis && (
           <>
             {image && (
-              <Image source={{ uri: image.uri }} style={styles.previewSmall} contentFit="cover" />
+              <Image
+                source={{ uri: image.uri }}
+                style={[styles.previewSmall, image.mirrored && styles.mirror]}
+                contentFit="cover"
+              />
             )}
 
             <View style={styles.resultCard}>
@@ -380,6 +399,8 @@ function makeStyles(colors: BrandPalette) {
       backgroundColor: colors.surfaceTint2,
       marginBottom: 14,
     },
+    /** Урд камерын дүрсийг урьдчилан харснаар нь буцаана. */
+    mirror: { transform: [{ scaleX: -1 }] },
 
     resultCard: {
       width: "100%",
