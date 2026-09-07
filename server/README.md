@@ -10,7 +10,10 @@
 | `supabase/README.md` | Supabase project тохируулах алхмууд |
 | `src/db/types.ts` | Схемийн TypeScript тодорхойлолт (frontend, app хуваалцана) |
 | `src/db/client.ts` | Supabase client — хэрэглэгчийн эрхээр / service_role-оор |
-| `src/index.ts` | Hono API |
+| `src/index.ts` | Hono API (route-ууд эндээс mount хийгдэнэ) |
+| `src/routes/` | Hono route бүлгүүд (жишээ нь `/ai/skin-analysis`) |
+| `src/dev.ts` | Локал dev сервер (`npm run dev`) — `@hono/node-server` |
+| `api/index.ts` | Vercel serverless entry (`vercel.json`-той хамт) |
 
 ## Архитектур
 
@@ -33,8 +36,11 @@ Hono API нь RLS-ээр шийдэгдэхгүй ажлуудад зориул�
 ```bash
 npm install
 cp .env.example .env
-vc dev
+npm run dev          # http://localhost:3001 — `PORT` хувьсагчаар солино
 ```
+
+Vercel-ийн adapter-ыг (`api/index.ts`) өөрийг нь турших бол `vc dev`
+ашиглана (Vercel CLI login/link шаардана — production deploy-той адил зам).
 
 ## DB тохируулах
 

@@ -273,6 +273,18 @@ export type Review = {
   updated_at: string
 }
 
+/** AI арьс шинжилгээний нэг түүхэн бичлэг (0024) — зураг хадгалдаггүй. */
+export type AiSkinScan = {
+  id: string
+  customer_id: string
+  skin_type: string
+  concerns: string[]
+  confidence: string
+  summary: string
+  recommended_categories: string[]
+  created_at: string
+}
+
 /* ----------------------------------------------------------------- views */
 
 /** `business_ratings` — сэтгэгдлийн дундаж болон тоо. */
@@ -321,6 +333,7 @@ export type Database = {
       favourites: Row<Favourite>
       notifications: Row<Notification>
       push_tokens: Row<PushToken>
+      ai_skin_scans: Row<AiSkinScan>
     }
     Views: {
       // supabase-js нь View бүрээс `Relationships`-ийг шаарддаг — үүнгүй бол
