@@ -2,6 +2,7 @@
   "name": "lumina-server",
   "type": "module",
   "scripts": {
+    "dev": "tsx watch --env-file=.env src/dev.ts",
     "typecheck": "tsc --noEmit",
     "sync:types": "node scripts/sync-db-types.mjs",
     "db:link": "supabase link --project-ref neeosuuhhbcaillrptpa",
@@ -12,10 +13,12 @@
     "seed:demo": "node scripts/seed-demo.mjs"
   },
   "dependencies": {
+    "@google/genai": "^2.21.0",
     "@supabase/supabase-js": "^2.109.0",
     "hono": "^4.13.1"
   },
   "devDependencies": {
+    "@hono/node-server": "^2.1.1",
     "@types/node": "^26.1.1",
     "supabase": "^2.114.0",
     "tsx": "^4.23.0",
