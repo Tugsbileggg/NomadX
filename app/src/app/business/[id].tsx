@@ -1,23 +1,22 @@
 import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   ActivityIndicator,
   Dimensions,
   Linking,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { BusinessMap } from "@/components/BusinessMap"
+import { ImageViewer } from "@/components/ImageViewer"
 import { MAP_ZOOM_OVERVIEW } from "@/lib/map-style"
 import { useAppTheme } from "@/lib/theme-context"
 import type { BrandPalette } from "@/constants/theme"
@@ -243,7 +242,11 @@ export default function BusinessDetailScreen() {
         />
       </Pressable>
 
-      <GalleryViewer items={gallery} index={viewerIndex} onClose={() => setViewerIndex(null)} />
+      <ImageViewer
+        urls={gallery.map((m) => publicAssetUrl(m.path))}
+        index={viewerIndex}
+        onClose={() => setViewerIndex(null)}
+      />
 
       <SafeAreaView edges={["bottom"]} style={styles.bookBar}>
         <Pressable
@@ -424,68 +427,6 @@ function GalleryTile({ item, onPress }: { item: ProfileMedia; onPress: () => voi
         <Image source={{ uri: url }} style={StyleSheet.absoluteFill} contentFit="cover" />
       ) : null}
     </Pressable>
-  )
-}
-
-/**
- * Галерейн бүтэн дэлгэцийн үзүүлэгч. Хэвтээ хуудаслалтаар зураг хооронд
- * шудрана; зураг эсвэл × дээр дарвал хаагдана.
- */
-function GalleryViewer({
-  items,
-  index,
-  onClose,
-}: {
-  items: ProfileMedia[]
-  index: number | null
-  onClose: () => void
-}) {
-  const { colors } = useAppTheme()
-  const styles = useMemo(() => makeStyles(colors), [colors])
-  const { width, height } = useWindowDimensions()
-  const scroller = useRef<ScrollView>(null)
-
-  // `contentOffset` нь Android дээр үл хэрэгсэгддэг тул нээгдэх бүрд
-  // сонгосон зураг руу нь гараар үсэргэнэ.
-  useEffect(() => {
-    if (index == null) return
-    // Modal-ын агуулга гарч ирсний дараа хэмжээ нь тогтдог тул нэг frame хүлээнэ.
-    const id = setTimeout(() => {
-      scroller.current?.scrollTo({ x: index * width, animated: false })
-    }, 0)
-    return () => clearTimeout(id)
-  }, [index, width])
-
-  return (
-    <Modal visible={index != null} transparent animationType="fade" onRequestClose={onClose}>
-      <View style={styles.viewerBackdrop}>
-        <ScrollView
-          ref={scroller}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-        >
-          {items.map((item) => {
-            const url = publicAssetUrl(item.path)
-            return (
-              <Pressable key={item.id} onPress={onClose} style={{ width, height }}>
-                {url ? (
-                  <Image
-                    source={{ uri: url }}
-                    style={StyleSheet.absoluteFill}
-                    contentFit="contain"
-                  />
-                ) : null}
-              </Pressable>
-            )
-          })}
-        </ScrollView>
-
-        <Pressable onPress={onClose} hitSlop={10} style={styles.viewerClose}>
-          <Ionicons name="close" size={22} color="#fff" />
-        </Pressable>
-      </View>
-    </Modal>
   )
 }
 
@@ -792,18 +733,6 @@ function makeStyles(colors: BrandPalette) {
 
     // Галерейн үзүүлэгч нь хоёр горимд хоёуланд нь бүтэн хар дэвсгэртэй
     // тул доорх цагаан утгууд зориудаар тогтмол.
-    viewerBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.92)" },
-    viewerClose: {
-      position: "absolute",
-      top: 52,
-      right: 20,
-      width: 36,
-      height: 36,
-      borderRadius: 18,
-      backgroundColor: "rgba(255,255,255,0.18)",
-      alignItems: "center",
-      justifyContent: "center",
-    },
 
     avatar: {
       backgroundColor: colors.primaryContainer,
