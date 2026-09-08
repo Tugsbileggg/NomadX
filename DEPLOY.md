@@ -1,7 +1,7 @@
 # LUMINA — Production бэлтгэл
 
-Гурван зорилтот орчин: **Vercel × 2** (вэб панел, Expo web), **EAS** (iOS/Android),
-**Supabase** (нэг project — `neeosuuhhbcaillrptpa`).
+Дөрвөн зорилтот орчин: **Vercel × 3** (вэб панел, Expo web, Hono API), **EAS**
+(iOS/Android), **Supabase** (нэг project — `neeosuuhhbcaillrptpa`).
 
 **Хэн хаана ажилладаг вэ:**
 
@@ -41,6 +41,21 @@
 | `EXPO_PUBLIC_SUPABASE_URL` | ✅ |
 | `EXPO_PUBLIC_SUPABASE_ANON_KEY` | ✅ |
 | `EXPO_PUBLIC_CARTO_KEY` | — |
+| `EXPO_PUBLIC_SERVER_URL` | — | `server`-ийн Vercel URL (жишээ нь `https://lumina-server.vercel.app`). Байхгүй бол зөвхөн "AI Зөвлөгөө" tab л ажиллахгүй, апп бусад талаараа хэвийн |
+
+### Vercel — Hono API (root: `server`)
+
+Шинэ Vercel project үүсгэж Root Directory-г `server` болгоно (Framework:
+Other). `api/index.ts` + `vercel.json`-ийг бэлдсэн тул zero-config ажиллана.
+
+| Хувьсагч | Заавал | Тайлбар |
+|---|---|---|
+| `SUPABASE_URL` | ✅ | Supabase → Project Settings → API |
+| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | **Зөвхөн энд.** `NEXT_PUBLIC_`/`EXPO_PUBLIC_` угтвар ХЭЗЭЭ Ч тавихгүй |
+| `GEMINI_API_KEY` | ✅ (AI Зөвлөгөө-д) | https://aistudio.google.com — зээлийн карт шаардахгүй үнэгүй |
+
+Deploy хийсний дараа `EXPO_PUBLIC_SERVER_URL`-ыг энэ project-ийн URL-аар
+(вэб болон EAS хоёуланд нь) тохируулна.
 
 ### EAS (native build)
 
@@ -51,6 +66,7 @@
 eas env:create --environment production --name EXPO_PUBLIC_SUPABASE_URL --value "https://….supabase.co"
 eas env:create --environment production --name EXPO_PUBLIC_SUPABASE_ANON_KEY --value "…"
 eas env:create --environment production --name EXPO_PUBLIC_CARTO_KEY --value "cb1_…"
+eas env:create --environment production --name EXPO_PUBLIC_SERVER_URL --value "https://lumina-server.vercel.app"
 ```
 
 `eas.json`-ы profile бүр `"environment"` талбараар эдгээрийг татна.
@@ -147,7 +163,7 @@ npm --prefix frontend run test
 |---|---|
 | **И-мэйл** | Resend sandbox — бодит хэрэглэгчид хүрэхгүй (дээрх 2-р хэсэг) |
 | **Төлбөр тооцоо** | `invoices` нь зөвхөн туршилтын бүртгэл. Мөнгө шилжихгүй, төлбөрийн хаалга, комисс, payout байхгүй |
-| **AI Зөвлөгөө** | Аппын tab нь placeholder |
+| **AI Зөвлөгөө** | Хэрэгжсэн (Gemini vision, `server/src/routes/ai-skin.ts`) — `GEMINI_API_KEY` болон `server`-ийн Vercel deploy шаардлагатай (дээрх 1-р хэсэг) |
 | **Чат** | Схем байхгүй — үйлчлүүлэгч, үйлчилгээ үзүүлэгч хоёр захиалгын тайлбар, сэтгэгдлийн хариугаар харилцана |
 | **Гомдол / AI ашиглалт** | Супер админд цэс бий, DB хүснэгт байхгүй |
 | **Артистын харилцагчид** | Аппад тусдаа жагсаалт байхгүй — захиалгын жагсаалтад мэдээлэл нь бий |
@@ -157,8 +173,9 @@ npm --prefix frontend run test
 
 ## 6. Гаргахын өмнөх шалгалт
 
-- [ ] Бүх migration (0001–0020) ажиллуулагдсан
-- [ ] Гурван эх сурвалжийн орчны хувьсагч бүрэн (дээрх хүснэгтүүд)
+- [ ] Бүх migration (0001–0024) ажиллуулагдсан
+- [ ] Дөрвөн эх сурвалжийн орчны хувьсагч бүрэн (дээрх хүснэгтүүд) — `server` Vercel project шинээр нэмэгдсэнийг мартуузай
+- [ ] `GEMINI_API_KEY` ажиллаж байгааг `/ai-advisor`-аар нэг зураг илгээж баталсан
 - [ ] `npm --prefix frontend run build` цэвэр
 - [ ] `npm --prefix app run test` ба `npm --prefix frontend run test` ногоон
 - [ ] Supabase SMTP өөрийн домэйн дээр, бодит и-мэйл хүрч байгааг шалгасан
