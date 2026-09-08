@@ -1,12 +1,13 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
 import { useMemo, useState } from "react"
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
+import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
 import type { BrandPalette } from "@/constants/theme"
 import { useAuth, signOut } from "@/lib/auth-context"
+import { useMyLocation } from "@/lib/location-context"
 import { useAppTheme } from "@/lib/theme-context"
 import type { ThemePreference } from "@/lib/theme-context"
 
@@ -34,6 +35,7 @@ const THEME_OPTIONS: { label: string; value: ThemePreference }[] = [
  */
 export default function ArtistProfileScreen() {
   const { colors, preference, setPreference } = useAppTheme()
+  const { sharing, setSharing } = useMyLocation()
   const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const { session, account } = useAuth()
@@ -81,6 +83,20 @@ export default function ArtistProfileScreen() {
             })}
           </View>
         </View>
+
+        <View style={styles.menuRow}>
+          <Ionicons name="location-outline" size={18} color={colors.primary} />
+          <Text style={styles.menuLabel}>Байршил хуваалцах</Text>
+          <Switch
+            value={sharing}
+            onValueChange={(next) => void setSharing(next)}
+            trackColor={{ true: colors.primary, false: colors.outlineSoft }}
+          />
+        </View>
+        <Text style={styles.shareHint}>
+          Асаалттай үед апп нээлттэй байх хугацаанд байрлалыг чинь үйлчлүүлэгчид
+          газрын зураг дээр амьдаар харна. Унтраахад тэр даруй зогсоно.
+        </Text>
 
         {MENU.map((m) => (
           <Pressable key={m.href} style={styles.menuRow} onPress={() => router.push(m.href)}>
@@ -151,6 +167,7 @@ function makeStyles(colors: BrandPalette) {
       paddingVertical: 14,
     },
     menuLabel: { flex: 1, fontSize: 13, fontWeight: "600", color: colors.ink },
+    shareHint: { fontSize: 11, color: colors.muted, lineHeight: 16, marginTop: 8, paddingHorizontal: 4 },
 
     signOut: { width: "100%", marginTop: 16 },
   })

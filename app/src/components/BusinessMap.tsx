@@ -29,6 +29,11 @@ export type MapMarker = {
   title: string
   /** Сонгогдсон цэг — томроод нэрийн бөмбөлөгтэй болно. */
   selected?: boolean
+  /**
+   * Артист яг одоо байршлаа хуваалцаж байгаа эсэх — цагираг нь ногоон
+   * болж, тогтмол хаягаараа зогсож буй салонуудаас ялгарна.
+   */
+  live?: boolean
 }
 
 type Props = {
@@ -139,7 +144,7 @@ export function BusinessMap({
 
         {markers.map((m) => (
           <BrandMarker
-            key={`${m.id}:${m.selected ? 1 : 0}`}
+            key={`${m.id}:${m.selected ? 1 : 0}:${m.live ? 1 : 0}`}
             marker={m}
             onPress={() => onMarkerPress(m.id)}
           />
@@ -190,7 +195,9 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
             </Text>
           </View>
         )}
-        <View style={[styles.pin, marker.selected && styles.pinSelected]} />
+        <View
+          style={[styles.pin, marker.selected && styles.pinSelected, marker.live && styles.pinLive]}
+        />
       </View>
     </Marker>
   )
@@ -257,6 +264,20 @@ function makeStyles(colors: BrandPalette) {
     width: PIN_OUTER + 10,
     height: PIN_OUTER + 10,
     borderRadius: (PIN_OUTER + 10) / 2,
+  },
+  // Амьд артист: цагираг нь ногоон болж, ижил өнгийн гэрэлтэлт нэмэгдэнэ.
+  pinLive: {
+    borderColor: colors.success,
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.success,
+        shadowOpacity: 0.6,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+      },
+      android: { elevation: 6 },
+      default: {},
+    }),
   },
   pinLabel: {
     marginBottom: 4,

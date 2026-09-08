@@ -21,6 +21,11 @@ export type MapMarker = {
   title: string
   /** Сонгогдсон цэг — томроод нэрийн бөмбөлөгтэй болно. */
   selected?: boolean
+  /**
+   * Артист яг одоо байршлаа хуваалцаж байгаа эсэх — цагираг нь ногоон
+   * болж, тогтмол хаягаараа зогсож буй салонуудаас ялгарна.
+   */
+  live?: boolean
 }
 
 type Props = {
@@ -188,13 +193,20 @@ export function BusinessMap({
       const size = m.selected ? MARKER_SIZE + 10 : MARKER_SIZE
       const outer = size + MARKER_RING * 2
 
+      // Амьд артист: цагираг нь ногоон болж, ижил өнгийн гэрэлтэлт нэмэгдэнэ.
+      // Тогтмол хаягаараа зогсож буй салонуудаас нэг харцаар ялгарна.
+      const ring = m.live ? colors.success : colors.surface
+      const glow = m.live
+        ? `0 0 0 2px ${colors.successSoft}, 0 2px 8px ${colors.success}`
+        : "0 2px 6px rgba(138,72,83,0.45)"
+
       const dot = `<div style="
         width:${size}px;
         height:${size}px;
         border-radius:50%;
         background:${colors.primary};
-        border:${MARKER_RING}px solid ${colors.surface};
-        box-shadow:0 2px 6px rgba(138,72,83,0.45);
+        border:${MARKER_RING}px solid ${ring};
+        box-shadow:${glow};
       "></div>`
 
       // Сонгогдсон цэгийн нэр нь цэгийн дээр бөмбөлөг болж гарна.

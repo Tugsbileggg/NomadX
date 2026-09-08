@@ -16,6 +16,7 @@ import { AppHeader } from "@/components/AppHeader"
 import { BusinessCard, BusinessThumb, HeartButton } from "@/components/BusinessCard"
 import { BusinessMap, type MapMarker } from "@/components/BusinessMap"
 import type { BrandPalette } from "@/constants/theme"
+import { subscribeToArtists } from "@/lib/artist-live"
 import { distanceMeters, formatDistance } from "@/lib/distance"
 import { useMyLocation } from "@/lib/location-context"
 import { MAP_ZOOM_OVERVIEW, UB_CENTER } from "@/lib/map-style"
@@ -60,6 +61,20 @@ export default function SearchScreen() {
     })
   }, [])
 
+  // Байршлаа хуваалцаж буй артистууд. Тогтмол хаягийнх нь оронд амьд
+  // байрлалыг нь газрын зураг дээр харуулна — хөдөлж байвал цэг нь дагана.
+  const [liveArtists, setLiveArtists] = useState<Map<string, { lat: number; lng: number }>>(
+    () => new Map(),
+  )
+
+  useEffect(
+    () =>
+      subscribeToArtists((fixes) => {
+        setLiveArtists(new Map(fixes.map((f) => [f.id, { lat: f.lat, lng: f.lon }])))
+      }),
+    [],
+  )
+
 
   const visible = useMemo<WithDistance[]>(() => {
     const q = query.trim().toLowerCase()
@@ -99,13 +114,17 @@ export default function SearchScreen() {
       ? { lat: selected.lat, lng: selected.lng }
       : (myLocation ?? UB_CENTER)
 
-  const markers: MapMarker[] = mapped.map((b) => ({
-    id: b.id,
-    lat: b.lat as number,
-    lng: b.lng as number,
-    title: b.name ?? "",
-    selected: b.id === selected?.id,
-  }))
+  const markers: MapMarker[] = mapped.map((b) => {
+    const live = liveArtists.get(b.id)
+    return {
+      id: b.id,
+      lat: live?.lat ?? (b.lat as number),
+      lng: live?.lng ?? (b.lng as number),
+      title: b.name ?? "",
+      selected: b.id === selected?.id,
+      live: live !== undefined,
+    }
+  })
 
   const onToggleFavourite = useCallback(async (id: string, next: boolean) => {
     // Шууд харуулаад, амжилтгүй бол буцаана.
