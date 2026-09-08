@@ -14,6 +14,8 @@ import {
   tileUrlFor,
 } from "@/lib/map-style"
 
+import type { BusinessType } from "@/lib/db-types"
+
 export type MapMarker = {
   id: string
   lat: number
@@ -26,6 +28,14 @@ export type MapMarker = {
    * болж, тогтмол хаягаараа зогсож буй салонуудаас ялгарна.
    */
   live?: boolean
+  /**
+   * Салон уу, хувиараа артист уу.
+   *
+   * Хэлбэрээр ялгана (өнгөөр биш): ногоон "амьд" цагираг өнгийг аль
+   * хэдийн эзэлсэн бөгөөд хэлбэрийн ялгаа өнгө ялгах бэрхшээлтэй
+   * хүмүүст ч ажиллана. Салон = дөрвөлжин (барилга), артист = дугуй.
+   */
+  kind?: BusinessType
 }
 
 type Props = {
@@ -200,10 +210,15 @@ export function BusinessMap({
         ? `0 0 0 2px ${colors.successSoft}, 0 2px 8px ${colors.success}`
         : "0 2px 6px rgba(138,72,83,0.45)"
 
+      // Салон = дөрвөлжин (тогтмол байрлалтай барилга), артист = дугуй
+      // (хөдөлдөг хүн). Хэлбэрээр ялгасан тул ногоон "амьд" цагирагтай
+      // давхцахгүй.
+      const radius = m.kind === "salon" ? `${Math.round(size / 4)}px` : "50%"
+
       const dot = `<div style="
         width:${size}px;
         height:${size}px;
-        border-radius:50%;
+        border-radius:${radius};
         background:${colors.primary};
         border:${MARKER_RING}px solid ${ring};
         box-shadow:${glow};

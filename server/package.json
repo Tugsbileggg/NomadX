@@ -10,7 +10,8 @@
     "db:types": "supabase gen types typescript --project-id neeosuuhhbcaillrptpa > src/db/types.generated.ts",
     "rt:check": "node scripts/rt-check.mjs",
     "rt:walk": "node scripts/fake-walk.mjs",
-    "seed:demo": "node scripts/seed-demo.mjs"
+    "seed:demo": "node scripts/seed-demo.mjs",
+    "sim:artists": "node scripts/simulate-artists.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.21.0",
