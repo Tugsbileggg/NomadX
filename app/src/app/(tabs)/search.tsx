@@ -1,5 +1,4 @@
 import { Ionicons } from "@expo/vector-icons"
-import * as Location from "expo-location"
 import { useRouter } from "expo-router"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import {
@@ -18,6 +17,7 @@ import { BusinessCard, BusinessThumb, HeartButton } from "@/components/BusinessC
 import { BusinessMap, type MapMarker } from "@/components/BusinessMap"
 import type { BrandPalette } from "@/constants/theme"
 import { distanceMeters, formatDistance } from "@/lib/distance"
+import { useMyLocation } from "@/lib/location-context"
 import { MAP_ZOOM_OVERVIEW, UB_CENTER } from "@/lib/map-style"
 import { fetchSearchBusinesses, toggleFavourite, type SearchBusiness } from "@/lib/search"
 import { useAppTheme } from "@/lib/theme-context"
@@ -38,13 +38,15 @@ export default function SearchScreen() {
   const router = useRouter()
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
+  // Байршлыг нэвтрэх үедээ асуусан тул энд дахин зөвшөөрөл хүсэхгүй —
+  // газрын зураг нээх даруйд бэлэн байна.
+  const { myLocation, refresh: locate } = useMyLocation()
   const [tab, setTab] = useState<Tab>("list")
   const [query, setQuery] = useState("")
   const [sort, setSort] = useState<SortId | null>(null)
   const [openOnly, setOpenOnly] = useState(false)
   const [businesses, setBusinesses] = useState<SearchBusiness[]>([])
   const [loading, setLoading] = useState(true)
-  const [myLocation, setMyLocation] = useState<{ lat: number; lng: number } | null>(null)
   // Хоосон эхэлнэ — газрын зураг эхлээд өөрийн байршил дээр төвлөрч,
   // доод карт нь зөвхөн салон сонгосон үед л гарна.
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -58,24 +60,6 @@ export default function SearchScreen() {
     })
   }, [])
 
-  /** Зөвшөөрөл асууж, өөрийн байршлыг тогтооно. Татгалзвал null. */
-  const locate = useCallback(async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync()
-    if (status !== "granted") return null
-
-    const pos = await Location.getCurrentPositionAsync({})
-    const next = { lat: pos.coords.latitude, lng: pos.coords.longitude }
-    setMyLocation(next)
-    return next
-  }, [])
-
-  useEffect(() => {
-    // `locate` нь эхний мөрөндөө `await` хийдэг тул setState нь синхроноор
-    // биш, зөвшөөрөл ирсний дараа л дуудагдана. Дүрэм функцийн дотор харж
-    // чаддаггүй тул энд худал дохио өгнө.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void locate()
-  }, [locate])
 
   const visible = useMemo<WithDistance[]>(() => {
     const q = query.trim().toLowerCase()
