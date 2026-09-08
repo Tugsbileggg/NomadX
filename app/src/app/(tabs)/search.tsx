@@ -123,6 +123,7 @@ export default function SearchScreen() {
       title: b.name ?? "",
       selected: b.id === selected?.id,
       live: live !== undefined,
+      kind: b.type,
     }
   })
 

@@ -22,6 +22,8 @@ import {
   tileUrlFor,
 } from "@/lib/map-style"
 
+import type { BusinessType } from "@/lib/db-types"
+
 export type MapMarker = {
   id: string
   lat: number
@@ -34,6 +36,14 @@ export type MapMarker = {
    * болж, тогтмол хаягаараа зогсож буй салонуудаас ялгарна.
    */
   live?: boolean
+  /**
+   * Салон уу, хувиараа артист уу.
+   *
+   * Хэлбэрээр ялгана (өнгөөр биш): ногоон "амьд" цагираг өнгийг аль
+   * хэдийн эзэлсэн бөгөөд хэлбэрийн ялгаа өнгө ялгах бэрхшээлтэй
+   * хүмүүст ч ажиллана. Салон = дөрвөлжин (барилга), артист = дугуй.
+   */
+  kind?: BusinessType
 }
 
 type Props = {
@@ -144,7 +154,7 @@ export function BusinessMap({
 
         {markers.map((m) => (
           <BrandMarker
-            key={`${m.id}:${m.selected ? 1 : 0}:${m.live ? 1 : 0}`}
+            key={`${m.id}:${m.selected ? 1 : 0}:${m.live ? 1 : 0}:${m.kind ?? ""}`}
             marker={m}
             onPress={() => onMarkerPress(m.id)}
           />
@@ -196,7 +206,13 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
           </View>
         )}
         <View
-          style={[styles.pin, marker.selected && styles.pinSelected, marker.live && styles.pinLive]}
+          style={[
+            styles.pin,
+            marker.selected && styles.pinSelected,
+            // Дугуй нь анхны хэлбэр (артист) — салоныг дөрвөлжин болгоно.
+            marker.kind === "salon" && styles.pinSalon,
+            marker.live && styles.pinLive,
+          ]}
         />
       </View>
     </Marker>
@@ -265,6 +281,10 @@ function makeStyles(colors: BrandPalette) {
     height: PIN_OUTER + 10,
     borderRadius: (PIN_OUTER + 10) / 2,
   },
+  // Салон = дөрвөлжин (тогтмол байрлалтай барилга), артист = дугуй
+  // (хөдөлдөг хүн). `pinSelected` томруулдаг тул радиусыг харьцангуйгаар
+  // биш, тогтмол утгаар өгнө — хоёулаа хэрэглэгдэхэд хэлбэр алдагдахгүй.
+  pinSalon: { borderRadius: 6 },
   // Амьд артист: цагираг нь ногоон болж, ижил өнгийн гэрэлтэлт нэмэгдэнэ.
   pinLive: {
     borderColor: colors.success,
