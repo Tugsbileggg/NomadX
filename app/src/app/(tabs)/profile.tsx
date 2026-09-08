@@ -143,12 +143,6 @@ export default function ProfileScreen() {
           <Ionicons name="chevron-forward" size={16} color={colors.muted} />
         </Pressable>
 
-        <Pressable style={styles.menuRow} onPress={() => router.push("/share")}>
-          <Ionicons name="navigate-outline" size={18} color={colors.primary} />
-          <Text style={styles.menuLabel}>Байршил хуваалцах (POC)</Text>
-          <Ionicons name="chevron-forward" size={16} color={colors.muted} />
-        </Pressable>
-
         <View style={styles.card}>
           <AuthButton label="Гарах" onPress={onSignOut} busy={signingOut} variant="outline" />
         </View>
