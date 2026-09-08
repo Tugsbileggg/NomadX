@@ -106,7 +106,6 @@ function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
           <Stack.Screen name="business/[id]" />
           <Stack.Screen name="book/[id]" />
           <Stack.Screen name="favourites" />
-          <Stack.Screen name="share" />
         </Stack.Protected>
         <Stack.Protected guard={signedIn}>
           {/* Мэдэгдэл хоёр талд хоёуланд нь хэрэгтэй. */}
