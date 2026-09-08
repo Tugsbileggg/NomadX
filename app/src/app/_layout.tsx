@@ -16,6 +16,7 @@ import { Platform, View } from 'react-native';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { InAppNotice } from '@/components/InAppNotice';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
+import { LocationProvider } from '@/lib/location-context';
 import { AppThemeProvider, useAppTheme } from '@/lib/theme-context';
 
 SplashScreen.preventAutoHideAsync();
@@ -32,8 +33,10 @@ export default function RootLayout() {
     <AppThemeProvider>
       <ThemedNavigation>
         <AuthProvider>
-          <AnimatedSplashOverlay />
-          <RootNavigator fontsLoaded={fontsLoaded} />
+          <LocationProvider>
+            <AnimatedSplashOverlay />
+            <RootNavigator fontsLoaded={fontsLoaded} />
+          </LocationProvider>
         </AuthProvider>
       </ThemedNavigation>
     </AppThemeProvider>

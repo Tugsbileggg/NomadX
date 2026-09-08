@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import * as ImagePicker from "expo-image-picker"
 import { useRouter } from "expo-router"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
@@ -18,6 +18,7 @@ import {
   uploadArtistImage,
 } from "@/lib/artist-profile"
 import { useAuth } from "@/lib/auth-context"
+import { useMyLocation } from "@/lib/location-context"
 import { useAppTheme } from "@/lib/theme-context"
 
 /** Батлагдсаны дараа ч мэдээллээ шинэчилж болно (0003-ийн дүрэм). */
@@ -26,6 +27,7 @@ export default function ArtistProfileEditScreen() {
   const styles = useMemo(() => makeStyles(colors), [colors])
   const router = useRouter()
   const { refreshAccount } = useAuth()
+  const { myLocation } = useMyLocation()
 
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState("")
@@ -55,6 +57,19 @@ export default function ArtistProfileEditScreen() {
   useEffect(() => {
     void load()
   }, [])
+
+  // Хадгалсан цэггүй артист эхлээд хот бүхэлдээ харна. Байршлын зөвшөөрөл
+  // ирж өөрийн байрлал тодорхой болмогц түүн рүү НЭГ л удаа ойртуулна —
+  // салон ихэвчлэн эзнийхээ байрлалд байдаг тул цэг тавихад хамгийн ойр
+  // эхлэл болно. Эзэн цэгээ өөрөө хөдөлгөсөн бол хөндөхгүй.
+  const centredOnMe = useRef(false)
+  useEffect(() => {
+    if (centredOnMe.current || loading) return
+    if (!myLocation || coords || pinMoved) return
+    centredOnMe.current = true
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMapView({ center: myLocation, zoom: MAP_ZOOM_PIN })
+  }, [myLocation, coords, pinMoved, loading])
 
   async function load() {
     const p = await fetchArtistProfile()
@@ -218,6 +233,7 @@ export default function ArtistProfileEditScreen() {
                   ? [{ id: "pin", lat: coords.lat, lng: coords.lng, title: name || "Байршил", selected: true }]
                   : []
               }
+              myLocation={myLocation}
               onMarkerPress={() => {}}
               onMapPress={(c) => {
                 setCoords(c)
