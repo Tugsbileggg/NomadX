@@ -7,6 +7,7 @@ import {
   CalendarCheck,
   ChevronLeft,
   ChevronRight,
+  CreditCard,
   Search,
   Sparkles,
   Star,
@@ -17,6 +18,9 @@ import { CATEGORIES, FEATURES, PROVIDERS, STEPS } from "@/lib/home-data";
 import { MOBILE_APP_URL } from "@/lib/mobile-app-url";
 
 const STEP_ICONS = [Search, Sparkles, CalendarCheck];
+
+/** `FEATURES`-тэй ЯГ ИЖИЛ эрэмбэтэй байх ёстой. */
+const FEATURE_ICONS = [Sparkles, BadgeCheck, CalendarCheck, CreditCard];
 
 export default function HomePage() {
   return (
@@ -37,7 +41,9 @@ async function Hero() {
     : null;
 
   return (
-    <section className="px-4 py-20">
+    // id — толгойн навигацийн "Нээх" зөвхөн энэ хэсэгт харагдахад
+    // scroll-spy-д ашиглана (`SiteHeader.tsx`).
+    <section id="hero" className="px-4 py-20">
       <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-6 px-6 py-20 lg:flex-row">
         <div className="flex flex-1 flex-col gap-8 lg:max-w-[564px]">
           <h1 className="text-[40px] leading-[1.14] font-bold text-ink sm:text-[56px]">
@@ -77,7 +83,7 @@ async function Hero() {
               )}
             </div>
             <p className="text-sm leading-5 font-bold text-primary">
-              10,00+ хэрэглэгчид нэгдсэн
+              10,000+ хэрэглэгчид нэгдсэн
             </p>
           </div>
         </div>
@@ -148,7 +154,9 @@ function FloatingCard({
 
 function WhyUs() {
   return (
-    <section className="mx-auto max-w-[1200px] px-10">
+    // id — толгойн навигацийн "AI зөвлөх" энд anchor хийнэ. scroll-mt нь
+    // sticky header (h-20) доор дарагдахгүй байхад зориулав.
+    <section id="why-us" className="mx-auto max-w-[1200px] scroll-mt-28 px-10">
       <div className="flex flex-col items-center gap-4 text-center">
         <h2 className="text-[28px] leading-9 font-semibold text-ink">
           Яагаад бид?
@@ -160,19 +168,26 @@ function WhyUs() {
       </div>
 
       <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {FEATURES.map((f) => (
-          <article key={f.title} className="soft-card flex flex-col gap-3 p-8">
-            <div
-              className="size-16 shrink-0 bg-[url('/img/feature-sprite.jpg')] bg-[length:128px_128px]"
-              style={{ backgroundPosition: f.sprite }}
-              role="presentation"
-            />
-            <h3 className="pt-3 text-lg leading-6 font-medium text-ink">
-              {f.title}
-            </h3>
-            <p className="text-sm leading-5 text-body">{f.body}</p>
-          </article>
-        ))}
+        {FEATURES.map((f, i) => {
+          const Icon = FEATURE_ICONS[i];
+          return (
+            <article
+              key={f.title}
+              className="soft-card flex flex-col gap-4 p-8 transition-transform duration-200 hover:-translate-y-1"
+            >
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-container">
+                <Icon className="size-7 text-primary" strokeWidth={1.8} />
+              </div>
+              {/* min-h нь 1 ба 2 мөрт гарчгийн хувьд доорх текстийг нэг
+                  түвшинд байлгана — эс тэгвэл гарчгийн урттай карт тус
+                  бүрт текст өөр өндөрт эхэлж, эгнээ тэгш бус харагдана. */}
+              <h3 className="min-h-12 text-lg leading-6 font-medium text-ink">
+                {f.title}
+              </h3>
+              <p className="text-sm leading-5 text-body">{f.body}</p>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -365,7 +380,11 @@ function FeaturedProviders() {
 
 function BusinessBanner() {
   return (
-    <section className="mx-auto max-w-[1200px] px-10 pb-20">
+    // id — толгойн навигацийн "Бизнес эрхлэгчдэд" энд anchor хийнэ.
+    <section
+      id="business"
+      className="mx-auto max-w-[1200px] scroll-mt-28 px-10 pb-20"
+    >
       <div className="glass relative overflow-hidden rounded-5xl shadow-soft">
         <Image
           src="/img/banner-bg.jpg"

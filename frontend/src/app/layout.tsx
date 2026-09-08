@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="mn" className={`${montserrat.variable} h-full`}>
+    <html lang="mn" className={`${montserrat.variable} h-full scroll-smooth`}>
       <body className="min-h-full">{children}</body>
     </html>
   );

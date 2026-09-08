@@ -1,188 +1,201 @@
 import { Ionicons } from "@expo/vector-icons"
-import { TabsStateContext, type TabTriggerSlotProps } from "expo-router/ui"
-import { forwardRef, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import {
+  TabListProps,
+  TabTriggerSlotProps,
+} from "expo-router/ui"
+import {
+  Children,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { Pressable, StyleSheet, View } from "react-native"
 import Animated, {
-  SnappySpringConfig,
+  Easing,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from "react-native-reanimated"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import type { BrandPalette } from "@/constants/theme"
+import { MaxContentWidth, Spacing, type BrandPalette } from "@/constants/theme"
 import { useAppTheme } from "@/lib/theme-context"
 
-/** Цэсний өндөр. Булангийн радиус нь үүний яг хагас — бүтэн капсул. */
-const BAR_HEIGHT = 62
+/**
+ * Хөвөгч доод цэс — харилцагч, артист хоёр талын tab bar ХОЁУЛАА үүнийг
+ * хуваалцана (`app-tabs.tsx`, `(artist)/(panel)/_layout.tsx`). Идэвхтэй
+ * tab нь дугуй "бөмбөлөг" болж цэснээс дээш гарна.
+ */
+const BAR_HEIGHT = 54
+const BUBBLE_SIZE = 47
+const NOTCH_SIZE = 66
 
-/** Дэлгэцийн хажуу талаас хөвөх зай. */
-const SIDE_MARGIN = 16
-
-/** Идэвхтэй табын доор гүйх дугуй тэмдэглэгээний хэмжээ. */
-const INDICATOR_SIZE = 44
+export type TabBarItem = {
+  icon: keyof typeof Ionicons.glyphMap
+  activeIcon: keyof typeof Ionicons.glyphMap
+  label: string
+}
 
 /**
- * Тэмдэглэгээний гулсалт — Reanimated-ийн өөрийнх нь тохируулсан хувилбар
- * (ζ≈0.92, `overshootClamping`), ойролцоогоор 300мс-д тогтоно.
- *
- * ⚠️ Гараар тоо бичихээс болгоомжил: Reanimated 4-ийн пүршний масштаб 3-аас
- * тэс өөр (анхдагч нь mass 4 / damping 120 / stiffness 900, өмнө нь
- * 1 / 10 / 100). RN3-ын зуршлаар бичсэн тоо энд савлаж унана.
+ * TabTrigger нь `isFocused`-ийг найдвартай, шууд tab navigator-ын state-ээс
+ * гаргаж өгдөг (`TabButton` доторх prop) — тэгэхээр идэвхтэй индексийг доороос
+ * дээш нь энэ context-оор дамжуулж авна.
  */
-const SLIDE = SnappySpringConfig
+const ActiveIndexContext = createContext<(index: number) => void>(() => {})
 
-/** Дүрсний өнгө солигдох хугацаа. Гулсалттай ойролцоо байх ёстой. */
-const FADE = { duration: 180 }
-
-/**
- * Аппын доод цэс — хөвөгч бараан капсул, идэвхтэй таб нь доогуураа
- * гулсдаг дугуй тэмдэглэгээгээр тэмдэглэгдэнэ.
- *
- * `<TabList asChild>`-ийн хүүхэд болж ажиллана: expo-router нь табуудынхаа
- * төлөвийг `TabsStateContext`-ээр дамжуулдаг тул идэвхтэй индексийг эндээс
- * шууд уншиж тэмдэглэгээгээ байрлуулна.
- *
- * ⚠️ Яагаад `Tabs`-ийн `tabBar` prop-ыг ашиглаагүй вэ: SDK 57-д тэр prop
- * үйлчлэхээ больсон. Өөрийн цэс зурах албан ёсны зам нь `expo-router/ui`-ийн
- * headless tabs.
- *
- * Тэмдэглэгээ нь биенээс ГАДАГШ цухуйхгүй — өмнө нь өргөгдсөн тойрог
- * ховилтойгоо таарахгүй завсар үлдээж, дундуур нь хуудасны дэвсгэр
- * харагддаг байв. Одоо капсул дотроо бүрэн багтах тул тийм завсар
- * үүсэх боломжгүй.
- */
-export const FloatingTabBar = forwardRef<View, { children?: ReactNode }>(
-  function FloatingTabBar({ children }, ref) {
-    const { colors } = useAppTheme()
-    const styles = useMemo(() => makeStyles(colors), [colors])
-    const insets = useSafeAreaInsets()
-    const state = useContext(TabsStateContext)
-
-    // Тэмдэглэгээг байрлуулахад биений бодит өргөн хэрэгтэй.
-    const [width, setWidth] = useState(0)
-
-    const count = state.routes.length
-    const slot = count > 0 ? width / count : 0
-
-    // Пикселээр биш ИНДЕКСЭЭР хөдөлгөнө: дэлгэц эргэх зэргээр өргөн
-    // өөрчлөгдөхөд тэмдэглэгээ хажуу тийш харайлгүй шинэ байрандаа шууд
-    // тохирно.
-    //
-    // React-ийн prop-оос анимаци хөтлөх тодорхой хэлбэр нь shared value +
-    // effect. `useDerivedValue` ч ажиллах боловч түүний хамаарлыг Babel
-    // plugin таамаглаж илрүүлдэг тул энд илүү шууд хэлбэрийг сонгов.
-    const progress = useSharedValue(state.index)
-
-    useEffect(() => {
-      progress.value = withSpring(state.index, SLIDE)
-    }, [state.index, progress])
-
-    const indicator = useAnimatedStyle(
-      () => ({
-        // Хэмжилт хийгдэх хүртэл нуугдана — эс тэгвэл зүүн ирмэг дээр
-        // нэг агшин анивчина.
-        opacity: slot > 0 ? 1 : 0,
-        transform: [{ translateX: progress.value * slot + (slot - INDICATOR_SIZE) / 2 }],
-      }),
-      [slot],
-    )
-
-    return (
-      <View
-        ref={ref}
-        // Home indicator-тай утсан дээр бүтэн inset нь цэсийг хэт өндөрт
-        // өргөж, доогуураа хоосон зай үлдээдэг тул бага зэрэг татав.
-        style={[styles.wrap, { paddingBottom: Math.max(insets.bottom - 8, 12) }]}
-      >
-        <View style={styles.bar} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
-          <Animated.View style={[styles.indicator, indicator]} />
-
-          <View style={styles.row}>{children}</View>
-        </View>
-      </View>
-    )
-  },
-)
-
-/**
- * Нэг таб. `<TabTrigger asChild>` нь дарах үйлдэл болон `isFocused`-ийг
- * энэ рүү дамжуулна — өөрөө навигаци хийхгүй.
- */
-export const TabButton = forwardRef<
-  View,
-  TabTriggerSlotProps & { icon: keyof typeof Ionicons.glyphMap }
->(function TabButton({ icon, isFocused, ...pressable }, ref) {
+export function TabButton({
+  index,
+  icon,
+  activeIcon,
+  label,
+  isFocused,
+  ...props
+}: TabTriggerSlotProps & {
+  index: number
+  icon: keyof typeof Ionicons.glyphMap
+  activeIcon: keyof typeof Ionicons.glyphMap
+  label: string
+}) {
   const { colors } = useAppTheme()
-  const styles = useMemo(() => makeStyles(colors), [colors])
-
-  // Дээрхтэй адил хэлбэр: prop-оос хөтлөх тул shared value + effect.
-  const active = useSharedValue(isFocused ? 1 : 0)
+  const setActiveIndex = useContext(ActiveIndexContext)
 
   useEffect(() => {
-    active.value = withTiming(isFocused ? 1 : 0, FADE)
-  }, [isFocused, active])
-
-  const lift = useAnimatedStyle(() => ({ transform: [{ scale: 1 + active.value * 0.1 }] }))
-  const overlay = useAnimatedStyle(() => ({ opacity: active.value }))
+    if (isFocused) setActiveIndex(index)
+  }, [isFocused, index, setActiveIndex])
 
   return (
     <Pressable
-      ref={ref}
-      {...pressable}
-      accessibilityState={{ selected: isFocused }}
-      style={styles.item}
+      {...props}
+      accessibilityLabel={label}
+      style={({ pressed }) => [staticStyles.tabButtonView, pressed && staticStyles.pressed]}
     >
-      {/*
-        Өнгийг шууд солихын оронд хоёр дүрсийг давхарлаж бүдгэрүүлнэ.
-        Vector icon нь эцсийн дүндээ Text тул өнгийг нь worklet-ээс
-        хөдөлгөх найдваргүй; давхарлах нь хямд бөгөөд гулсалттай яг
-        зэрэгцэж өнгө нь ормогцоо цагаан болно.
-      */}
-      <Animated.View style={[styles.iconStack, lift]}>
-        <Ionicons name={icon} size={23} color={colors.tabBarMuted} />
-
-        <Animated.View style={[StyleSheet.absoluteFill, styles.iconStack, overlay]}>
-          <Ionicons name={icon} size={23} color={colors.onPrimary} />
-        </Animated.View>
-      </Animated.View>
+      {/* Идэвхтэй tab-ын дүрс дэвсгэрээс дээш гарсан "бөмбөлөг" дотор харагдана. */}
+      {!isFocused && <Ionicons name={icon} size={19} color={colors.muted} />}
     </Pressable>
   )
+}
+
+export function FloatingTabBar(props: TabListProps & { items: TabBarItem[] }) {
+  const { items, ...tabListProps } = props
+  const { colors } = useAppTheme()
+  const insets = useSafeAreaInsets()
+  const styles = useMemo(() => makeStyles(colors), [colors])
+
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeItem = items[activeIndex] ?? items[0]
+  const itemCount = Children.count(tabListProps.children)
+
+  const [barWidth, setBarWidth] = useState(0)
+  const centerX = useSharedValue(0)
+
+  useEffect(() => {
+    if (barWidth <= 0) return
+    const itemWidth = barWidth / itemCount
+    const target = itemWidth * activeIndex + itemWidth / 2
+    // Савчилгүй, гөлгөр гулсалт — bounce/overshoot-гүй тул эргэн тойрноо хэлбэлздэггүй.
+    centerX.value = withTiming(target, {
+      duration: 260,
+      easing: Easing.out(Easing.cubic),
+    })
+  }, [activeIndex, barWidth, itemCount, centerX])
+
+  const notchStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: centerX.value - NOTCH_SIZE / 2 }],
+  }))
+  const bubbleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: centerX.value - BUBBLE_SIZE / 2 }],
+  }))
+
+  return (
+    <View
+      {...tabListProps}
+      style={[staticStyles.tabListContainer, { paddingBottom: Math.max(insets.bottom, Spacing.three) }]}
+    >
+      <View style={staticStyles.innerContainer}>
+        <View style={styles.pill} onLayout={(e) => setBarWidth(e.nativeEvent.layout.width)}>
+          <ActiveIndexContext.Provider value={setActiveIndex}>
+            {tabListProps.children}
+          </ActiveIndexContext.Provider>
+        </View>
+        {barWidth > 0 && activeItem && (
+          <>
+            <Animated.View style={[styles.notch, notchStyle]} />
+            <Animated.View style={[styles.bubble, bubbleStyle]}>
+              <Ionicons name={activeItem.activeIcon} size={21} color="#ffffff" />
+            </Animated.View>
+          </>
+        )}
+      </View>
+    </View>
+  )
+}
+
+// Theme-ээс хамаардаггүй, зөвхөн байрлал/хэмжээтэй холбоотой хэсгүүд.
+const staticStyles = StyleSheet.create({
+  tabListContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    paddingHorizontal: Spacing.three,
+    alignItems: "center",
+  },
+  innerContainer: {
+    width: "100%",
+    maxWidth: MaxContentWidth,
+  },
+  tabButtonView: {
+    flex: 1,
+    height: BAR_HEIGHT,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pressed: { opacity: 0.7 },
 })
 
+// Theme-ийн өнгөнөөс хамаарах хэсгүүд.
 function makeStyles(colors: BrandPalette) {
   return StyleSheet.create({
-    wrap: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-      paddingHorizontal: SIDE_MARGIN,
-      // Цэсний хажуугийн хоосон зай доорх хуудсыг даралгүй өнгөрөөнө.
-      pointerEvents: "box-none",
-    },
-    bar: {
+    pill: {
       height: BAR_HEIGHT,
       borderRadius: BAR_HEIGHT / 2,
-      backgroundColor: colors.tabBar,
-      // Тэмдэглэгээ капсулын нумаас гадагш гарахгүй.
-      overflow: "hidden",
-      // RN 0.86-д `shadow*` хуучирсан — `boxShadow` нь гурван талдаа нэг
-      // адил ажиллана.
-      boxShadow: "0px 8px 16px rgba(0, 0, 0, 0.3)",
+      backgroundColor: colors.surface,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.outlineSoft,
+      flexDirection: "row",
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOpacity: 0.12,
+      shadowRadius: 20,
+      shadowOffset: { width: 0, height: 10 },
+      elevation: 10,
     },
-    row: { flexDirection: "row", height: BAR_HEIGHT },
-    item: { flex: 1, alignItems: "center", justifyContent: "center" },
-    iconStack: { alignItems: "center", justifyContent: "center" },
-    indicator: {
+    // Дэвсгэр (surfacePage) өнгөтэйгээ таарч, pill-ийн ирмэгээс "хазагдсан" мэт харагдана.
+    notch: {
       position: "absolute",
-      top: (BAR_HEIGHT - INDICATOR_SIZE) / 2,
+      top: -(NOTCH_SIZE / 2 - 4),
       left: 0,
-      width: INDICATOR_SIZE,
-      height: INDICATOR_SIZE,
-      borderRadius: INDICATOR_SIZE / 2,
+      width: NOTCH_SIZE,
+      height: NOTCH_SIZE,
+      borderRadius: NOTCH_SIZE / 2,
+      backgroundColor: colors.surfacePage,
+    },
+    bubble: {
+      position: "absolute",
+      top: -(NOTCH_SIZE / 2 - 4) + (NOTCH_SIZE - BUBBLE_SIZE) / 2,
+      left: 0,
+      width: BUBBLE_SIZE,
+      height: BUBBLE_SIZE,
+      borderRadius: BUBBLE_SIZE / 2,
       backgroundColor: colors.primary,
+      alignItems: "center",
+      justifyContent: "center",
+      shadowColor: colors.primary,
+      shadowOpacity: 0.45,
+      shadowRadius: 12,
+      shadowOffset: { width: 0, height: 6 },
+      elevation: 12,
     },
   })
 }
