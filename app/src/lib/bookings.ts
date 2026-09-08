@@ -82,10 +82,19 @@ export type NewBooking = { id: string } | { error: string }
  * хавсаргана (зам нь захиалгын id-г шаарддаггүй ч RLS нь захиалга
  * аль хэдийн үүссэн байхыг шаардана).
  */
+/**
+ * Үйлчилгээ үзүүлэх байршил (0026).
+ *
+ * Артист үйлчлүүлэгч рүү очдог тул "хаана" гэдгийг мэдэх шаардлагатай.
+ * Заагаагүй бол null — хуучин захиалгууд ч байршилгүй байдаг.
+ */
+export type ServiceLocation = { lat: number; lng: number; address: string }
+
 export async function createBooking(
   businessId: string,
   scheduledAt: Date,
   note: string,
+  location: ServiceLocation | null,
 ): Promise<NewBooking> {
   const {
     data: { user },
@@ -99,6 +108,11 @@ export async function createBooking(
       business_id: businessId,
       scheduled_at: scheduledAt.toISOString(),
       note: note.trim(),
+      // DB нь хоёулаа null, эсвэл хоёулаа утгатай байхыг шаарддаг
+      // (bookings_service_coords_pair) тул хамт тавина.
+      service_lat: location?.lat ?? null,
+      service_lng: location?.lng ?? null,
+      service_address: location?.address.trim() || null,
     })
     .select("id")
     .single()
