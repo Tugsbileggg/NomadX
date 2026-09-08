@@ -1,15 +1,22 @@
-import { Ionicons } from "@expo/vector-icons"
-import { Image } from "expo-image"
-import { useRouter } from "expo-router"
-import { useEffect, useMemo, useState } from "react"
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { AppHeader } from "@/components/AppHeader"
-import type { BrandPalette } from "@/constants/theme"
-import { fetchApprovedBusinesses, type BusinessCard } from "@/lib/businesses"
-import { publicAssetUrl } from "@/lib/storage"
-import { useAppTheme } from "@/lib/theme-context"
+import { AppHeader } from "@/components/AppHeader";
+import type { BrandPalette } from "@/constants/theme";
+import { fetchApprovedBusinesses, type BusinessCard } from "@/lib/businesses";
+import { publicAssetUrl } from "@/lib/storage";
+import { useAppTheme } from "@/lib/theme-context";
 
 const CATEGORIES: { label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { label: "Гоо сайхан", icon: "sparkles-outline" },
@@ -17,40 +24,42 @@ const CATEGORIES: { label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
   { label: "Хумс", icon: "hand-left-outline" },
   { label: "Спа, Массаж", icon: "flower-outline" },
   { label: "Арьс арчилгаа", icon: "water-outline" },
-]
+];
 
 export default function HomeScreen() {
-  const router = useRouter()
-  const { colors } = useAppTheme()
-  const styles = useMemo(() => makeStyles(colors), [colors])
-  const [category, setCategory] = useState<string | null>(null)
-  const [businesses, setBusinesses] = useState<BusinessCard[]>([])
-  const [loading, setLoading] = useState(true)
+  const router = useRouter();
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const [category, setCategory] = useState<string | null>(null);
+  const [businesses, setBusinesses] = useState<BusinessCard[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchApprovedBusinesses().then((rows) => {
-      setBusinesses(rows)
-      setLoading(false)
-    })
-  }, [])
+      setBusinesses(rows);
+      setLoading(false);
+    });
+  }, []);
 
   const artists = useMemo(
     () =>
       businesses.filter(
-        (b) => b.type === "artist" && (!category || b.categories.includes(category)),
+        (b) =>
+          b.type === "artist" && (!category || b.categories.includes(category)),
       ),
     [businesses, category],
-  )
+  );
   const salons = useMemo(
     () =>
       businesses.filter(
-        (b) => b.type === "salon" && (!category || b.categories.includes(category)),
+        (b) =>
+          b.type === "salon" && (!category || b.categories.includes(category)),
       ),
     [businesses, category],
-  )
+  );
 
   function openBusiness(id: string) {
-    router.push({ pathname: "/business/[id]", params: { id } })
+    router.push({ pathname: "/business/[id]", params: { id } });
   }
 
   return (
@@ -61,7 +70,7 @@ export default function HomeScreen() {
         <View style={styles.banner}>
           <Text style={styles.bannerTitle}>Тавтай морил!</Text>
           <Text style={styles.bannerSubtitle}>
-            Мэргэжлийн үйлчилгээ, танд тухтай орчинд танд зориулж байна.
+            Таны төгс төрх, тав тухтай орчныг бид бүтээнэ.
           </Text>
         </View>
 
@@ -71,19 +80,28 @@ export default function HomeScreen() {
           contentContainerStyle={styles.categoryRow}
         >
           {CATEGORIES.map((c) => {
-            const active = category === c.label
+            const active = category === c.label;
             return (
               <Pressable
                 key={c.label}
                 onPress={() => setCategory(active ? null : c.label)}
                 style={styles.categoryItem}
               >
-                <View style={[styles.categoryIcon, active && styles.categoryIconActive]}>
-                  <Ionicons name={c.icon} size={20} color={active ? colors.onPrimary : colors.primary} />
+                <View
+                  style={[
+                    styles.categoryIcon,
+                    active && styles.categoryIconActive,
+                  ]}
+                >
+                  <Ionicons
+                    name={c.icon}
+                    size={20}
+                    color={active ? colors.onPrimary : colors.primary}
+                  />
                 </View>
                 <Text style={styles.categoryLabel}>{c.label}</Text>
               </Pressable>
-            )
+            );
           })}
         </ScrollView>
 
@@ -92,8 +110,12 @@ export default function HomeScreen() {
             <Ionicons name="sparkles" size={18} color={colors.onPrimary} />
           </View>
           <View style={styles.aiTextBox}>
-            <Text style={styles.aiTitle}>Хиймэл оюунаар арьсаа оношлуулах уу?</Text>
-            <Text style={styles.aiSubtitle}>Тун удахгүй — тохирох үйлчилгээгээ олоход тусална.</Text>
+            <Text style={styles.aiTitle}>
+              Хиймэл оюунаар арьсаа оношлуулах уу?
+            </Text>
+            <Text style={styles.aiSubtitle}>
+              Тун удахгүй — тохирох үйлчилгээгээ олоход тусална.
+            </Text>
           </View>
         </View>
 
@@ -101,19 +123,31 @@ export default function HomeScreen() {
           <ActivityIndicator color={colors.primary} style={{ marginTop: 24 }} />
         ) : (
           <>
-            <BusinessSection title="Онцлох артистууд" businesses={artists} onOpen={openBusiness} />
-            <BusinessSection title="Онцлох салонууд" businesses={salons} onOpen={openBusiness} />
+            <BusinessSection
+              title="Онцлох артистууд"
+              businesses={artists}
+              onOpen={openBusiness}
+            />
+            <BusinessSection
+              title="Онцлох салонууд"
+              businesses={salons}
+              onOpen={openBusiness}
+            />
           </>
         )}
 
         <Text style={styles.sectionTitle}>Сэтгэгдлүүд</Text>
         <View style={styles.emptyReviews}>
-          <Ionicons name="chatbubble-ellipses-outline" size={20} color={colors.muted} />
+          <Ionicons
+            name="chatbubble-ellipses-outline"
+            size={20}
+            color={colors.muted}
+          />
           <Text style={styles.emptyReviewsText}>Одоогоор сэтгэгдэл алга.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
+  );
 }
 
 function BusinessSection({
@@ -121,18 +155,20 @@ function BusinessSection({
   businesses,
   onOpen,
 }: {
-  title: string
-  businesses: BusinessCard[]
-  onOpen: (id: string) => void
+  title: string;
+  businesses: BusinessCard[];
+  onOpen: (id: string) => void;
 }) {
-  const { colors } = useAppTheme()
-  const styles = useMemo(() => makeStyles(colors), [colors])
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       {businesses.length === 0 ? (
-        <Text style={styles.emptyText}>Одоогоор энэ ангилалд бүртгэл алга.</Text>
+        <Text style={styles.emptyText}>
+          Одоогоор энэ ангилалд бүртгэл алга.
+        </Text>
       ) : (
         <ScrollView
           horizontal
@@ -140,31 +176,39 @@ function BusinessSection({
           contentContainerStyle={styles.cardRow}
         >
           {businesses.map((b) => (
-            <BusinessCardTile key={b.id} business={b} onPress={() => onOpen(b.id)} />
+            <BusinessCardTile
+              key={b.id}
+              business={b}
+              onPress={() => onOpen(b.id)}
+            />
           ))}
         </ScrollView>
       )}
     </View>
-  )
+  );
 }
 
 function BusinessCardTile({
   business,
   onPress,
 }: {
-  business: BusinessCard
-  onPress: () => void
+  business: BusinessCard;
+  onPress: () => void;
 }) {
-  const { colors } = useAppTheme()
-  const styles = useMemo(() => makeStyles(colors), [colors])
-  const logoUrl = publicAssetUrl(business.logoPath)
-  const initial = (business.name ?? "L").trim().charAt(0).toUpperCase()
+  const { colors } = useAppTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const logoUrl = publicAssetUrl(business.logoPath);
+  const initial = (business.name ?? "L").trim().charAt(0).toUpperCase();
 
   return (
     <Pressable onPress={onPress} style={styles.tile}>
       <View style={styles.tileImage}>
         {logoUrl ? (
-          <Image source={{ uri: logoUrl }} style={styles.tileImageInner} contentFit="cover" />
+          <Image
+            source={{ uri: logoUrl }}
+            style={styles.tileImageInner}
+            contentFit="cover"
+          />
         ) : (
           <Text style={styles.tileInitial}>{initial}</Text>
         )}
@@ -186,7 +230,7 @@ function BusinessCardTile({
         </View>
       )}
     </Pressable>
-  )
+  );
 }
 
 function makeStyles(colors: BrandPalette) {
@@ -200,7 +244,11 @@ function makeStyles(colors: BrandPalette) {
       gap: 4,
     },
     bannerTitle: { fontSize: 18, fontWeight: "700", color: colors.onPrimary },
-    bannerSubtitle: { fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 18 },
+    bannerSubtitle: {
+      fontSize: 12,
+      color: "rgba(255,255,255,0.85)",
+      lineHeight: 18,
+    },
     categoryRow: { gap: 20, paddingVertical: 4 },
     categoryItem: { alignItems: "center", gap: 6, width: 60 },
     categoryIcon: {
@@ -268,5 +316,5 @@ function makeStyles(colors: BrandPalette) {
       padding: 16,
     },
     emptyReviewsText: { fontSize: 12, color: colors.muted },
-  })
+  });
 }
