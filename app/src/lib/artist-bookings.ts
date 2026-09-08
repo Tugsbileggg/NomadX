@@ -24,6 +24,11 @@ export type ArtistBooking = {
   note: string | null
   /** Бүртгэлтэй хэрэглэгч, эсвэл панелаас бүртгэсэн зочин (0019). */
   customer: { name: string; phone: string | null; isGuest: boolean } | null
+  /**
+   * Үйлчилгээ үзүүлэх байршил (0026) — артист хаана очихыг мэдэхэд.
+   * Хуучин захиалга, эсвэл заагаагүй бол null.
+   */
+  serviceLocation: { lat: number; lng: number; address: string | null } | null
   /** Жишээ зургууд — bucket хувийн тул signed URL. */
   images: string[]
   /** ⚠️ Туршилтын нэхэмжлэх. Үүсээгүй бол null. */
@@ -58,7 +63,9 @@ export async function fetchArtistBookings(): Promise<ArtistBookings> {
 
   const { data: rows } = await supabase
     .from("bookings")
-    .select("id, status, scheduled_at, created_at, note, customer_id, guest_name, guest_phone")
+    .select(
+      "id, status, scheduled_at, created_at, note, customer_id, guest_name, guest_phone, service_lat, service_lng, service_address",
+    )
     .eq("business_id", business.id)
     // Хамгийн сүүлд ИРСЭН нь дээрээ. Үйлчилгээний цагаар (`scheduled_at`)
     // эрэмбэлбэл шинэ захиалга жагсаалтын дунд ороод анзаарагдахгүй өнгөрдөг.
@@ -115,6 +122,12 @@ export async function fetchArtistBookings(): Promise<ArtistBookings> {
           ? { name: p.full_name, phone: p.phone, isGuest: false }
           : r.guest_name
             ? { name: r.guest_name, phone: r.guest_phone, isGuest: true }
+            : null,
+        // DB нь хоёулаа null, эсвэл хоёулаа утгатай байхыг баталгаажуулдаг
+        // (bookings_service_coords_pair) — нэгийг нь шалгахад хангалттай.
+        serviceLocation:
+          r.service_lat !== null && r.service_lng !== null
+            ? { lat: r.service_lat, lng: r.service_lng, address: r.service_address }
             : null,
         images: byBooking.get(r.id) ?? [],
         invoice: byInvoice.get(r.id) ?? null,

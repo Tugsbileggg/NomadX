@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import * as ImagePicker from "expo-image-picker"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -15,10 +15,13 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
+import { BusinessMap } from "@/components/BusinessMap"
 import { useAppTheme } from "@/lib/theme-context"
 import type { BrandPalette } from "@/constants/theme"
 import { createBooking, uploadBookingImages } from "@/lib/bookings"
 import { fetchBusiness, type BusinessCard } from "@/lib/businesses"
+import { useMyLocation } from "@/lib/location-context"
+import { MAP_ZOOM_OVERVIEW, MAP_ZOOM_PIN, UB_CENTER } from "@/lib/map-style"
 import { mnWeekdayShort } from "@/lib/mn-date"
 import { fetchSlotDays, type SlotDay } from "@/lib/slots"
 
@@ -45,10 +48,25 @@ export default function BookScreen() {
   /** Сонгосон цагийн бодит мөч — өдөр солиход тэглэгдэнэ. */
   const [slotAt, setSlotAt] = useState<Date | null>(null)
   const [description, setDescription] = useState("")
+  // Үйлчилгээ авах байршил (0026) — артист хаана очихыг мэдэхэд.
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [address, setAddress] = useState("")
   const [images, setImages] = useState<PickedImage[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
+  const { myLocation } = useMyLocation()
+
+  // Байршлын зөвшөөрөл өгсөн бол цэгийг өөрийнх нь байрлалаар нэг удаа
+  // урьдчилан тавина — үйлчлүүлэгч ихэвчлэн байгаа газраа үйлчилгээ
+  // авдаг тул ердөө баталгаажуулах л үлдэнэ. Гараар зөөсний дараа
+  // хөндөхгүй.
+  const prefilled = useRef(false)
+  useEffect(() => {
+    if (prefilled.current || !myLocation || coords) return
+    prefilled.current = true
+    setCoords(myLocation)
+  }, [myLocation, coords])
 
   useEffect(() => {
     Promise.all([fetchBusiness(id), fetchSlotDays(id)]).then(([b, d]) => {
@@ -109,7 +127,12 @@ export default function BookScreen() {
     setBusy(true)
     setError(null)
 
-    const booking = await createBooking(id, slotAt, description)
+    const booking = await createBooking(
+      id,
+      slotAt,
+      description,
+      coords ? { lat: coords.lat, lng: coords.lng, address } : null,
+    )
     if ("error" in booking) {
       setBusy(false)
       setError(booking.error)
@@ -244,6 +267,34 @@ export default function BookScreen() {
             style={styles.noteInput}
           />
 
+          <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Хаана очих вэ?</Text>
+          <Text style={styles.sectionHint}>
+            {coords
+              ? "Газрын зураг дээр дарж цэгээ зөөнө. Орц, давхар зэргийг доор бичвэл артист хурдан олно."
+              : "Газрын зураг дээр дарж үйлчилгээ авах газраа тэмдэглэнэ үү."}
+          </Text>
+          <View style={styles.mapBox}>
+            <BusinessMap
+              center={coords ?? myLocation ?? UB_CENTER}
+              zoom={coords ? MAP_ZOOM_PIN : MAP_ZOOM_OVERVIEW}
+              markers={
+                coords
+                  ? [{ id: "pin", lat: coords.lat, lng: coords.lng, title: "Үйлчилгээ авах газар", selected: true }]
+                  : []
+              }
+              myLocation={myLocation}
+              onMarkerPress={() => {}}
+              onMapPress={setCoords}
+            />
+          </View>
+          <TextInput
+            value={address}
+            onChangeText={setAddress}
+            placeholder="Жишээ: 3-р хороолол, 45-р байр, 2-р орц, 4 давхар"
+            placeholderTextColor={colors.muted}
+            style={styles.addressInput}
+          />
+
           <Text style={[styles.sectionLabel, { marginTop: 20 }]}>
             Жишээ зураг {images.length > 0 && `(${images.length}/${MAX_IMAGES})`}
           </Text>
@@ -315,6 +366,8 @@ function makeStyles(colors: BrandPalette) {
       color: colors.muted,
       textAlign: "center",
     },
+    mapBox: { marginTop: 8, height: 200, borderRadius: 14, overflow: "hidden", backgroundColor: colors.surface },
+    addressInput: { marginTop: 8, borderRadius: 14, backgroundColor: colors.surface, paddingHorizontal: 14, paddingVertical: 12, fontSize: 13, color: colors.ink },
     noteInput: { marginTop: 8, minHeight: 96, borderRadius: 14, backgroundColor: colors.surface, padding: 14, fontSize: 13, lineHeight: 19, color: colors.ink, textAlignVertical: "top" },
     imageRow: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: 10 },
     thumb: { width: 76, height: 76, borderRadius: 12, overflow: "hidden", backgroundColor: colors.surfaceTint2 },

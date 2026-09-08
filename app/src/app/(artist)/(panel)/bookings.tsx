@@ -14,9 +14,11 @@ import {
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
+import { BusinessMap } from "@/components/BusinessMap"
 import { NotificationBell } from "@/components/NotificationBell"
 import type { BrandPalette } from "@/constants/theme"
 import type { BookingStatus } from "@/lib/db-types"
+import { MAP_ZOOM_PIN } from "@/lib/map-style"
 import {
   fetchArtistBookings,
   saveArtistInvoice,
@@ -221,6 +223,42 @@ function BookingCard({
         <Text style={styles.noteText}>{booking.note?.trim() || "Тайлбар бичээгүй."}</Text>
       </View>
 
+      {booking.serviceLocation && (
+        <View style={styles.locationBox}>
+          <Text style={styles.noteLabel}>ХААНА ОЧИХ</Text>
+          {booking.serviceLocation.address?.trim() ? (
+            <Text style={styles.noteText}>{booking.serviceLocation.address.trim()}</Text>
+          ) : null}
+          <View style={styles.locationMap}>
+            <BusinessMap
+              center={{ lat: booking.serviceLocation.lat, lng: booking.serviceLocation.lng }}
+              zoom={MAP_ZOOM_PIN}
+              markers={[
+                {
+                  id: booking.id,
+                  lat: booking.serviceLocation.lat,
+                  lng: booking.serviceLocation.lng,
+                  title: booking.customer?.name ?? "Үйлчилгээ авах газар",
+                  selected: true,
+                },
+              ]}
+              onMarkerPress={() => {}}
+            />
+          </View>
+          <Pressable
+            style={styles.directionsRow}
+            onPress={() =>
+              void Linking.openURL(
+                `https://maps.google.com/?q=${booking.serviceLocation!.lat},${booking.serviceLocation!.lng}`,
+              )
+            }
+          >
+            <Ionicons name="navigate-outline" size={13} color={colors.primary} />
+            <Text style={styles.phone}>Замын заавар</Text>
+          </Pressable>
+        </View>
+      )}
+
       {booking.images.length > 0 && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
           <View style={styles.imageRow}>
@@ -367,6 +405,9 @@ function makeStyles(colors: BrandPalette) {
     phone: { fontSize: 12, fontWeight: "600", color: colors.primary },
 
     noteBox: { marginTop: 10, backgroundColor: colors.surfaceTint, borderRadius: 12, padding: 12 },
+    locationBox: { marginTop: 10, backgroundColor: colors.surfaceTint, borderRadius: 12, padding: 12 },
+    locationMap: { marginTop: 8, height: 140, borderRadius: 10, overflow: "hidden" },
+    directionsRow: { marginTop: 8, flexDirection: "row", alignItems: "center", gap: 6 },
     noteLabel: { fontSize: 9, fontWeight: "700", color: colors.muted, letterSpacing: 0.6 },
     noteText: { fontSize: 12, color: colors.ink, lineHeight: 18, marginTop: 3 },
 

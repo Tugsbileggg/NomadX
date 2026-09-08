@@ -148,6 +148,15 @@ export type Booking = {
   /** Бүртгэлгүй зочны нэр — панелаас үүсгэсэн захиалгад (0019). */
   guest_name: string | null
   guest_phone: string | null
+  /**
+   * Үйлчилгээ үзүүлэх байршил — артист хаана очихыг мэдэхэд (0026).
+   *
+   * Бизнесийн `lat/lng`-ээс тусдаа: салон нэг байрлалд байхад үйлчилгээ
+   * өөр газар үзүүлэгдэж болно. Хоёул null, эсвэл хоёул утгатай байна.
+   */
+  service_lat: number | null
+  service_lng: number | null
+  service_address: string | null
   created_at: string
   updated_at: string
 }
