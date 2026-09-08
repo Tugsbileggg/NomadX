@@ -15,6 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { BusinessMap } from "@/components/BusinessMap"
+import { ImageViewer } from "@/components/ImageViewer"
 import { NotificationBell } from "@/components/NotificationBell"
 import type { BrandPalette } from "@/constants/theme"
 import type { BookingStatus } from "@/lib/db-types"
@@ -170,6 +171,8 @@ function BookingCard({
   const [note, setNote] = useState(booking.invoice?.note ?? "")
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Бүтэн дэлгэцээр харж буй зургийн дугаар — хаалттай бол null.
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null)
 
   const at = new Date(booking.scheduledAt)
   const isPending = booking.status === "pending"
@@ -262,12 +265,20 @@ function BookingCard({
       {booking.images.length > 0 && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 10 }}>
           <View style={styles.imageRow}>
-            {booking.images.map((url) => (
-              <Image key={url} source={{ uri: url }} style={styles.thumb} contentFit="cover" />
+            {booking.images.map((url, i) => (
+              <Pressable
+                key={url}
+                onPress={() => setViewerIndex(i)}
+                accessibilityLabel={`Жишээ зураг ${i + 1} — томруулах`}
+              >
+                <Image source={{ uri: url }} style={styles.thumb} contentFit="cover" />
+              </Pressable>
             ))}
           </View>
         </ScrollView>
       )}
+
+      <ImageViewer urls={booking.images} index={viewerIndex} onClose={() => setViewerIndex(null)} />
 
       {/* ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */}
       {booking.status === "completed" && (
