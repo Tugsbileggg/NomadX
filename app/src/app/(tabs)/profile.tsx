@@ -1,12 +1,13 @@
 import { Ionicons } from "@expo/vector-icons"
 import { useFocusEffect, useRouter } from "expo-router"
 import { useCallback, useMemo, useState } from "react"
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
+import { Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 import { AuthButton } from "@/components/auth/AuthButton"
 import type { BrandPalette } from "@/constants/theme"
 import { useAuth, signOut } from "@/lib/auth-context"
+import { useMyLocation } from "@/lib/location-context"
 import { fetchMyProfile, updateMyProfile } from "@/lib/profile"
 import { useAppTheme, type ThemePreference } from "@/lib/theme-context"
 
@@ -27,6 +28,7 @@ export default function ProfileScreen() {
   const router = useRouter()
   const { session } = useAuth()
   const { colors, preference, setPreference } = useAppTheme()
+  const { sharing, setSharing } = useMyLocation()
   const styles = useMemo(() => makeStyles(colors), [colors])
   const [fullName, setFullName] = useState("")
   const [phone, setPhone] = useState("")
@@ -123,6 +125,16 @@ export default function ProfileScreen() {
               )
             })}
           </View>
+        </View>
+
+        <View style={styles.menuRow}>
+          <Ionicons name="location-outline" size={18} color={colors.primary} />
+          <Text style={styles.menuLabel}>Байршил хуваалцах</Text>
+          <Switch
+            value={sharing}
+            onValueChange={(next) => void setSharing(next)}
+            trackColor={{ true: colors.primary, false: colors.outlineSoft }}
+          />
         </View>
 
         <Pressable style={styles.menuRow} onPress={() => router.push("/favourites")}>
