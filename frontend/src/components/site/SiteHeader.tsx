@@ -15,8 +15,8 @@ import { cn } from "@/lib/cn";
  * (`id="hero"`) идэвхтэй байх ёстой тул мөн адил ажиглагдана.
  */
 const NAV: Array<{ href: string | null; label: string; sectionId?: string }> = [
-  { href: "/", label: "Нээх", sectionId: "hero" },
-  { href: "/#why-us", label: "AI зөвлөх", sectionId: "why-us" },
+  { href: "/", label: "Нүүр", sectionId: "hero" },
+  { href: "/#why-us", label: "Бидний тухай", sectionId: "why-us" },
   { href: "/#business", label: "Бизнес эрхлэгчдэд", sectionId: "business" },
 ];
 
@@ -31,12 +31,14 @@ export function SiteHeader({ active = "/" }: { active?: string }) {
   // `undefined` — observer хараахан анхны хариугаа өгөөгүй (эсвэл Home бус
   // хуудсанд эдгээр `id` огт байхгүй) тул `active` prop-оор л ажиллана.
   // `null` — observer ажиллаж байгаа ч одоогоор ямар ч хэсэг идэвхгүй.
-  const [activeSection, setActiveSection] = useState<string | null | undefined>(undefined);
+  const [activeSection, setActiveSection] = useState<string | null | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
-    const elements = SPY_SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      (el): el is HTMLElement => el !== null,
-    );
+    const elements = SPY_SECTION_IDS.map((id) =>
+      document.getElementById(id),
+    ).filter((el): el is HTMLElement => el !== null);
     if (elements.length === 0) return;
 
     const intersecting = new Set<string>();
@@ -50,7 +52,8 @@ export function SiteHeader({ active = "/" }: { active?: string }) {
         // margin нь why-us эхлэх хүртэл давхцаж болно) — баримт бичгийн
         // эрэмбээр СҮҮЛД орсныг сонгоно, учир нь тэр нь "хэрэглэгч дөнгөж
         // орж ирсэн" хэсэг, өмнөх нь зөвхөн зайнаасаа болж давхцаж байна.
-        const next = SPY_SECTION_IDS.filter((id) => intersecting.has(id)).pop() ?? null;
+        const next =
+          SPY_SECTION_IDS.filter((id) => intersecting.has(id)).pop() ?? null;
         setActiveSection(next);
       },
       // Sticky толгойн (h-20 ≈ 80px) доор, дэлгэцний дээд ~30%-д ороход л
@@ -65,7 +68,10 @@ export function SiteHeader({ active = "/" }: { active?: string }) {
   return (
     <header className="glass sticky top-0 z-50 shadow-[0_8px_32px_rgba(140,75,85,0.05)]">
       <div className="mx-auto flex h-20 max-w-[1200px] items-center justify-between px-6">
-        <Link href="/" className="text-[28px] leading-9 font-semibold text-primary">
+        <Link
+          href="/"
+          className="text-[28px] leading-9 font-semibold text-primary"
+        >
           LUMINA
         </Link>
 
@@ -78,11 +84,17 @@ export function SiteHeader({ active = "/" }: { active?: string }) {
 
             const className = cn(
               "text-base transition-colors",
-              item.href && isActive ? "font-bold text-primary" : "text-[#4c4546]",
+              item.href && isActive
+                ? "font-bold text-primary"
+                : "text-[#4c4546]",
             );
 
             return item.href ? (
-              <Link key={item.label} href={item.href} className={cn(className, "hover:text-primary")}>
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(className, "hover:text-primary")}
+              >
                 {item.label}
               </Link>
             ) : (

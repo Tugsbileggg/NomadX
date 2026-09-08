@@ -83,7 +83,7 @@ async function Hero() {
               )}
             </div>
             <p className="text-sm leading-5 font-bold text-primary">
-              10,00+ хэрэглэгчид нэгдсэн
+              10,000+ хэрэглэгчид нэгдсэн
             </p>
           </div>
         </div>
@@ -381,7 +381,10 @@ function FeaturedProviders() {
 function BusinessBanner() {
   return (
     // id — толгойн навигацийн "Бизнес эрхлэгчдэд" энд anchor хийнэ.
-    <section id="business" className="mx-auto max-w-[1200px] scroll-mt-28 px-10 pb-20">
+    <section
+      id="business"
+      className="mx-auto max-w-[1200px] scroll-mt-28 px-10 pb-20"
+    >
       <div className="glass relative overflow-hidden rounded-5xl shadow-soft">
         <Image
           src="/img/banner-bg.jpg"
