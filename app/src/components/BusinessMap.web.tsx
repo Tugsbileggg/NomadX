@@ -213,8 +213,9 @@ export function BusinessMap({
 
       // Салон = дөрвөлжин (тогтмол байрлалтай барилга), артист = дугуй
       // (хөдөлдөг хүн). Хэлбэрээр ялгасан тул ногоон "амьд" цагирагтай
-      // давхцахгүй.
-      const radius = m.kind === "salon" ? `${Math.round(size / 4)}px` : "50%"
+      // давхцахгүй. 18px дээр `size/4` радиус нь бараг дугуй харагддаг
+      // байсныг хурцлав.
+      const radius = m.kind === "salon" ? "4px" : "50%"
 
       const dot = `<div style="
         width:${size}px;
@@ -224,6 +225,16 @@ export function BusinessMap({
         border:${MARKER_RING}px solid ${ring};
         box-shadow:${glow};
       "></div>`
+
+      // Хэлбэрийн ялгаа дангаараа сул тул артистад лугшиж буй цагираг
+      // нэмэв: барилга зогсож байдаг, хүн хөдөлдөг гэдгийг хөдөлгөөн нь
+      // өөрөө хэлнэ. `kind` заагаагүй marker (захиалгын байршил г.м.)
+      // энгийн хэвээр үлдэнэ. Анимацийг `leaflet-overrides.css` тодорхойлж,
+      // `prefers-reduced-motion` үед унтраана.
+      const halo =
+        m.kind === "artist"
+          ? `<span class="lumina-halo" style="background:${m.live ? colors.success : colors.primary}"></span>`
+          : ""
 
       // Сонгогдсон цэгийн нэр нь цэгийн дээр бөмбөлөг болж гарна.
       const label = m.selected
@@ -240,7 +251,8 @@ export function BusinessMap({
         .marker([m.lat, m.lng], {
           icon: leaflet.divIcon({
             className: "",
-            html: `<div style="position:relative">${label}${dot}</div>`,
+            // Цагираг цэгээс ӨМНӨ — DOM-ийн дараалал нь түүнийг доогуур зурна.
+            html: `<div style="position:relative">${halo}${label}${dot}</div>`,
             iconSize: [outer, outer],
             iconAnchor: [outer / 2, outer / 2],
           }),

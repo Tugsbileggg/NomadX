@@ -177,6 +177,7 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
   const styles = useMemo(() => makeStyles(colors), [colors])
 
   const [tracksViewChanges, setTracksViewChanges] = useState(true)
+  const isArtist = marker.kind === "artist"
 
   // Сонгогдсон цэг өөрчлөгдөхөд зургаа дахин авах ёстой. Урьд нь энд
   // `setTracksViewChanges(true)` гэж синхроноор буцаадаг байсныг эцэг нь
@@ -205,15 +206,20 @@ function BrandMarker({ marker, onPress }: { marker: MapMarker; onPress: () => vo
             </Text>
           </View>
         )}
-        <View
-          style={[
-            styles.pin,
-            marker.selected && styles.pinSelected,
-            // Дугуй нь анхны хэлбэр (артист) — салоныг дөрвөлжин болгоно.
-            marker.kind === "salon" && styles.pinSalon,
-            marker.live && styles.pinLive,
-          ]}
-        />
+        {/* Артистын гадуур зөөлөн цагираг — 18px дээр дугуй/дөрвөлжингийн
+            ялгаа дангаараа сул тул хэмжээгээр нь давхар ялгав. `kind`
+            заагаагүй marker (жишээ нь захиалгын байршил) энгийн хэвээр. */}
+        <View style={[styles.haloWrap, isArtist && styles.halo, isArtist && marker.live && styles.haloLive]}>
+          <View
+            style={[
+              styles.pin,
+              marker.selected && styles.pinSelected,
+              // Дугуй нь анхны хэлбэр (артист) — салоныг дөрвөлжин болгоно.
+              marker.kind === "salon" && styles.pinSalon,
+              marker.live && styles.pinLive,
+            ]}
+          />
+        </View>
       </View>
     </Marker>
   )
@@ -284,7 +290,16 @@ function makeStyles(colors: BrandPalette) {
   // Салон = дөрвөлжин (тогтмол байрлалтай барилга), артист = дугуй
   // (хөдөлдөг хүн). `pinSelected` томруулдаг тул радиусыг харьцангуйгаар
   // биш, тогтмол утгаар өгнө — хоёулаа хэрэглэгдэхэд хэлбэр алдагдахгүй.
-  pinSalon: { borderRadius: 6 },
+  // Дөрвөлжинг нь илүү хурц болгов: 6px радиус нь 18px цэг дээр бараг
+  // дугуй харагдаж, артистаас ялгарахгүй байв.
+  pinSalon: { borderRadius: 4 },
+  haloWrap: { alignItems: "center", justifyContent: "center" },
+  halo: {
+    padding: 5,
+    borderRadius: 999,
+    backgroundColor: colors.primaryContainer,
+  },
+  haloLive: { backgroundColor: colors.successSoft },
   // Амьд артист: цагираг нь ногоон болж, ижил өнгийн гэрэлтэлт нэмэгдэнэ.
   pinLive: {
     borderColor: colors.success,

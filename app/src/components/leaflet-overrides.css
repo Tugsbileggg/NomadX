@@ -15,3 +15,54 @@
 .leaflet-touch .leaflet-control-layers-toggle {
   background-image: none;
 }
+
+/*
+ * Артистын marker-ийн лугшиж буй цагираг (BusinessMap.web.tsx).
+ *
+ * Салон бол тогтмол хаягтай барилга, артист бол хөдөлдөг хүн — 18px цэг
+ * дээр дугуй/дөрвөлжингийн ялгаа сул тул хөдөлгөөнөөр давхар ялгав.
+ *
+ * `divIcon`-ы HTML нь мөр болж угсрагддаг тул keyframes-ийг inline
+ * style-аар өгөх боломжгүй — өнгийг л inline-аар дамжуулж, хөдөлгөөнийг
+ * энд тодорхойлов.
+ *
+ * Цагираг нь цэгээс ӨМНӨ DOM-д ордог бөгөөд z-index хөндөөгүй — ижил
+ * давхаргад эрт орсон элемент доогуураа зурагдана.
+ */
+@keyframes lumina-halo-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.45;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(2.6);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.6);
+    opacity: 0;
+  }
+}
+
+.lumina-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: lumina-halo-pulse 2.4s ease-out infinite;
+}
+
+/*
+ * Хөдөлгөөн багасгах тохиргоотой хэрэглэгчид анимаци асуудал үүсгэдэг
+ * тул зогсоож, оронд нь тогтмол цагираг үлдээнэ — ялгаа нь алдагдахгүй.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .lumina-halo {
+    animation: none;
+    transform: translate(-50%, -50%) scale(1.9);
+    opacity: 0.25;
+  }
+}
