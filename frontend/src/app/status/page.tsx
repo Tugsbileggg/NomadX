@@ -22,13 +22,13 @@ const VIEW = {
   },
   needs_info: {
     icon: AlertTriangle,
-    tone: "bg-[#fef3c7] text-warning-darker",
+    tone: "bg-warning-soft text-warning-darker",
     title: "Нэмэлт мэдээлэл шаардлагатай",
     body: "Дараах зүйлийг нөхөж илгээнэ үү:",
   },
   rejected: {
     icon: XCircle,
-    tone: "bg-[#fee2e2] text-danger-dark",
+    tone: "bg-danger-soft text-danger-dark",
     title: "Бүртгэл татгалзсан",
     body: "Шалтгаан:",
   },
@@ -67,12 +67,12 @@ export default async function StatusPage() {
         <p className="text-base leading-6 text-body">{view.body}</p>
 
         {business.reject_reason && (
-          <p className="w-full rounded-xl bg-white px-6 py-4 text-left text-sm leading-6 text-body shadow-hairline">
+          <p className="w-full rounded-xl bg-surface px-6 py-4 text-left text-sm leading-6 text-body shadow-hairline">
             {business.reject_reason}
           </p>
         )}
 
-        <dl className="mt-2 flex w-full flex-col gap-2 rounded-2xl bg-white/70 px-6 py-5 text-left text-sm shadow-soft backdrop-blur-xl">
+        <dl className="mt-2 flex w-full flex-col gap-2 rounded-2xl bg-glass/70 px-6 py-5 text-left text-sm shadow-soft backdrop-blur-xl">
           <div className="flex justify-between gap-4">
             <dt className="text-muted">Байгууллага</dt>
             <dd className="font-medium text-ink">{business.name ?? "—"}</dd>
@@ -99,7 +99,7 @@ export default async function StatusPage() {
           <form action={signOut}>
             <button
               type="submit"
-              className="flex h-12 items-center rounded-full border border-outline bg-white px-8 text-base font-medium text-body hover:bg-surface-tint"
+              className="flex h-12 items-center rounded-full border border-outline bg-surface px-8 text-base font-medium text-body hover:bg-surface-tint"
             >
               Гарах
             </button>

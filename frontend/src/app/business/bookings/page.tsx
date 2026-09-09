@@ -8,7 +8,7 @@ import type { BookingStatus } from "@/lib/db-types";
 
 export const metadata = { title: "Захиалгууд — Салоны админ" };
 
-const STATUSES: BookingStatus[] = ["pending", "confirmed", "completed", "cancelled"];
+const STATUSES: BookingStatus[] = ["pending", "confirmed", "completed", "closed", "cancelled"];
 
 export default async function BusinessBookingsPage({
   searchParams,

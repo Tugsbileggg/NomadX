@@ -73,7 +73,7 @@ export default async function ReviewPage() {
           </p>
         </div>
 
-        <section className="rounded-2xl bg-white p-8 shadow-soft">
+        <section className="rounded-2xl bg-surface p-8 shadow-soft">
           <h2 className="flex items-center gap-2 border-b border-surface-tint pb-4 text-base font-semibold text-ink">
             <Building2 className="size-5 text-primary" />
             Байгууллагын мэдээлэл
@@ -97,7 +97,7 @@ export default async function ReviewPage() {
           </dl>
         </section>
 
-        <section className="rounded-2xl bg-white p-8 shadow-soft">
+        <section className="rounded-2xl bg-surface p-8 shadow-soft">
           <h2 className="flex items-center gap-2 border-b border-surface-tint pb-4 text-base font-semibold text-ink">
             <FileText className="size-5 text-primary" />
             Хавсаргасан баримт бичиг

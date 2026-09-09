@@ -6,7 +6,7 @@ export function TextInput({ className, ...props }: ComponentProps<"input">) {
   return (
     <input
       className={cn(
-        "h-[51px] w-full rounded-xl border border-[#6b7280] bg-white px-4",
+        "h-[51px] w-full rounded-xl border border-outline bg-surface px-4",
         "text-base text-ink placeholder:text-[rgba(82,67,69,0.4)]",
         "focus:border-primary focus:outline-none",
         className,

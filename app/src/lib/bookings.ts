@@ -201,5 +201,14 @@ export async function cancelBooking(id: string): Promise<string | null> {
  */
 export async function payInvoice(invoiceId: string): Promise<string | null> {
   const { error } = await supabase.rpc("mark_invoice_paid", { p_invoice_id: invoiceId })
-  return error ? error.message : null
+  if (error) return error.message
+
+  // `mark_invoice_paid` нь эрх, төлөв тохирохгүй үед алдаа өгөхгүй,
+  // ЧИМЭЭГҮЙ буцдаг (0023). Клиент нь "амжилттай төлөгдлөө" цонх
+  // нээдэг тул үр дүнг нь заавал баталгаажуулна — үгүй бол цуцлагдсан
+  // нэхэмжлэх дээр ч төлөгдсөн мэт харагдана.
+  const { data } = await supabase.from("invoices").select("status").eq("id", invoiceId).single()
+  if (data?.status !== "paid") return "Нэхэмжлэхийг төлөгдсөн гэж бүртгэж чадсангүй."
+
+  return null
 }

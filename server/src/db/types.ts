@@ -23,7 +23,7 @@ export type BusinessStatus =
   | "rejected"
   | "needs_info"
 
-export type BookingStatus = "pending" | "confirmed" | "completed" | "cancelled"
+export type BookingStatus = "pending" | "confirmed" | "completed" | "closed" | "cancelled"
 
 /** ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */
 export type InvoiceStatus = "issued" | "paid" | "cancelled"

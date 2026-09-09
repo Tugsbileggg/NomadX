@@ -11,7 +11,7 @@ export function AdminComingSoon({
   description: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-2xl border border-surface-variant bg-white px-6 py-20 text-center shadow-hairline">
+    <div className="flex flex-col items-center gap-4 rounded-2xl border border-surface-variant bg-surface px-6 py-20 text-center shadow-hairline">
       <span className="flex size-16 items-center justify-center rounded-2xl bg-surface-tint">
         <Icon className="size-7 text-primary" strokeWidth={1.6} />
       </span>

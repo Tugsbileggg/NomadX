@@ -25,7 +25,7 @@ export default async function AvailabilityPage() {
       {schedule.hasBusiness ? (
         <ScheduleEditor schedule={schedule} />
       ) : (
-        <p className="rounded-2xl border border-surface-variant bg-white p-6 text-sm text-body shadow-hairline">
+        <p className="rounded-2xl border border-surface-variant bg-surface p-6 text-sm text-body shadow-hairline">
           Бизнесийн бүртгэл олдсонгүй.
         </p>
       )}

@@ -86,7 +86,7 @@ export default async function ArtistsPage({
                     "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
                     filter === f.value
                       ? "bg-primary text-white"
-                      : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                      : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
                   )}
                 >
                   {f.label}

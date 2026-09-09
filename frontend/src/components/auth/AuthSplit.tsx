@@ -41,7 +41,7 @@ export function AuthSplit({ children }: { children: ReactNode }) {
 
 export function AuthPanel({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-8 rounded-xl border border-white/50 bg-white/70 p-10 shadow-[0_8px_32px_rgba(183,110,121,0.08)] backdrop-blur-xl">
+    <div className="flex flex-col gap-8 rounded-xl border border-glass-edge/50 bg-glass/70 p-10 shadow-[0_8px_32px_rgba(183,110,121,0.08)] backdrop-blur-xl">
       {children}
     </div>
   );

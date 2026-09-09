@@ -112,7 +112,7 @@ export function StepCard({
   return (
     <div
       className={cn(
-        "rounded-4xl border border-white/40 bg-white/60 p-12 shadow-soft backdrop-blur-xl",
+        "rounded-4xl border border-glass-edge/40 bg-glass/60 p-12 shadow-soft backdrop-blur-xl",
         className,
       )}
     >

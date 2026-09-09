@@ -12,7 +12,7 @@ const RULES = [
 ];
 
 const LEVELS = [
-  { label: "Сул", width: "33%", color: "bg-[#c6c6c7]" },
+  { label: "Сул", width: "33%", color: "bg-surface-variant" },
   { label: "Дунд", width: "66%", color: "bg-warning" },
   { label: "Хүчтэй", width: "100%", color: "bg-success" },
 ];

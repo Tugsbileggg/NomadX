@@ -31,7 +31,7 @@ export function ReviewTabs({ basePath, active }: { basePath: string; active: str
               "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
               on
                 ? "bg-primary text-white"
-                : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
             )}
           >
             {t.label}
@@ -87,7 +87,7 @@ export function ReviewSummaryPanel({ summary }: { summary: ReviewSummary }) {
 export function ReviewList({ reviews }: { reviews: PanelReview[] }) {
   if (!reviews.length) {
     return (
-      <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+      <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
         Энэ шүүлтэд тохирох сэтгэгдэл алга.
       </p>
     );
@@ -115,7 +115,7 @@ function ReviewCard({ review }: { review: PanelReview }) {
   }
 
   return (
-    <article className="rounded-2xl border border-surface-variant bg-white p-6 shadow-hairline">
+    <article className="rounded-2xl border border-surface-variant bg-surface p-6 shadow-hairline">
       <div className="flex items-center gap-3">
         <Monogram name={review.authorName || "Хэрэглэгч"} />
         <div className="flex-1">
@@ -151,7 +151,7 @@ function ReviewCard({ review }: { review: PanelReview }) {
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="mt-4 h-9 rounded-full border border-outline bg-white px-4 text-xs font-medium text-primary hover:bg-surface-tint"
+          className="mt-4 h-9 rounded-full border border-outline bg-surface px-4 text-xs font-medium text-primary hover:bg-surface-tint"
         >
           Хариулах
         </button>
@@ -177,7 +177,7 @@ function ReviewCard({ review }: { review: PanelReview }) {
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="h-9 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint"
+              className="h-9 rounded-full border border-surface-variant bg-surface px-5 text-xs font-medium text-body hover:bg-surface-tint"
             >
               Болих
             </button>

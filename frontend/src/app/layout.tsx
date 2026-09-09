@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import { THEME_SCRIPT } from "@/lib/theme";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -17,8 +18,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="mn" className={`${montserrat.variable} h-full scroll-smooth`}>
-      <body className="min-h-full">{children}</body>
+    // `suppressHydrationWarning` — доорх скрипт нь hydrate болохоос өмнө
+    // `data-theme`-ийг нэмдэг тул серверийн HTML-ээс зөрөх нь ХҮЛЭЭГДСЭН.
+    <html
+      lang="mn"
+      className={`${montserrat.variable} h-full scroll-smooth`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full">
+        {/* Хамгийн эхэнд, зурагдахаас өмнө ажиллана — эс тэгвээс бараан
+            горимтой хэрэглэгчид цайвар өнгө анивчиж харагдана. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+        {children}
+      </body>
     </html>
   );
 }

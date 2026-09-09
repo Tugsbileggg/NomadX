@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { cn } from "@/lib/cn";
 
 /**
@@ -86,7 +87,7 @@ export function SiteHeader({ active = "/" }: { active?: string }) {
               "text-base transition-colors",
               item.href && isActive
                 ? "font-bold text-primary"
-                : "text-[#4c4546]",
+                : "text-body",
             );
 
             return item.href ? (
@@ -106,6 +107,7 @@ export function SiteHeader({ active = "/" }: { active?: string }) {
         </nav>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <ButtonLink href="/login" variant="ghost" size="sm">
             Нэвтрэх
           </ButtonLink>

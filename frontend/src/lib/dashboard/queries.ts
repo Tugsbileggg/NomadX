@@ -10,6 +10,7 @@ const STATUS_LABEL: Record<BookingStatus, string> = {
   pending: "Хүлээгдэж буй",
   confirmed: "Баталгаажсан",
   completed: "Дууссан",
+  closed: "Хаагдсан",
   cancelled: "Цуцлагдсан",
 };
 
@@ -164,7 +165,7 @@ function buildTrend(rows: { scheduled_at: string }[]) {
 }
 
 function buildStatusMix(rows: { status: BookingStatus }[]) {
-  const order: BookingStatus[] = ["pending", "confirmed", "completed", "cancelled"];
+  const order: BookingStatus[] = ["pending", "confirmed", "completed", "closed", "cancelled"];
 
   return order.map((status) => {
     const count = rows.filter((r) => r.status === status).length;

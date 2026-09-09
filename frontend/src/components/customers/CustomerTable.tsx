@@ -25,7 +25,7 @@ export function CustomerTabs({ basePath, active }: { basePath: string; active: s
               "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
               on
                 ? "bg-primary text-white"
-                : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
             )}
           >
             {t.label}
@@ -39,7 +39,7 @@ export function CustomerTabs({ basePath, active }: { basePath: string; active: s
 export function CustomerTable({ customers }: { customers: PanelCustomer[] }) {
   if (!customers.length) {
     return (
-      <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+      <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
         Энэ шүүлтэд тохирох харилцагч алга.
       </p>
     );

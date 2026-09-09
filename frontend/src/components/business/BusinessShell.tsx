@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { AccountMenu } from "@/components/business/AccountMenu";
 import { PanelBell } from "@/components/notifications/PanelBell";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { createClient } from "@/lib/supabase/server";
 
 export type BizNavItem = { href: string; label: string; icon: LucideIcon };
@@ -36,8 +37,8 @@ export async function BusinessShell({
   const account = avatar ? null : await fetchAccount();
 
   return (
-    <div className="flex min-h-screen bg-[rgba(255,240,241,0.8)]">
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-white/20 bg-[rgba(255,248,247,0.8)] p-6 shadow-[24px_0_48px_rgba(140,75,85,0.08)] lg:flex">
+    <div className="flex min-h-screen bg-surface-tint/80">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-glass-edge/20 bg-surface-page/80 p-6 shadow-rail lg:flex">
         <div>
           <Link href="/" className="block text-[40px] leading-[48px] font-semibold text-primary">
             {brand[0]}
@@ -76,22 +77,23 @@ export async function BusinessShell({
         )}
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col bg-white">
-        <header className="flex h-20 items-center justify-between gap-6 border-b border-white/20 bg-[rgba(255,248,247,0.6)] px-4">
+      <div className="flex min-w-0 flex-1 flex-col bg-surface">
+        <header className="flex h-20 items-center justify-between gap-6 border-b border-glass-edge/20 bg-surface-page/60 px-4">
           <label className="relative max-w-[420px] flex-1">
             <span className="sr-only">Хайх</span>
             <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-muted" />
             <input
               type="search"
               placeholder="Хайх..."
-              className="h-10 w-full rounded-full bg-white pr-4 pl-11 text-sm text-ink placeholder:text-muted focus:outline-2 focus:outline-primary"
+              className="h-10 w-full rounded-full bg-surface pr-4 pl-11 text-sm text-ink placeholder:text-muted focus:outline-2 focus:outline-primary"
             />
           </label>
 
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <PanelBell
               href="/business/notifications"
-              className="relative flex size-10 items-center justify-center rounded-full text-primary hover:bg-white"
+              className="relative flex size-10 items-center justify-center rounded-full text-primary hover:bg-surface"
             />
             {avatar ?? (
               <AccountMenu name={account?.name ?? "Хэрэглэгч"} subtitle={account?.subtitle} />

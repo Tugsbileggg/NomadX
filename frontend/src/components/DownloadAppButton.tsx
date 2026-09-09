@@ -15,7 +15,7 @@ export function DownloadAppButton({ qrSvg, url }: { qrSvg: string | null; url: s
       </Button>
 
       {open ? (
-        <div className="absolute top-full left-0 z-20 mt-3 w-72 rounded-2xl border border-outline bg-white p-5 shadow-card">
+        <div className="absolute top-full left-0 z-20 mt-3 w-72 rounded-2xl border border-outline bg-surface p-5 shadow-card">
           <button
             type="button"
             onClick={() => setOpen(false)}

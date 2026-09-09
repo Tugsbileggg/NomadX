@@ -35,7 +35,7 @@ export default function ContractPage() {
         </div>
 
         <ActionForm action={saveContract}>
-        <section className="mt-10 rounded-2xl border border-white/60 bg-white/70 p-8 shadow-soft backdrop-blur-xl">
+        <section className="mt-10 rounded-2xl border border-glass-edge/60 bg-glass/70 p-8 shadow-soft backdrop-blur-xl">
           <div className="flex items-center justify-between border-b border-surface-tint pb-4">
             <h2 className="text-base font-medium text-ink">
               LUMINA платформын үйлчилгээний нөхцөл
@@ -116,7 +116,7 @@ export default function ContractPage() {
         <div className="mt-8 flex items-center justify-between">
           <Link
             href="/business/register/documents"
-            className="flex h-12 items-center gap-2 rounded-full border border-outline bg-white px-6 text-sm font-medium text-body hover:bg-surface-tint"
+            className="flex h-12 items-center gap-2 rounded-full border border-outline bg-surface px-6 text-sm font-medium text-body hover:bg-surface-tint"
           >
             <ArrowLeft className="size-4" />
             Өмнөх алхам

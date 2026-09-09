@@ -6,6 +6,7 @@ import {
   MessageSquare,
   ReceiptText,
   Sparkles,
+  Wallet,
   XCircle,
   type LucideIcon,
 } from "lucide-react";
@@ -23,6 +24,7 @@ const ICON: Record<NotificationKind, LucideIcon> = {
   booking_cancelled: XCircle,
   booking_completed: Sparkles,
   invoice_issued: ReceiptText,
+  invoice_paid: Wallet,
   review_replied: MessageSquare,
   business_status: BadgeCheck,
 };
@@ -66,7 +68,7 @@ export function NotificationList({
           <article
             key={n.id}
             className={cn(
-              "flex items-start gap-4 rounded-2xl border bg-white p-5 shadow-hairline",
+              "flex items-start gap-4 rounded-2xl border bg-surface p-5 shadow-hairline",
               n.isRead ? "border-surface-variant" : "border-primary/40",
             )}
           >
@@ -98,7 +100,7 @@ export function NotificationList({
                 )}
                 <ActionForm action={deleteNotification} className="contents">
                   <input type="hidden" name="notification_id" value={n.id} />
-                  <SubmitButton className="text-xs font-medium text-[#991b1b] hover:underline">
+                  <SubmitButton className="text-xs font-medium text-danger-strong hover:underline">
                     Устгах
                   </SubmitButton>
                 </ActionForm>

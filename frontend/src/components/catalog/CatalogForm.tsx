@@ -77,7 +77,7 @@ export function ActiveToggle({ defaultChecked = true }: { defaultChecked?: boole
         type="checkbox"
         name="is_active"
         defaultChecked={defaultChecked}
-        className="size-4 rounded border-outline accent-[#8a4853]"
+        className="size-4 rounded border-outline accent-primary"
       />
       Идэвхтэй — аппад харагдана
     </label>
@@ -88,4 +88,4 @@ export const PRIMARY_BUTTON =
   "h-10 rounded-full bg-primary px-5 text-xs font-medium text-white hover:bg-primary-dark";
 
 export const GHOST_BUTTON =
-  "h-10 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint";
+  "h-10 rounded-full border border-surface-variant bg-surface px-5 text-xs font-medium text-body hover:bg-surface-tint";

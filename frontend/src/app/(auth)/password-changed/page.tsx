@@ -19,7 +19,7 @@ export default function PasswordChangedPage() {
       </div>
 
       <div className="relative flex flex-1 flex-col items-center justify-center bg-surface-page p-6">
-        <div className="flex w-full max-w-[480px] flex-col items-center rounded-4xl border border-white/80 bg-white/70 px-12 py-14 text-center shadow-float backdrop-blur-xl">
+        <div className="flex w-full max-w-[480px] flex-col items-center rounded-4xl border border-glass-edge/80 bg-glass/70 px-12 py-14 text-center shadow-float backdrop-blur-xl">
           <div className="flex size-24 items-center justify-center rounded-full bg-surface-tint shadow-[0_12px_32px_rgba(138,72,83,0.1)]">
             <Image src="/img/success-check.jpg" alt="" width={96} height={96} className="rounded-full" />
           </div>
@@ -31,7 +31,7 @@ export default function PasswordChangedPage() {
 
           <Link
             href="/login"
-            className="mt-10 flex h-14 w-full items-center justify-center rounded-full bg-linear-to-r from-primary to-[#a85c6a] text-lg leading-6 font-medium text-white shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:brightness-105"
+            className="mt-10 flex h-14 w-full items-center justify-center rounded-full bg-linear-to-r from-primary to-primary-light text-lg leading-6 font-medium text-white shadow-[0_4px_6px_rgba(0,0,0,0.1)] hover:brightness-105"
           >
             Нэвтрэх
           </Link>

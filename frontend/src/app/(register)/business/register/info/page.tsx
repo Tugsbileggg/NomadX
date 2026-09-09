@@ -80,7 +80,7 @@ export default async function BusinessInfoPage() {
               </div>
             </section>
 
-            <section className="flex flex-col gap-4 border-t border-white/60 pt-8">
+            <section className="flex flex-col gap-4 border-t border-glass-edge/60 pt-8">
               <SectionTitle>Ерөнхий мэдээлэл</SectionTitle>
               <div className="grid gap-4 sm:grid-cols-2">
                 <SoftInput
@@ -118,7 +118,7 @@ export default async function BusinessInfoPage() {
                   <button
                     type="button"
                     aria-label="Газрын зураг дээрээс сонгох"
-                    className="flex size-[51px] items-center justify-center rounded-lg border border-outline bg-white text-primary hover:bg-surface-tint"
+                    className="flex size-[51px] items-center justify-center rounded-lg border border-outline bg-surface text-primary hover:bg-surface-tint"
                   >
                     <MapPin className="size-5" />
                   </button>
@@ -126,7 +126,7 @@ export default async function BusinessInfoPage() {
               </label>
             </section>
 
-            <section className="flex flex-col gap-4 border-t border-white/60 pt-8">
+            <section className="flex flex-col gap-4 border-t border-glass-edge/60 pt-8">
               <SectionTitle>Үйл ажиллагаа</SectionTitle>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
@@ -169,7 +169,7 @@ export default async function BusinessInfoPage() {
                   {SERVICE_TAGS.map((tag) => (
                     <label
                       key={tag}
-                      className="cursor-pointer rounded-full border border-outline bg-white px-4 py-2 text-xs leading-4 font-medium text-body has-checked:border-primary has-checked:bg-primary has-checked:text-white"
+                      className="cursor-pointer rounded-full border border-outline bg-surface px-4 py-2 text-xs leading-4 font-medium text-body has-checked:border-primary has-checked:bg-primary has-checked:text-white"
                     >
                       <input
                         type="checkbox"
@@ -185,14 +185,14 @@ export default async function BusinessInfoPage() {
               </fieldset>
             </section>
 
-            <section className="flex flex-col gap-4 border-t border-white/60 pt-8">
+            <section className="flex flex-col gap-4 border-t border-glass-edge/60 pt-8">
               <SectionTitle>Бичиг баримт</SectionTitle>
               <label className="flex flex-col gap-2">
                 <span className="text-xs leading-4 font-medium text-body">
                   Улсын бүртгэлийн гэрчилгээ
                 </span>
                 <div className="flex items-center gap-3 rounded-lg bg-surface-tint px-4 py-3">
-                  <span className="flex items-center gap-2 rounded-md border border-outline bg-white px-3 py-1.5 text-xs font-medium text-ink">
+                  <span className="flex items-center gap-2 rounded-md border border-outline bg-surface px-3 py-1.5 text-xs font-medium text-ink">
                     <Upload className="size-3.5" />
                     Файл сонгох
                   </span>
@@ -202,10 +202,10 @@ export default async function BusinessInfoPage() {
               </label>
             </section>
 
-            <div className="flex justify-between border-t border-white/60 pt-8">
+            <div className="flex justify-between border-t border-glass-edge/60 pt-8">
               <Link
                 href="/business/register"
-                className="flex h-12 items-center rounded-full border border-outline bg-white px-8 text-base font-medium text-body hover:bg-surface-tint"
+                className="flex h-12 items-center rounded-full border border-outline bg-surface px-8 text-base font-medium text-body hover:bg-surface-tint"
               >
                 Буцах
               </Link>

@@ -15,13 +15,13 @@ export function MarkAllRead() {
         <button
           type="submit"
           disabled={pending}
-          className="flex h-10 items-center gap-2 rounded-full border border-outline bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint disabled:opacity-60"
+          className="flex h-10 items-center gap-2 rounded-full border border-outline bg-surface px-5 text-xs font-medium text-body hover:bg-surface-tint disabled:opacity-60"
         >
           <CheckCheck className="size-4" />
           Бүгдийг уншсан болгох
         </button>
       </form>
-      {state?.error && <p className="text-xs text-[#991b1b]">{state.error}</p>}
+      {state?.error && <p className="text-xs text-danger-strong">{state.error}</p>}
     </div>
   );
 }

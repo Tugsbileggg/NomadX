@@ -151,7 +151,12 @@ async function signPaths(paths: string[]) {
   return map
 }
 
-/** Тухайн төлвөөс шилжиж болох үйлдлүүд — DB-ийн триггертэй (0015) ижил. */
+/**
+ * Тухайн төлвөөс шилжиж болох үйлдлүүд — DB-ийн триггертэй (0028) ижил.
+ *
+ * `completed` дээр товч байхгүй нь санаатай: түүнээс цааш `closed` руу
+ * зөвхөн төлбөр төлөгдөхөд ӨӨРӨӨ шилжинэ (0028-ийн `close_paid_booking`).
+ */
 export const NEXT_STEPS: Record<BookingStatus, { status: BookingStatus; label: string; primary?: boolean }[]> = {
   pending: [
     { status: "confirmed", label: "Баталгаажуулах", primary: true },
@@ -162,6 +167,7 @@ export const NEXT_STEPS: Record<BookingStatus, { status: BookingStatus; label: s
     { status: "cancelled", label: "Цуцлах" },
   ],
   completed: [],
+  closed: [],
   cancelled: [],
 }
 
@@ -169,6 +175,7 @@ export const STATUS_LABEL: Record<BookingStatus, string> = {
   pending: "Хүлээгдэж буй",
   confirmed: "Баталгаажсан",
   completed: "Дууссан",
+  closed: "Хаагдсан",
   cancelled: "Цуцлагдсан",
 }
 

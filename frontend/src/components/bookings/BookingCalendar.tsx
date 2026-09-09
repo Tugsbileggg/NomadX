@@ -156,7 +156,7 @@ export function BookingCalendar({
             {dayBookings.map((b) => (
               <li
                 key={b.id}
-                className="rounded-xl border border-surface-variant bg-white p-4"
+                className="rounded-xl border border-surface-variant bg-surface p-4"
               >
                 <div className="flex flex-wrap items-start gap-4">
                   <span className="w-14 shrink-0 text-sm font-semibold text-primary">

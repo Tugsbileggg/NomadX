@@ -3,6 +3,12 @@
 /* ------------------------------------------------------------------
    Design tokens — extracted from the Figma file (dgGOEHdB3yYVkFFe3VOTvk).
    Rose / mauve palette on a Material-3 style neutral ramp, Montserrat type.
+
+   Every colour lives here as a token so the whole UI can be repainted by
+   overriding the same names under `[data-theme="dark"]` further down.
+   Components must therefore never hard-code a colour: reach for a token
+   (`bg-surface`, `text-ink`, `border-outline`) instead of `bg-white` or
+   `text-[#991b1b]`, otherwise it will stay light in dark mode.
    ------------------------------------------------------------------ */
 @theme {
   /* brand */
@@ -23,6 +29,12 @@
   --color-surface-variant: #eedfe0;
   --color-surface-variant-2: #ebe0e0;
 
+  /* Frosted-glass fill and its highlight edge. Light mode paints them
+     white; dark mode needs a lifted grey instead, so they are tokens
+     rather than literal `bg-white/70` / `border-white/60`. */
+  --color-glass: #ffffff;
+  --color-glass-edge: #ffffff;
+
   /* text */
   --color-ink: #211a1b;
   --color-ink-strong: #23191b;
@@ -35,15 +47,19 @@
   --color-outline: #d7c1c3;
   --color-outline-soft: #eedfe0;
 
-  /* status */
+  /* status — `*-soft` нь тэмдэглэгээний дэвсгэр, `*-strong` нь дээрх бичиг */
   --color-danger: #ba1a1a;
   --color-danger-dark: #93000a;
+  --color-danger-soft: #fee2e2;
+  --color-danger-strong: #991b1b;
   --color-success: #16a34a;
   --color-success-dark: #15803d;
   --color-success-darker: #166534;
+  --color-success-soft: #dcfce7;
   --color-warning: #f59e0b;
   --color-warning-dark: #b45309;
   --color-warning-darker: #92400e;
+  --color-warning-soft: #fef3c7;
   --color-gold: #d4af37;
 
   /* type */
@@ -67,6 +83,100 @@
   --shadow-raised: 0 8px 24px rgba(183, 110, 121, 0.12);
   --shadow-float: 0 24px 48px rgba(140, 75, 85, 0.08);
   --shadow-rail: 24px 0 48px rgba(140, 75, 85, 0.08);
+}
+
+/* Утилитуудын дотор шууд ашиглагддаг, @theme-д багтахгүй утгууд
+   (градиент, давхар сүүдэр). Эдгээрийг бараан горимд доор дарж бичнэ. */
+:root {
+  --aurora-1: rgba(255, 255, 255, 1);
+  --aurora-2: rgba(255, 194, 203, 0.4);
+  --aurora-3: rgba(250, 235, 237, 0.6);
+  --aurora-4: rgba(255, 194, 203, 0.4);
+  --soft-card-shadow:
+    10px 10px 20px rgba(140, 75, 85, 0.08),
+    -10px -10px 20px rgba(255, 255, 255, 0.8);
+}
+
+/* ------------------------------------------------------------------
+   Dark theme
+   ------------------------------------------------------------------
+   Сонголтыг `<html data-theme>` дээр `ThemeScript` (layout.tsx) будаг
+   зурахаас ӨМНӨ тавьдаг тул энд `prefers-color-scheme` шалгах
+   шаардлагагүй — систем дагах горимыг тэр скрипт `dark`/`light` болгож
+   аль хэдийн шийдсэн байна. Ингэснээр CSS нэг л салбартай болж, хуудас
+   ачаалахад цайвар өнгө анивчихаас ч сэргийлнэ.
+
+   Өнгөнүүд нь гар утасны аппын `DarkBrand`-тай (app/src/constants/theme.ts)
+   санаатайгаар нийцүүлсэн — нэг бүтээгдэхүүн хоёр өөр бараан өнгөтэй
+   байх нь утгагүй.
+   ------------------------------------------------------------------ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* `--color-primary` нь ХОЁР үүрэгтэй: товчны дэвсгэр (дээрээ цагаан
+     бичигтэй) ба бараан дэвсгэр дээрх бичиг/дүрс. Хэт цайвар сонговол
+     товч уншигдахаа болино, хэт бараан бол бичиг нь. #a6606b нь цагаан
+     бичигтэй 4.7:1, хуудасны дэвсгэр дээр 3.9:1 — хоёуланд нь тэнцвэртэй. */
+  --color-primary: #a6606b;
+  --color-primary-dark: #8a4853;
+  --color-primary-light: #c98894;
+  --color-primary-container: #4a2b30;
+  --color-primary-accent: #e3aab2;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #ffd9dd;
+
+  --color-surface: #241a1c;
+  --color-surface-page: #160f10;
+  --color-surface-tint: #2c2124;
+  --color-surface-tint-2: #332628;
+  --color-surface-tint-3: #3a2c2e;
+  --color-surface-variant: #4d3a3d;
+  --color-surface-variant-2: #433235;
+
+  --color-glass: #33262a;
+  --color-glass-edge: #6b5155;
+
+  --color-ink: #f5ecec;
+  --color-ink-strong: #fdf6f6;
+  --color-body: #d6c7c8;
+  --color-muted: #a08e90;
+  --color-muted-2: #b3a3a4;
+  --color-muted-3: #ac9c9d;
+
+  --color-outline: #4d3a3d;
+  --color-outline-soft: #3a2c2e;
+
+  /* Статусын өнгө мөн адил хоёр үүрэгтэй (товчны дэвсгэр ба бичиг) тул
+     хэт цайвар болгосонгүй. */
+  --color-danger: #d64545;
+  --color-danger-dark: #b3302f;
+  --color-danger-soft: #4a2323;
+  --color-danger-strong: #ffb4ab;
+  --color-success: #3fbf6d;
+  --color-success-dark: #2e9c55;
+  --color-success-darker: #86efac;
+  --color-success-soft: #1e3a2a;
+  --color-warning: #e0a020;
+  --color-warning-dark: #c88a10;
+  --color-warning-darker: #fcd34d;
+  --color-warning-soft: #3d3116;
+  --color-gold: #e5c158;
+
+  /* Бараан дэвсгэр дээр ягаан сүүдэр харагдахгүй — хар сүүдэр л гүн өгнө. */
+  --shadow-hairline: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-float: 0 24px 48px rgba(0, 0, 0, 0.55);
+  --shadow-rail: 24px 0 48px rgba(0, 0, 0, 0.5);
+
+  --aurora-1: rgba(255, 255, 255, 0.04);
+  --aurora-2: rgba(201, 136, 148, 0.14);
+  --aurora-3: rgba(74, 43, 48, 0.5);
+  --aurora-4: rgba(201, 136, 148, 0.1);
+  --soft-card-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.45),
+    -10px -10px 20px rgba(255, 255, 255, 0.02);
 }
 
 /* ------------------------------------------------------------------
@@ -96,42 +206,40 @@ body {
 @utility bg-aurora {
   background-color: var(--color-surface-page);
   background-image:
-    radial-gradient(141% 141% at 0% 100%, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%),
-    radial-gradient(141% 141% at 100% 100%, rgba(255, 194, 203, 0.4) 0%, rgba(255, 194, 203, 0) 50%),
-    radial-gradient(141% 141% at 100% 0%, rgba(250, 235, 237, 0.6) 0%, rgba(250, 235, 237, 0) 50%),
-    radial-gradient(141% 141% at 0% 0%, rgba(255, 194, 203, 0.4) 0%, rgba(255, 194, 203, 0) 50%);
+    radial-gradient(141% 141% at 0% 100%, var(--aurora-1) 0%, transparent 50%),
+    radial-gradient(141% 141% at 100% 100%, var(--aurora-2) 0%, transparent 50%),
+    radial-gradient(141% 141% at 100% 0%, var(--aurora-3) 0%, transparent 50%),
+    radial-gradient(141% 141% at 0% 0%, var(--aurora-4) 0%, transparent 50%);
   background-attachment: fixed;
 }
 
 /* Frosted panel used for nav bars, cards and banners throughout the design. */
 @utility glass {
-  background-color: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background-color: color-mix(in srgb, var(--color-glass) 40%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-glass-edge) 60%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
 @utility glass-strong {
-  background-color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background-color: color-mix(in srgb, var(--color-glass) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-glass-edge) 60%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
-/* Neumorphic white card: light from the top-left, shadow to the bottom-right. */
+/* Neumorphic card: light from the top-left, shadow to the bottom-right. */
 @utility soft-card {
-  background-color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-glass-edge) 50%, transparent);
   border-radius: var(--radius-5xl);
-  box-shadow:
-    10px 10px 20px rgba(140, 75, 85, 0.08),
-    -10px -10px 20px rgba(255, 255, 255, 0.8);
+  box-shadow: var(--soft-card-shadow);
 }
 
 /* Soft-UI pill (search field, segmented controls). */
 @utility pill-inset {
-  background-color: rgba(255, 255, 255, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background-color: color-mix(in srgb, var(--color-glass) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-glass-edge) 60%, transparent);
   box-shadow: var(--shadow-hairline);
 }
 

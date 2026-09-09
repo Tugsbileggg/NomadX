@@ -29,7 +29,7 @@ export function NewBookingForm({ day, basePath }: { day: OwnerDay; basePath: str
           </label>
           <button
             type="submit"
-            className="h-10 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint"
+            className="h-10 rounded-full border border-surface-variant bg-surface px-5 text-xs font-medium text-body hover:bg-surface-tint"
           >
             Цагийг харах
           </button>

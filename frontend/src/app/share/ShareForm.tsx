@@ -106,7 +106,7 @@ export function ShareForm({ initialRoom }: { initialRoom: string }) {
           value={room}
           onChange={(event) => setRoom(event.target.value)}
           disabled={live}
-          className="h-12 rounded-xl border border-outline bg-white px-4 text-ink outline-none focus:border-primary disabled:opacity-60"
+          className="h-12 rounded-xl border border-outline bg-surface px-4 text-ink outline-none focus:border-primary disabled:opacity-60"
         />
       </label>
 
@@ -144,7 +144,7 @@ export function ShareForm({ initialRoom }: { initialRoom: string }) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-white px-4 py-3">
+    <div className="rounded-xl bg-surface px-4 py-3">
       <dt className="text-xs text-muted">{label}</dt>
       <dd className="mt-1 font-semibold text-ink tabular-nums">{value}</dd>
     </div>

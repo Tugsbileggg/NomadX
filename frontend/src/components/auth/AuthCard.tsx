@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 
 /**
@@ -43,6 +44,17 @@ export function AuthCard({
         </div>
 
         <div className="flex flex-1 flex-col px-10 py-8">
+          {/* Зүүн талын "LUMINA" бичиг ч нүүр рүү холбогддог ч түүнийг
+              зөвхөн lg дэлгэц дээр харагддаг (зурагтай багана нуугддаг) тул
+              буцах ганц зам үлддэггүй байв. Энэ холбоос бүх өргөнд гарна. */}
+          <Link
+            href="/"
+            className="mb-3 inline-flex w-fit items-center gap-1.5 text-xs leading-4 font-medium text-body transition-colors hover:text-primary"
+          >
+            <ArrowLeft className="size-4" />
+            Нүүр хуудас руу буцах
+          </Link>
+
           {children}
           <div className="mt-6 flex items-center justify-center gap-1 pt-6">{footer}</div>
         </div>
@@ -57,14 +69,14 @@ export function SocialRow() {
     <div className="flex gap-4">
       <button
         type="button"
-        className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-outline bg-white text-xs leading-4 font-medium text-ink hover:bg-surface-tint"
+        className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-outline bg-surface text-xs leading-4 font-medium text-ink hover:bg-surface-tint"
       >
         <Image src="/img/icon-gmail.png" alt="" width={21} height={22} />
         Google-ээр
       </button>
       <button
         type="button"
-        className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-outline bg-white text-xs leading-4 font-medium text-ink hover:bg-surface-tint"
+        className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl border border-outline bg-surface text-xs leading-4 font-medium text-ink hover:bg-surface-tint"
       >
         <PhoneGlyph />
         Утасны дугаараар
@@ -76,8 +88,8 @@ export function SocialRow() {
 function PhoneGlyph() {
   return (
     <svg width="15" height="22" viewBox="0 0 15 22" fill="none" aria-hidden>
-      <rect x="0.75" y="0.75" width="13.5" height="20.5" rx="2.25" stroke="#211a1b" strokeWidth="1.5" />
-      <circle cx="7.5" cy="18" r="1" fill="#211a1b" />
+      <rect x="0.75" y="0.75" width="13.5" height="20.5" rx="2.25" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="7.5" cy="18" r="1" fill="currentColor" />
     </svg>
   );
 }

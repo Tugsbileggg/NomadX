@@ -25,7 +25,7 @@ export function ActionForm({
       {state?.error && (
         <p
           role="alert"
-          className="flex items-start gap-2 rounded-xl bg-[#fee2e2] px-4 py-3 text-sm leading-5 text-danger-dark"
+          className="flex items-start gap-2 rounded-xl bg-danger-soft px-4 py-3 text-sm leading-5 text-danger-dark"
         >
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
           {state.error}
@@ -34,7 +34,7 @@ export function ActionForm({
       {state?.success && (
         <p
           role="status"
-          className="flex items-start gap-2 rounded-xl bg-[#dcfce7] px-4 py-3 text-sm leading-5 text-success-darker"
+          className="flex items-start gap-2 rounded-xl bg-success-soft px-4 py-3 text-sm leading-5 text-success-darker"
         >
           <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
           {state.success}

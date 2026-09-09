@@ -35,7 +35,7 @@ export function RoleActions({
           {promoting ? "Админ болгох" : "Админаас чөлөөлөх"}
         </button>
       </form>
-      {state?.error && <p className="text-xs text-[#991b1b]">{state.error}</p>}
+      {state?.error && <p className="text-xs text-danger-strong">{state.error}</p>}
     </div>
   );
 }

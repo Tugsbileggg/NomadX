@@ -39,7 +39,9 @@ export async function fetchReviewEligibility(businessId: string): Promise<Review
       .select("id")
       .eq("customer_id", user.id)
       .eq("business_id", businessId)
-      .eq("status", "completed")
+      // Төлбөр төлөгдөхөд захиалга `closed` болдог (0028) — сэтгэгдэл
+      // бичих эрхийг тэр нь хасах ёсгүй. RLS ч мөн хоёуланг зөвшөөрнө.
+      .in("status", ["completed", "closed"])
       .order("scheduled_at", { ascending: false })
       .limit(1)
       .maybeSingle(),

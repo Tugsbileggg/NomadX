@@ -19,7 +19,7 @@ export function Panel({
   return (
     <section
       className={cn(
-        "rounded-2xl border border-surface-variant bg-white shadow-hairline",
+        "rounded-2xl border border-surface-variant bg-surface shadow-hairline",
         className,
       )}
     >
@@ -49,7 +49,7 @@ export function StatCard({
   icon?: LucideIcon;
 }) {
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-surface-variant bg-white p-6 shadow-hairline">
+    <div className="relative overflow-hidden rounded-2xl border border-surface-variant bg-surface p-6 shadow-hairline">
       {Icon && (
         <Icon
           className="absolute top-5 right-5 size-8 text-surface-variant"
@@ -74,9 +74,9 @@ export function StatCard({
 
 const TONES = {
   neutral: "bg-surface-variant text-body",
-  success: "bg-[#dcfce7] text-success-darker",
-  warning: "bg-[#fef3c7] text-warning-darker",
-  danger: "bg-[#fee2e2] text-[#991b1b]",
+  success: "bg-success-soft text-success-darker",
+  warning: "bg-warning-soft text-warning-darker",
+  danger: "bg-danger-soft text-danger-strong",
   primary: "bg-primary-container text-on-primary-container",
 } as const;
 
@@ -163,7 +163,7 @@ export function FilterTabs({ tabs, active }: { tabs: string[]; active: string })
             "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
             t === active
               ? "bg-primary text-white"
-              : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+              : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
           )}
         >
           {t}
@@ -188,14 +188,14 @@ export function Toolbar({
         <input
           type="search"
           placeholder={placeholder}
-          className="h-10 w-full rounded-lg border border-surface-variant bg-white pr-4 pl-10 text-sm text-ink placeholder:text-muted focus:border-primary focus:outline-none"
+          className="h-10 w-full rounded-lg border border-surface-variant bg-surface pr-4 pl-10 text-sm text-ink placeholder:text-muted focus:border-primary focus:outline-none"
         />
       </div>
       {filters.map((f) => (
         <select
           key={f.label}
           aria-label={f.label}
-          className="h-10 rounded-lg border border-surface-variant bg-white px-3 text-sm text-body focus:border-primary focus:outline-none"
+          className="h-10 rounded-lg border border-surface-variant bg-surface px-3 text-sm text-body focus:border-primary focus:outline-none"
         >
           {f.options.map((o) => (
             <option key={o}>{o}</option>
@@ -236,7 +236,7 @@ export function Pagination({ summary, pages = 3 }: { summary: string; pages?: nu
               "size-8 rounded-lg text-xs font-medium",
               i === 0
                 ? "bg-primary text-white"
-                : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
             )}
           >
             {i + 1}
@@ -322,7 +322,7 @@ export function Donut({ percent, label }: { percent: number; label: string }) {
       role="img"
       aria-label={`${label}: ${percent}%`}
     >
-      <div className="flex size-[56px] items-center justify-center rounded-full bg-white">
+      <div className="flex size-[56px] items-center justify-center rounded-full bg-surface">
         <span className="text-xs leading-4 font-semibold text-ink">{percent}%</span>
       </div>
     </div>

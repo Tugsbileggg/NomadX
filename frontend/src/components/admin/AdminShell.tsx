@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Bell } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/cn";
 
@@ -42,8 +43,8 @@ export async function AdminShell({
   const pending = await pendingVerificationCount();
 
   return (
-    <div className="flex min-h-screen bg-white">
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-[rgba(215,193,195,0.3)] bg-surface-page py-6 lg:flex">
+    <div className="flex min-h-screen bg-surface">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-outline/30 bg-surface-page py-6 lg:flex">
         <div className="border-b border-surface-variant px-6 pb-6">
           <p className="text-lg leading-6 font-medium text-primary">{brand}</p>
           <p className="mt-1 text-xs leading-4 font-medium text-body">{subtitle}</p>
@@ -96,6 +97,7 @@ export async function AdminShell({
           </div>
           <div className="flex shrink-0 items-center gap-4">
             {actions}
+            <ThemeToggle />
             <button
               type="button"
               aria-label="Мэдэгдэл"

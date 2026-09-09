@@ -18,7 +18,7 @@ const APP_URL = process.env.NEXT_PUBLIC_MOBILE_APP_URL;
 export default function ArtistMovedPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface-tint px-6 py-16">
-      <div className="w-full max-w-[440px] rounded-3xl border border-surface-variant bg-white p-8 text-center shadow-hairline">
+      <div className="w-full max-w-[440px] rounded-3xl border border-surface-variant bg-surface p-8 text-center shadow-hairline">
         <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-surface-tint">
           <Smartphone className="size-7 text-primary" strokeWidth={1.6} />
         </span>

@@ -20,6 +20,7 @@ import {
   type BookingWithBusiness,
 } from "@/lib/bookings"
 import { mnDateLabel, mnTimeLabel } from "@/lib/mn-date"
+import { showPaymentNotice } from "@/lib/payment-notice"
 import { publicAssetUrl } from "@/lib/storage"
 import { useAppTheme } from "@/lib/theme-context"
 
@@ -29,10 +30,18 @@ const INVOICE_LABEL: Record<string, string> = {
   cancelled: "Цуцлагдсан нэхэмжлэх",
 }
 
+/**
+ * `cancelled`, `closed` нь ТӨГСГӨЛИЙН төлвүүд: цаг нь ирээгүй байсан ч
+ * (артист эрт дуусгаад тооцоо хаагдсан гэх мэт) идэвхтэйд тооцох утгагүй
+ * тул шууд түүх рүү явна.
+ */
+const isDone = (status: string) => status === "cancelled" || status === "closed"
+
 const STATUS_LABEL: Record<string, string> = {
   pending: "Хүлээгдэж буй",
   confirmed: "Баталгаажсан",
   completed: "Дууссан",
+  closed: "Хаагдсан",
   cancelled: "Цуцлагдсан",
 }
 
@@ -44,6 +53,9 @@ export default function BookingsScreen() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<"upcoming" | "history">("upcoming")
   const [now, setNow] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+  /** Төлж буй нэхэмжлэхийн id — товчийг давхар дарахаас сэргийлнэ. */
+  const [paying, setPaying] = useState<string | null>(null)
 
   const load = useCallback(() => {
     fetchMyBookings().then((rows) => {
@@ -64,12 +76,11 @@ export default function BookingsScreen() {
 
   const upcoming = useMemo(
     () =>
-      bookings.filter((b) => b.status !== "cancelled" && new Date(b.scheduledAt).getTime() >= now),
+      bookings.filter((b) => !isDone(b.status) && new Date(b.scheduledAt).getTime() >= now),
     [bookings, now],
   )
   const history = useMemo(
-    () =>
-      bookings.filter((b) => b.status === "cancelled" || new Date(b.scheduledAt).getTime() < now),
+    () => bookings.filter((b) => isDone(b.status) || new Date(b.scheduledAt).getTime() < now),
     [bookings, now],
   )
 
@@ -78,8 +89,31 @@ export default function BookingsScreen() {
     load()
   }
 
-  async function onPay(invoiceId: string) {
-    await payInvoice(invoiceId)
+  /**
+   * ⚠️ Мөнгө ШИЛЖИХГҮЙ. Төлбөрийн систем хойшлогдсон тул энэ нь зөвхөн
+   * нэхэмжлэхийг `paid` болгож тэмдэглээд (0023) амжилтын цонх нээнэ.
+   * Артист руу нь мөн адил цонх DB-ийн триггерээр очно (0027).
+   *
+   * Цонхыг хариу ирсний ДАРАА нээнэ — тэмдэглэл бүтэлгүйтвэл (жишээ нь
+   * нэхэмжлэх аль хэдийн цуцлагдсан) "төлөгдлөө" гэж худал хэлэх болно.
+   */
+  async function onPay(booking: BookingWithBusiness) {
+    const invoice = booking.invoice
+    if (!invoice || paying) return
+
+    setError(null)
+    setPaying(invoice.id)
+    const failed = await payInvoice(invoice.id)
+    setPaying(null)
+
+    if (failed) {
+      setError(failed)
+      return
+    }
+
+    showPaymentNotice({
+      detail: `${booking.business?.name ?? "Бизнес"} · ${invoice.amount.toLocaleString("en-US")}₮`,
+    })
     load()
   }
 
@@ -108,6 +142,8 @@ export default function BookingsScreen() {
         </Pressable>
       </View>
 
+      {error && <Text style={styles.error}>{error}</Text>}
+
       {loading ? (
         <ActivityIndicator color={colors.primary} style={{ marginTop: 24 }} />
       ) : list.length === 0 ? (
@@ -128,7 +164,8 @@ export default function BookingsScreen() {
                 router.push({ pathname: "/business/[id]", params: { id: b.business.id } })
               }
               onCancel={() => onCancel(b.id)}
-              onPay={() => b.invoice && onPay(b.invoice.id)}
+              onPay={() => void onPay(b)}
+              paying={paying != null && paying === b.invoice?.id}
             />
           ))}
         </ScrollView>
@@ -142,11 +179,13 @@ function BookingRow({
   onPress,
   onCancel,
   onPay,
+  paying,
 }: {
   booking: BookingWithBusiness
   onPress: () => void
   onCancel: () => void
   onPay: () => void
+  paying: boolean
 }) {
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
@@ -213,10 +252,11 @@ function BookingRow({
                 e.stopPropagation()
                 onPay()
               }}
-              style={styles.payButton}
+              disabled={paying}
+              style={[styles.payButton, paying && styles.payButtonBusy]}
             >
               <Ionicons name="card-outline" size={15} color={colors.onPrimary} />
-              <Text style={styles.payText}>Төлсөн гэж тэмдэглэх</Text>
+              <Text style={styles.payText}>{paying ? "Төлж байна..." : "Төлбөр төлөх"}</Text>
             </Pressable>
           )}
         </View>
@@ -239,6 +279,8 @@ function statusStyle(status: string, colors: BrandPalette) {
       return { backgroundColor: colors.dangerSoft }
     case "completed":
       return { backgroundColor: colors.surfaceTint2 }
+    case "closed":
+      return { backgroundColor: colors.primaryContainer }
     default:
       return { backgroundColor: colors.warningSoft }
   }
@@ -305,7 +347,17 @@ function makeStyles(colors: BrandPalette) {
       borderRadius: 999,
       backgroundColor: colors.primary,
     },
+    payButtonBusy: { opacity: 0.6 },
     payText: { fontSize: 13, fontWeight: "700", color: colors.onPrimary },
+    error: {
+      marginHorizontal: 20,
+      marginTop: 12,
+      fontSize: 12,
+      color: colors.danger,
+      backgroundColor: colors.dangerSoft,
+      borderRadius: 10,
+      padding: 10,
+    },
     cancelButton: { alignSelf: "flex-start" },
     cancelText: { fontSize: 12, fontWeight: "600", color: colors.danger },
   })

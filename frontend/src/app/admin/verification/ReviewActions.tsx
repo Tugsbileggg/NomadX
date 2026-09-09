@@ -19,7 +19,7 @@ export function ReviewActions({ businessId }: { businessId: string }) {
           <button
             type="submit"
             disabled={approving}
-            className="rounded-full bg-[#dcfce7] px-3 py-1.5 text-xs font-medium text-success-darker hover:brightness-95 disabled:opacity-60"
+            className="rounded-full bg-success-soft px-3 py-1.5 text-xs font-medium text-success-darker hover:brightness-95 disabled:opacity-60"
           >
             Зөвшөөрөх
           </button>
@@ -28,7 +28,7 @@ export function ReviewActions({ businessId }: { businessId: string }) {
         <button
           type="button"
           onClick={() => setAsking((v) => !v)}
-          className="rounded-full bg-[#fee2e2] px-3 py-1.5 text-xs font-medium text-[#991b1b] hover:brightness-95"
+          className="rounded-full bg-danger-soft px-3 py-1.5 text-xs font-medium text-danger-strong hover:brightness-95"
         >
           Татгалзах
         </button>

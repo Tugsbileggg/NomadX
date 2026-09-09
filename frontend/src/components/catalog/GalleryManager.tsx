@@ -30,7 +30,7 @@ export function GalleryManager({
 
   if (!canEdit) {
     return (
-      <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+      <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
         Бизнесийн бүртгэл олдсонгүй. Эхлээд бүртгэлээ бөглөж, батлуулна уу.
       </p>
     );
@@ -39,7 +39,7 @@ export function GalleryManager({
   return (
     <div className="flex flex-col gap-6">
       <ActionForm action={uploadMedia} className="flex flex-col gap-4">
-        <div className="rounded-2xl border border-surface-variant bg-white p-6 shadow-hairline">
+        <div className="rounded-2xl border border-surface-variant bg-surface p-6 shadow-hairline">
           <p className="text-sm text-body">
             Энд оруулсан зураг үйлчлүүлэгчийн аппын профайл дээр{" "}
             <span className="font-medium text-ink">{noun}</span> хэсэгт харагдана.
@@ -92,7 +92,7 @@ export function GalleryManager({
       </ActionForm>
 
       {gallery.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+        <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
           Одоогоор зураг байхгүй байна.
         </p>
       ) : (
@@ -119,7 +119,7 @@ export function GalleryManager({
               <ActionForm action={deleteMedia} className="absolute top-2 right-2">
                 <input type="hidden" name="media_id" value={item.id} />
                 <SubmitButton
-                  className="flex size-8 items-center justify-center rounded-full bg-white/90 text-[#991b1b] shadow-hairline hover:bg-white"
+                  className="flex size-8 items-center justify-center rounded-full bg-glass/90 text-danger-strong shadow-hairline hover:bg-surface"
                   pendingLabel="…"
                 >
                   <Trash2 className="size-4" />

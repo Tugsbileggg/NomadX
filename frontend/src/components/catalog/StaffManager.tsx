@@ -29,7 +29,7 @@ export function StaffManager({
 
   if (!canEdit) {
     return (
-      <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+      <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
         Бизнесийн бүртгэл олдсонгүй. Эхлээд бүртгэлээ бөглөж, батлуулна уу.
       </p>
     );
@@ -55,7 +55,7 @@ export function StaffManager({
       {editing === "new" && <StaffForm onClose={() => setEditing(null)} />}
 
       {staff.length === 0 && editing !== "new" ? (
-        <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+        <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
           Одоогоор ажилтан бүртгээгүй байна.
         </p>
       ) : (
@@ -80,7 +80,7 @@ export function StaffManager({
 
 function StaffRow({ member, onEdit }: { member: CatalogStaff; onEdit: () => void }) {
   return (
-    <article className="flex items-start gap-4 rounded-2xl border border-surface-variant bg-white p-5">
+    <article className="flex items-start gap-4 rounded-2xl border border-surface-variant bg-surface p-5">
       {member.photoUrl ? (
         <span className="relative size-12 shrink-0 overflow-hidden rounded-full">
           <Image src={member.photoUrl} alt="" fill className="object-cover" sizes="48px" />
@@ -131,7 +131,7 @@ function StaffForm({
   return (
     <ActionForm
       action={saveStaff}
-      className={`flex flex-col gap-4 rounded-2xl border border-primary/30 bg-white p-6 ${className ?? ""}`}
+      className={`flex flex-col gap-4 rounded-2xl border border-primary/30 bg-surface p-6 ${className ?? ""}`}
     >
       {member && <input type="hidden" name="staff_id" value={member.id} />}
 

@@ -81,7 +81,7 @@ export default async function VerificationPage() {
         </div>
 
         <ActionForm action={saveDocuments} className="flex flex-col gap-8">
-        <section className="rounded-2xl bg-white p-8 shadow-soft">
+        <section className="rounded-2xl bg-surface p-8 shadow-soft">
           <h2 className="flex items-center gap-2 text-base font-semibold text-primary">
             <ShieldCheck className="size-5" />
             Иргэний үнэмлэх баталгаажуулах
@@ -134,7 +134,7 @@ export default async function VerificationPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl bg-white p-8 shadow-soft">
+        <section className="rounded-2xl bg-surface p-8 shadow-soft">
           <h2 className="flex items-center gap-2 text-base font-semibold text-primary">
             <CreditCard className="size-5" />
             Төлбөр хүлээн авах мэдээлэл
@@ -166,7 +166,7 @@ export default async function VerificationPage() {
         <div className="flex items-center justify-between">
           <Link
             href="/business/register/info"
-            className="flex h-10 items-center rounded-full border border-outline bg-white px-6 text-sm font-medium text-body hover:bg-surface-tint"
+            className="flex h-10 items-center rounded-full border border-outline bg-surface px-6 text-sm font-medium text-body hover:bg-surface-tint"
           >
             Буцах
           </Link>
@@ -197,7 +197,7 @@ function DropZone({
     <label
       className={cn(
         "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-8 text-center hover:border-primary",
-        done ? "border-success bg-[#dcfce7]/40" : "border-primary/40 bg-surface-tint/60",
+        done ? "border-success bg-success-soft/40" : "border-primary/40 bg-surface-tint/60",
       )}
     >
       {done ? <Check className="size-6 text-success" /> : icon}

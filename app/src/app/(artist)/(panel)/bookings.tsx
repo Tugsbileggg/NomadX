@@ -36,6 +36,7 @@ const FILTERS: { label: string; value: BookingStatus | "all" }[] = [
   { label: "Хүлээгдэж буй", value: "pending" },
   { label: "Баталгаажсан", value: "confirmed" },
   { label: "Дууссан", value: "completed" },
+  { label: "Хаагдсан", value: "closed" },
   { label: "Цуцлагдсан", value: "cancelled" },
 ]
 
@@ -281,7 +282,7 @@ function BookingCard({
       <ImageViewer urls={booking.images} index={viewerIndex} onClose={() => setViewerIndex(null)} />
 
       {/* ⚠️ Туршилтын нэхэмжлэх — бодит төлбөр тооцоо хийгддэггүй. */}
-      {booking.status === "completed" && (
+      {(booking.status === "completed" || booking.status === "closed") && (
         <View style={styles.invoice}>
           <View style={styles.invoiceHead}>
             <Ionicons name="receipt-outline" size={14} color={colors.primary} />
@@ -341,6 +342,8 @@ function statusStyle(status: BookingStatus, colors: BrandPalette) {
       return { backgroundColor: colors.dangerSoft }
     case "completed":
       return { backgroundColor: colors.surfaceTint2 }
+    case "closed":
+      return { backgroundColor: colors.primaryContainer }
     default:
       return { backgroundColor: colors.warningSoft }
   }

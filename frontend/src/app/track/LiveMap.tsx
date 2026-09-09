@@ -36,7 +36,7 @@ export function LiveMap({ initialRoom }: { initialRoom: string }) {
           <input
             value={room}
             onChange={(event) => setRoom(event.target.value)}
-            className="h-11 w-48 rounded-xl border border-outline bg-white px-4 text-ink outline-none focus:border-primary"
+            className="h-11 w-48 rounded-xl border border-outline bg-surface px-4 text-ink outline-none focus:border-primary"
           />
         </label>
         <button
@@ -253,7 +253,7 @@ function MapPanel({ room }: { room: string }) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl bg-white px-4 py-3">
+    <div className="rounded-xl bg-surface px-4 py-3">
       <dt className="text-xs text-muted">{label}</dt>
       <dd className="mt-1 font-semibold text-ink tabular-nums">{value}</dd>
     </div>

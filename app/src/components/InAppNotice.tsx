@@ -69,7 +69,16 @@ export function InAppNotice() {
     return subscribeToNotifications(uid)
   }, [session])
 
-  useEffect(() => onNotification(setNotice), [])
+  useEffect(
+    () =>
+      onNotification((n) => {
+        // Төлбөрийн баталгааг `PaymentSuccessModal` цонхоор гаргана —
+        // хоёуланг нь зэрэг харуулбал нэг үйл явдал давхар мэдэгдэнэ.
+        if (n.kind === "invoice_paid") return
+        setNotice(n)
+      }),
+    [],
+  )
 
   useEffect(() => {
     if (!notice) return

@@ -53,14 +53,14 @@ export default async function BusinessTypePage() {
               {TYPES.map((t) => (
                 <label
                   key={t.id}
-                  className="group relative cursor-pointer overflow-hidden rounded-4xl border border-white/60 bg-white/70 shadow-hairline transition-shadow has-checked:border-primary has-checked:shadow-card"
+                  className="group relative cursor-pointer overflow-hidden rounded-4xl border border-glass-edge/60 bg-glass/70 shadow-hairline transition-shadow has-checked:border-primary has-checked:shadow-card"
                 >
                   <input
                     type="radio"
                     name="business-type"
                     value={t.id}
                     defaultChecked={business?.type === t.id}
-                    className="absolute top-6 right-6 z-10 size-5 appearance-none rounded-full border border-white bg-white/40 checked:border-6 checked:border-primary checked:bg-white"
+                    className="absolute top-6 right-6 z-10 size-5 appearance-none rounded-full border border-glass-edge bg-glass/40 checked:border-6 checked:border-primary checked:bg-surface"
                   />
                   <div className="relative h-36 w-full">
                     <Image
@@ -84,7 +84,7 @@ export default async function BusinessTypePage() {
               ))}
             </fieldset>
 
-            <div className="flex justify-end border-t border-white/60 pt-8">
+            <div className="flex justify-end border-t border-glass-edge/60 pt-8">
               <SubmitButton className="flex h-12 items-center rounded-full bg-primary px-8 text-base font-medium text-white shadow-hairline hover:bg-primary-dark">
                 Үргэлжлүүлэх
               </SubmitButton>

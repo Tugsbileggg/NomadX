@@ -18,7 +18,7 @@ export default function LoginPage() {
         </>
       }
     >
-      <h1 className="pt-10 text-[28px] leading-9 font-semibold text-primary">
+      <h1 className="pt-4 text-[28px] leading-9 font-semibold text-primary">
         Тавтай морилно уу?
       </h1>
 

@@ -15,6 +15,7 @@ import { Platform, View } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { InAppNotice } from '@/components/InAppNotice';
+import { PaymentSuccessModal } from '@/components/PaymentSuccessModal';
 import { AuthProvider, useAuth } from '@/lib/auth-context';
 import { LocationProvider } from '@/lib/location-context';
 import { AppThemeProvider, useAppTheme } from '@/lib/theme-context';
@@ -118,6 +119,8 @@ function RootNavigator({ fontsLoaded }: { fontsLoaded: boolean }) {
       {/* Мэдэгдлийн самбар бүх дэлгэцийн дээгүүр гарах ёстой тул
           Stack-ийн гадна, түүний дараа байрлана. */}
       <InAppNotice />
+      {/* Төлбөрийн баталгаа — самбараас илүү тод байх ёстой (0027). */}
+      <PaymentSuccessModal />
     </View>
   );
 }

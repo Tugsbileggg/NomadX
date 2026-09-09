@@ -20,7 +20,7 @@ export function UserActions({ userId, banned }: { userId: string; banned: boolea
           {banned ? "Хориг цуцлах" : "Хориглох"}
         </button>
       </form>
-      {error && <p className="text-xs text-[#991b1b]">{error}</p>}
+      {error && <p className="text-xs text-danger-strong">{error}</p>}
     </div>
   );
 }

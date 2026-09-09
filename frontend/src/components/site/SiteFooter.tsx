@@ -38,7 +38,7 @@ export function SiteFooter() {
                 <Link
                   key={i}
                   href="#"
-                  className="flex size-10 items-center justify-center rounded-full bg-white shadow-[4px_4px_12px_rgba(140,75,85,0.15)] transition-transform hover:-translate-y-0.5"
+                  className="flex size-10 items-center justify-center rounded-full bg-surface shadow-[4px_4px_12px_rgba(140,75,85,0.15)] transition-transform hover:-translate-y-0.5"
                 >
                   <Icon className="size-5 text-primary" strokeWidth={1.8} />
                 </Link>
@@ -62,7 +62,7 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-white/60 pt-8 text-center text-sm text-muted">
+        <div className="mt-12 border-t border-glass-edge/60 pt-8 text-center text-sm text-muted">
           © 2024 Lumina Mongolia. Бүх эрх хамгаалагдсан.
         </div>
       </div>

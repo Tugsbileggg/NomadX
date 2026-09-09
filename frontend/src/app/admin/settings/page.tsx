@@ -62,7 +62,7 @@ export default async function SettingsPage({
                 "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
                 t.value === active
                   ? "bg-primary text-white"
-                  : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                  : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
               )}
             >
               {t.label}
@@ -74,7 +74,7 @@ export default async function SettingsPage({
           <>
             <Panel title={`Одоогийн админууд (${admins.length})`}>
               {error ? (
-                <p className="py-6 text-sm text-[#991b1b]">{error}</p>
+                <p className="py-6 text-sm text-danger-strong">{error}</p>
               ) : (
                 <Table headers={["Хэрэглэгч", "И-мэйл", "Эрх", ""]}>
                   {admins.map((u) => (
@@ -159,7 +159,7 @@ export default async function SettingsPage({
         )}
 
         {active === "admins" && (
-          <p className="flex items-start gap-2 rounded-2xl border border-surface-variant bg-white px-5 py-4 text-xs leading-5 text-body shadow-hairline">
+          <p className="flex items-start gap-2 rounded-2xl border border-surface-variant bg-surface px-5 py-4 text-xs leading-5 text-body shadow-hairline">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             Админаас чөлөөлөгдсөн хэрэглэгч «Хэрэглэгч» эрхтэй болно. Бизнесийн
             эзэн байсан бол «Салонууд» хуудаснаас эрхийг нь буцааж тааруулна уу.

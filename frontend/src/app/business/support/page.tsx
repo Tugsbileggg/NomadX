@@ -93,7 +93,7 @@ export default function BusinessSupportPage() {
                   <p className="text-sm leading-5 text-body">{c.body}</p>
                   <a
                     href={c.href}
-                    className="mt-2 flex h-10 items-center self-start rounded-full border border-outline bg-white px-5 text-xs font-medium text-primary hover:bg-surface-tint"
+                    className="mt-2 flex h-10 items-center self-start rounded-full border border-outline bg-surface px-5 text-xs font-medium text-primary hover:bg-surface-tint"
                   >
                     {c.action}
                   </a>

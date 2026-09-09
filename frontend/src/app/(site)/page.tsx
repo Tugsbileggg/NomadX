@@ -101,7 +101,7 @@ async function Hero() {
           <FloatingCard
             className="top-[13%] right-0"
             icon={<BadgeCheck className="size-5 text-success-dark" />}
-            iconBg="bg-[#dcfce7]"
+            iconBg="bg-success-soft"
             title="Баталгаажсан"
             subtitle="Топ Артист"
           />
@@ -119,7 +119,7 @@ async function Hero() {
 }
 
 function cnAvatar(i: number) {
-  return `size-12 rounded-full border-2 border-white object-cover ${i > 0 ? "-ml-4" : ""}`;
+  return `size-12 rounded-full border-2 border-glass-edge object-cover ${i > 0 ? "-ml-4" : ""}`;
 }
 
 function FloatingCard({
@@ -223,7 +223,7 @@ function HowItWorks() {
                 <div className="relative">
                   <div
                     className={`flex size-24 items-center justify-center rounded-full shadow-card ${
-                      isLast ? "bg-primary" : "bg-white"
+                      isLast ? "bg-primary" : "bg-surface"
                     }`}
                   >
                     <Icon
@@ -279,7 +279,7 @@ function PopularCategories() {
                   alt={c.label}
                   width={110}
                   height={110}
-                  className="size-[110px] rounded-4xl border border-white/60 object-cover shadow-hairline transition-transform group-hover:-translate-y-1"
+                  className="size-[110px] rounded-4xl border border-glass-edge/60 object-cover shadow-hairline transition-transform group-hover:-translate-y-1"
                 />
                 <span className="text-sm text-body group-hover:text-primary">
                   {c.label}
@@ -312,7 +312,7 @@ function FeaturedProviders() {
                 key={i}
                 type="button"
                 aria-label={i === 0 ? "Өмнөх" : "Дараах"}
-                className="flex size-10 items-center justify-center rounded-full bg-white shadow-[4px_4px_12px_rgba(140,75,85,0.15)] hover:bg-surface-tint"
+                className="flex size-10 items-center justify-center rounded-full bg-surface shadow-[4px_4px_12px_rgba(140,75,85,0.15)] hover:bg-surface-tint"
               >
                 <Icon className="size-4 text-ink" />
               </button>
@@ -345,7 +345,7 @@ function FeaturedProviders() {
                   alt=""
                   width={64}
                   height={64}
-                  className="absolute -top-8 left-6 size-16 rounded-full border-4 border-white object-cover shadow-hairline"
+                  className="absolute -top-8 left-6 size-16 rounded-full border-4 border-glass-edge object-cover shadow-hairline"
                 />
                 <div className="flex items-center gap-1">
                   <h3 className="text-lg leading-6 font-medium text-ink">
@@ -417,7 +417,7 @@ function BusinessBanner() {
                   Сарын захиалга
                 </p>
               </div>
-              <div className="h-14 w-px bg-white/30" />
+              <div className="h-14 w-px bg-glass/30" />
               <div>
                 <p className="text-[30px] leading-9 font-bold drop-shadow-sm">
                   500+
@@ -447,11 +447,11 @@ function BookingPreviewCard() {
       {/* blurred colour blooms tucked behind the card content */}
       <div
         aria-hidden
-        className="absolute -top-2 -right-2 size-21 rounded-full bg-[rgba(255,217,221,0.5)] blur-xl"
+        className="absolute -top-2 -right-2 size-21 rounded-full bg-primary-container/50 blur-xl"
       />
       <div
         aria-hidden
-        className="absolute -bottom-2 -left-2 size-21 rounded-full bg-[rgba(255,178,188,0.5)] blur-xl"
+        className="absolute -bottom-2 -left-2 size-21 rounded-full bg-primary-accent/50 blur-xl"
       />
 
       <div className="relative">

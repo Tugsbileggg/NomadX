@@ -26,7 +26,7 @@ export function OtpInputs() {
           maxLength={1}
           required
           aria-label={`${i + 1}-р орон`}
-          className="h-14 w-10 rounded-xl border border-[#6b7280] bg-white text-center text-xl font-semibold text-ink focus:border-primary focus:outline-2 focus:outline-primary"
+          className="h-14 w-10 rounded-xl border border-outline bg-surface text-center text-xl font-semibold text-ink focus:border-primary focus:outline-2 focus:outline-primary"
           onChange={(e) => {
             if (e.target.value && i < LENGTH - 1) focus(i + 1);
           }}

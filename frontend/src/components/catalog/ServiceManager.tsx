@@ -29,7 +29,7 @@ export function ServiceManager({
 
   if (!canEdit) {
     return (
-      <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+      <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
         Бизнесийн бүртгэл олдсонгүй. Эхлээд бүртгэлээ бөглөж, батлуулна уу.
       </p>
     );
@@ -57,7 +57,7 @@ export function ServiceManager({
       )}
 
       {services.length === 0 && editing !== "new" ? (
-        <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+        <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
           Одоогоор үйлчилгээ бүртгээгүй байна.
         </p>
       ) : (
@@ -77,7 +77,7 @@ export function ServiceManager({
 
 function ServiceRow({ service, onEdit }: { service: CatalogService; onEdit: () => void }) {
   return (
-    <article className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-surface-variant bg-white p-5">
+    <article className="flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-surface-variant bg-surface p-5">
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="text-base font-medium text-ink">{service.name}</h3>
@@ -121,7 +121,7 @@ function ServiceForm({ service, onClose }: { service?: CatalogService; onClose: 
   return (
     <ActionForm
       action={saveService}
-      className="flex flex-col gap-4 rounded-2xl border border-primary/30 bg-white p-6"
+      className="flex flex-col gap-4 rounded-2xl border border-primary/30 bg-surface p-6"
     >
       {service && <input type="hidden" name="service_id" value={service.id} />}
 

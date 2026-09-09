@@ -14,12 +14,14 @@ const STATUS_LABEL: Record<string, string> = {
   pending: "Хүлээгдэж буй",
   confirmed: "Баталгаажсан",
   completed: "Дууссан",
+  closed: "Хаагдсан",
   cancelled: "Цуцлагдсан",
 };
 const STATUS_TONE: Record<string, Tone> = {
   pending: "warning",
   confirmed: "success",
   completed: "neutral",
+  closed: "primary",
   cancelled: "danger",
 };
 
@@ -28,6 +30,7 @@ const FILTERS = [
   { label: "Хүлээгдэж буй", value: "pending" },
   { label: "Баталгаажсан", value: "confirmed" },
   { label: "Дууссан", value: "completed" },
+  { label: "Хаагдсан", value: "closed" },
   { label: "Цуцлагдсан", value: "cancelled" },
 ] as const;
 
@@ -84,7 +87,7 @@ export default async function AdminBookingsPage({
                     "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
                     filter === f.value
                       ? "bg-primary text-white"
-                      : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                      : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
                   )}
                 >
                   {f.label}

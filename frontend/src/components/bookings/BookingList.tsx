@@ -14,6 +14,7 @@ export const STATUS_META: Record<BookingStatus, { label: string; tone: Tone }> =
   pending: { label: "Хүлээгдэж буй", tone: "warning" },
   confirmed: { label: "Баталгаажсан", tone: "success" },
   completed: { label: "Дууссан", tone: "neutral" },
+  closed: { label: "Хаагдсан", tone: "primary" },
   cancelled: { label: "Цуцлагдсан", tone: "danger" },
 };
 
@@ -27,7 +28,10 @@ const NEXT_STEPS: Record<BookingStatus, { status: BookingStatus; label: string; 
     { status: "completed", label: "Дууссан гэж тэмдэглэх", primary: true },
     { status: "cancelled", label: "Цуцлах" },
   ],
+  // `completed → closed` руу гараар шилжүүлэх товч ЗОРИУДААР байхгүй:
+  // төлбөр төлөгдөхөд DB өөрөө хаана (0028).
   completed: [],
+  closed: [],
   cancelled: [],
 };
 
@@ -42,6 +46,7 @@ export const STATUS_TABS: { label: string; value: BookingStatus | null }[] = [
   { label: "Хүлээгдэж буй", value: "pending" },
   { label: "Баталгаажсан", value: "confirmed" },
   { label: "Дууссан", value: "completed" },
+  { label: "Хаагдсан", value: "closed" },
   { label: "Цуцлагдсан", value: "cancelled" },
 ];
 
@@ -59,7 +64,7 @@ export function StatusTabs({ basePath, active }: { basePath: string; active: str
               "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
               on
                 ? "bg-primary text-white"
-                : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
             )}
           >
             {t.label}
@@ -73,7 +78,7 @@ export function StatusTabs({ basePath, active }: { basePath: string; active: str
 export function BookingList({ bookings }: { bookings: PanelBooking[] }) {
   if (!bookings.length) {
     return (
-      <p className="rounded-2xl border border-dashed border-outline bg-white px-6 py-12 text-center text-sm text-muted">
+      <p className="rounded-2xl border border-dashed border-outline bg-surface px-6 py-12 text-center text-sm text-muted">
         Энэ шүүлтэд тохирох захиалга алга.
       </p>
     );
@@ -93,7 +98,7 @@ function BookingCard({ booking }: { booking: PanelBooking }) {
   const name = booking.customer?.name?.trim() || "Нэргүй хэрэглэгч";
 
   return (
-    <article className="rounded-2xl border border-surface-variant bg-white p-6 shadow-hairline">
+    <article className="rounded-2xl border border-surface-variant bg-surface p-6 shadow-hairline">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <Monogram name={name} />
@@ -159,7 +164,9 @@ function BookingCard({ booking }: { booking: PanelBooking }) {
         </div>
       )}
 
-      {booking.status === "completed" && <InvoiceBlock booking={booking} />}
+      {(booking.status === "completed" || booking.status === "closed") && (
+        <InvoiceBlock booking={booking} />
+      )}
 
       <StatusSteps
         bookingId={booking.id}
@@ -197,7 +204,7 @@ export function StatusSteps({
               "h-9 rounded-full px-5 text-xs font-medium",
               step.primary
                 ? "bg-primary text-white hover:bg-primary-dark"
-                : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
             )}
           >
             {step.label}
@@ -280,14 +287,14 @@ function InvoiceBlock({ booking }: { booking: PanelBooking }) {
           <ActionForm action={setInvoiceStatus} className="contents">
             <input type="hidden" name="invoice_id" value={invoice.id} />
             <input type="hidden" name="status" value="paid" />
-            <SubmitButton className="h-9 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint">
+            <SubmitButton className="h-9 rounded-full border border-surface-variant bg-surface px-5 text-xs font-medium text-body hover:bg-surface-tint">
               Төлөгдсөн гэж тэмдэглэх
             </SubmitButton>
           </ActionForm>
           <ActionForm action={setInvoiceStatus} className="contents">
             <input type="hidden" name="invoice_id" value={invoice.id} />
             <input type="hidden" name="status" value="cancelled" />
-            <SubmitButton className="h-9 rounded-full border border-surface-variant bg-white px-5 text-xs font-medium text-body hover:bg-surface-tint">
+            <SubmitButton className="h-9 rounded-full border border-surface-variant bg-surface px-5 text-xs font-medium text-body hover:bg-surface-tint">
               Цуцлах
             </SubmitButton>
           </ActionForm>

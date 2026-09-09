@@ -70,7 +70,7 @@ export default async function UsersPage({
         <Panel>
           <div className="flex flex-col gap-4">
             {error ? (
-              <p className="rounded-xl bg-[#fee2e2] px-4 py-3 text-sm text-[#991b1b]">{error}</p>
+              <p className="rounded-xl bg-danger-soft px-4 py-3 text-sm text-danger-strong">{error}</p>
             ) : (
               <>
                 <div className="flex flex-wrap gap-2">
@@ -82,7 +82,7 @@ export default async function UsersPage({
                         "rounded-full px-4 py-2 text-xs leading-4 font-medium transition-colors",
                         filter === f.value
                           ? "bg-primary text-white"
-                          : "border border-surface-variant bg-white text-body hover:bg-surface-tint",
+                          : "border border-surface-variant bg-surface text-body hover:bg-surface-tint",
                       )}
                     >
                       {f.label}

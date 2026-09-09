@@ -145,6 +145,7 @@ export const NOTIFICATION_ICON: Record<NotificationKind, string> = {
   booking_cancelled: "close-circle-outline",
   booking_completed: "sparkles-outline",
   invoice_issued: "receipt-outline",
+  invoice_paid: "cash-outline",
   review_replied: "chatbubble-ellipses-outline",
   business_status: "shield-checkmark-outline",
 }
