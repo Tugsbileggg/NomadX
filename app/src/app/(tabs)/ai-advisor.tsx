@@ -19,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { AppHeader } from "@/components/AppHeader"
 import { AuthButton } from "@/components/auth/AuthButton"
 import { BusinessCard } from "@/components/BusinessCard"
+import { SelfieCamera, type SelfiePhoto } from "@/components/SelfieCamera"
 import type { BrandPalette } from "@/constants/theme"
 import {
   analyzeSkin,
@@ -35,16 +36,7 @@ import { useAppTheme } from "@/lib/theme-context"
 const CONSENT_KEY = "ai_advisor_consent_seen"
 
 type Step = "intro" | "loading" | "result" | "error"
-/**
- * `mirrored` — урд камерын урьдчилсан дүрс толь шиг эргэсэн байдаг ч
- * хадгалагдах файл нь эргээгүй жинхэнэ дүрс байдаг. Хэрэглэгчийн хувьд
- * энэ нь "баруун нүд минь зүүн тийшээ үсэрлээ" гэж харагддаг тул
- * ХАРУУЛАХДАА буцааж эргүүлнэ (доорх `mirror` style).
- *
- * Пикселийг нь өөрчлөхгүй: Gemini-д эргэлт огт хамаагүй бөгөөд зургийг
- * хаана ч хадгалдаггүй тул харагдацыг засахад л хангалттай.
- */
-type PickedImage = { base64: string; mime: string; uri: string; mirrored: boolean }
+type PickedImage = { base64: string; mime: string; uri: string }
 
 const TIPS = [
   "Гэрэл сайтай, нүүрэн рүү чиглэсэн орчинд авна уу",
@@ -68,6 +60,7 @@ export default function AiAdvisorScreen() {
   const [consentSeen, setConsentSeen] = useState(false)
   const [showConsent, setShowConsent] = useState(false)
   const [pendingSource, setPendingSource] = useState<"camera" | "library" | null>(null)
+  const [showCamera, setShowCamera] = useState(false)
 
   useEffect(() => {
     AsyncStorage.getItem(CONSENT_KEY).then((v) => setConsentSeen(v === "1"))
@@ -80,45 +73,37 @@ export default function AiAdvisorScreen() {
       setShowConsent(true)
       return
     }
-    void pick(source)
+    openSource(source)
   }
 
   async function onConfirmConsent() {
     await AsyncStorage.setItem(CONSENT_KEY, "1")
     setConsentSeen(true)
     setShowConsent(false)
-    if (pendingSource) void pick(pendingSource)
+    if (pendingSource) openSource(pendingSource)
     setPendingSource(null)
   }
 
-  async function pick(source: "camera" | "library") {
+  function openSource(source: "camera" | "library") {
+    if (source === "camera") {
+      // Систем камер сонгогч (ImagePicker) биш өөрийн SelfieCamera-г ашиглана:
+      // тэр нь урьдчилан харах ба эцсийн зургаа ХОЁУЛАНГ нь ижил (толин)
+      // чиглэлтэй хадгалдаг тул авсан зураг "эргэчихсэн" мэт харагдахгүй.
+      setShowCamera(true)
+    } else {
+      void pickFromLibrary()
+    }
+  }
+
+  async function pickFromLibrary() {
     setBusy(true)
     setError(null)
 
-    let result: ImagePicker.ImagePickerResult
-    if (source === "camera") {
-      // Камер бол системийн сонгогч биш, жинхэнэ төхөөрөмжийн камер тул
-      // зөвшөөрөл ЭХЛЭЭД асуух шаардлагатай — сангаас сонгохоос ялгаатай.
-      const { status } = await ImagePicker.requestCameraPermissionsAsync()
-      if (status !== "granted") {
-        setBusy(false)
-        setError("Камерын зөвшөөрөл өгөөгүй байна. Тохиргооноос зөвшөөрнө үү.")
-        setStep("error")
-        return
-      }
-      result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ["images"],
-        quality: 0.6,
-        base64: true,
-        cameraType: ImagePicker.CameraType.front,
-      })
-    } else {
-      result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
-        quality: 0.6,
-        base64: true,
-      })
-    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 0.6,
+      base64: true,
+    })
 
     setBusy(false)
     if (result.canceled) return
@@ -134,9 +119,14 @@ export default function AiAdvisorScreen() {
       base64: asset.base64,
       mime: asset.mimeType ?? "image/jpeg",
       uri: asset.uri,
-      // Сангаас сонгосон зураг аль хэдийн зөв чиглэлтэй тул хөндөхгүй.
-      mirrored: source === "camera",
     }
+    setImage(picked)
+    await runAnalysis(picked)
+  }
+
+  async function onCameraCapture(photo: SelfiePhoto) {
+    setShowCamera(false)
+    const picked: PickedImage = { base64: photo.base64, mime: photo.mime, uri: photo.uri }
     setImage(picked)
     await runAnalysis(picked)
   }
@@ -226,7 +216,7 @@ export default function AiAdvisorScreen() {
             {image && (
               <Image
                 source={{ uri: image.uri }}
-                style={[styles.previewLarge, image.mirrored && styles.mirror]}
+                style={styles.previewLarge}
                 contentFit="cover"
               />
             )}
@@ -248,7 +238,7 @@ export default function AiAdvisorScreen() {
             {image && (
               <Image
                 source={{ uri: image.uri }}
-                style={[styles.previewSmall, image.mirrored && styles.mirror]}
+                style={styles.previewSmall}
                 contentFit="cover"
               />
             )}
@@ -325,6 +315,12 @@ export default function AiAdvisorScreen() {
           </View>
         </View>
       </Modal>
+
+      <SelfieCamera
+        visible={showCamera}
+        onCancel={() => setShowCamera(false)}
+        onCapture={(photo) => void onCameraCapture(photo)}
+      />
     </SafeAreaView>
   )
 }
@@ -399,9 +395,6 @@ function makeStyles(colors: BrandPalette) {
       backgroundColor: colors.surfaceTint2,
       marginBottom: 14,
     },
-    /** Урд камерын дүрсийг урьдчилан харснаар нь буцаана. */
-    mirror: { transform: [{ scaleX: -1 }] },
-
     resultCard: {
       width: "100%",
       borderRadius: 18,

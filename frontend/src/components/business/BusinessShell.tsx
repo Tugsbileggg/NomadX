@@ -2,7 +2,9 @@ import Link from "next/link";
 import { Plus, Search } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { AccountMenu } from "@/components/business/AccountMenu";
 import { PanelBell } from "@/components/notifications/PanelBell";
+import { createClient } from "@/lib/supabase/server";
 
 export type BizNavItem = { href: string; label: string; icon: LucideIcon };
 
@@ -10,7 +12,7 @@ export type BizNavItem = { href: string; label: string; icon: LucideIcon };
  * Salon / artist console layout: tinted rail with a wordmark and "new booking"
  * CTA, a search top bar, and a white content column.
  */
-export function BusinessShell({
+export async function BusinessShell({
   brand,
   subtitle,
   nav,
@@ -31,6 +33,8 @@ export function BusinessShell({
   avatar?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const account = avatar ? null : await fetchAccount();
+
   return (
     <div className="flex min-h-screen bg-[rgba(255,240,241,0.8)]">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-white/20 bg-[rgba(255,248,247,0.8)] p-6 shadow-[24px_0_48px_rgba(140,75,85,0.08)] lg:flex">
@@ -90,9 +94,7 @@ export function BusinessShell({
               className="relative flex size-10 items-center justify-center rounded-full text-primary hover:bg-white"
             />
             {avatar ?? (
-              <span className="flex size-9 items-center justify-center rounded-full border-2 border-white bg-primary-container text-xs font-semibold text-primary-dark">
-                LU
-              </span>
+              <AccountMenu name={account?.name ?? "Хэрэглэгч"} subtitle={account?.subtitle} />
             )}
           </div>
         </header>
@@ -101,6 +103,24 @@ export function BusinessShell({
       </div>
     </div>
   );
+}
+
+/** Header аватарын цэсэнд харуулах нэр/и-мэйл — салоны нэр, байхгүй бол и-мэйл. */
+async function fetchAccount(): Promise<{ name: string; subtitle?: string } | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data: business } = await supabase
+    .from("businesses")
+    .select("name")
+    .eq("owner_id", user.id)
+    .maybeSingle();
+
+  if (business?.name) return { name: business.name, subtitle: user.email ?? undefined };
+  return user.email ? { name: user.email } : null;
 }
 
 function NavLink({ item, active }: { item: BizNavItem; active: string }) {
