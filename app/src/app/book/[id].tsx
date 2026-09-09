@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons"
 import { Image } from "expo-image"
 import * as ImagePicker from "expo-image-picker"
 import { useLocalSearchParams, useRouter } from "expo-router"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import {
   ActivityIndicator,
   Pressable,
@@ -48,25 +48,19 @@ export default function BookScreen() {
   /** Сонгосон цагийн бодит мөч — өдөр солиход тэглэгдэнэ. */
   const [slotAt, setSlotAt] = useState<Date | null>(null)
   const [description, setDescription] = useState("")
-  // Үйлчилгээ авах байршил (0026) — артист хаана очихыг мэдэхэд.
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null)
+  // Үйлчилгээ авах байршил (0026) — ЗӨВХӨН артистад. Салон бол
+  // үйлчлүүлэгч нь салон руугаа очдог тул "хаана очих вэ?" гэж асуух
+  // утгагүй (доорх `isArtist`-ыг үзнэ үү).
+  //
+  // Энэ нь хэрэглэгчийн ГАРААР тавьсан цэг. Хоосон байх нь "хараахан
+  // сонгоогүй" гэсэн үг — доор өөрийнх нь байрлалаар нөхнө.
+  const [pickedCoords, setPickedCoords] = useState<{ lat: number; lng: number } | null>(null)
   const [address, setAddress] = useState("")
   const [images, setImages] = useState<PickedImage[]>([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
   const { myLocation } = useMyLocation()
-
-  // Байршлын зөвшөөрөл өгсөн бол цэгийг өөрийнх нь байрлалаар нэг удаа
-  // урьдчилан тавина — үйлчлүүлэгч ихэвчлэн байгаа газраа үйлчилгээ
-  // авдаг тул ердөө баталгаажуулах л үлдэнэ. Гараар зөөсний дараа
-  // хөндөхгүй.
-  const prefilled = useRef(false)
-  useEffect(() => {
-    if (prefilled.current || !myLocation || coords) return
-    prefilled.current = true
-    setCoords(myLocation)
-  }, [myLocation, coords])
 
   useEffect(() => {
     Promise.all([fetchBusiness(id), fetchSlotDays(id)]).then(([b, d]) => {
@@ -81,6 +75,19 @@ export default function BookScreen() {
   }, [id])
 
   const activeDay = days[dayIndex]
+  /**
+   * Артист үйлчлүүлэгч рүүгээ очдог, салон руу нь үйлчлүүлэгч очдог —
+   * байршил асуух эсэхийг энэ ялгаа шийднэ.
+   */
+  const isArtist = business?.type === "artist"
+
+  /**
+   * Ашиглах цэг: гараар сонгосон нь тэргүүлнэ, үгүй бол байршлын
+   * зөвшөөрөл өгсөн хэрэглэгчийн одоогийн байрлал. Үйлчлүүлэгч
+   * ихэвчлэн байгаа газраа үйлчилгээ авдаг тул ердөө баталгаажуулах л
+   * үлдэнэ.
+   */
+  const coords = pickedCoords ?? (isArtist ? myLocation : null)
 
   async function onPickImages() {
     const remaining = MAX_IMAGES - images.length
@@ -131,6 +138,9 @@ export default function BookScreen() {
       id,
       slotAt,
       description,
+      // Салоны захиалгад `coords` нь тодорхойлолтоороо null — DB нь
+      // lat/lng хоёуланг заавал хамт шаарддаг (0026-ийн
+      // `bookings_service_coords_pair`) тул бүтнээр нь алгасна.
       coords ? { lat: coords.lat, lng: coords.lng, address } : null,
     )
     if ("error" in booking) {
@@ -267,33 +277,39 @@ export default function BookScreen() {
             style={styles.noteInput}
           />
 
-          <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Хаана очих вэ?</Text>
-          <Text style={styles.sectionHint}>
-            {coords
-              ? "Газрын зураг дээр дарж цэгээ зөөнө. Орц, давхар зэргийг доор бичвэл артист хурдан олно."
-              : "Газрын зураг дээр дарж үйлчилгээ авах газраа тэмдэглэнэ үү."}
-          </Text>
-          <View style={styles.mapBox}>
-            <BusinessMap
-              center={coords ?? myLocation ?? UB_CENTER}
-              zoom={coords ? MAP_ZOOM_PIN : MAP_ZOOM_OVERVIEW}
-              markers={
-                coords
-                  ? [{ id: "pin", lat: coords.lat, lng: coords.lng, title: "Үйлчилгээ авах газар", selected: true }]
-                  : []
-              }
-              myLocation={myLocation}
-              onMarkerPress={() => {}}
-              onMapPress={setCoords}
-            />
-          </View>
-          <TextInput
-            value={address}
-            onChangeText={setAddress}
-            placeholder="Жишээ: 3-р хороолол, 45-р байр, 2-р орц, 4 давхар"
-            placeholderTextColor={colors.muted}
-            style={styles.addressInput}
-          />
+          {/* Байршил зөвхөн артистад — салон руу нь үйлчлүүлэгч өөрөө
+              очдог тул "хаана очих вэ?" гэдэг асуулт утгагүй. */}
+          {isArtist && (
+            <>
+              <Text style={[styles.sectionLabel, { marginTop: 20 }]}>Хаана очих вэ?</Text>
+              <Text style={styles.sectionHint}>
+                {coords
+                  ? "Газрын зураг дээр дарж цэгээ зөөнө. Орц, давхар зэргийг доор бичвэл артист хурдан олно."
+                  : "Газрын зураг дээр дарж үйлчилгээ авах газраа тэмдэглэнэ үү."}
+              </Text>
+              <View style={styles.mapBox}>
+                <BusinessMap
+                  center={coords ?? myLocation ?? UB_CENTER}
+                  zoom={coords ? MAP_ZOOM_PIN : MAP_ZOOM_OVERVIEW}
+                  markers={
+                    coords
+                      ? [{ id: "pin", lat: coords.lat, lng: coords.lng, title: "Үйлчилгээ авах газар", selected: true }]
+                      : []
+                  }
+                  myLocation={myLocation}
+                  onMarkerPress={() => {}}
+                  onMapPress={setPickedCoords}
+                />
+              </View>
+              <TextInput
+                value={address}
+                onChangeText={setAddress}
+                placeholder="Жишээ: 3-р хороолол, 45-р байр, 2-р орц, 4 давхар"
+                placeholderTextColor={colors.muted}
+                style={styles.addressInput}
+              />
+            </>
+          )}
 
           <Text style={[styles.sectionLabel, { marginTop: 20 }]}>
             Жишээ зураг {images.length > 0 && `(${images.length}/${MAX_IMAGES})`}
