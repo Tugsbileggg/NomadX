@@ -1,0 +1,17 @@
+/*
+ * Leaflet-ийн үндсэн CSS нь анхны marker болон layers-control-ийн
+ * зургуудыг `url(images/...)` гэсэн харьцангуй замаар дууддаг. Metro
+ * эдгээрийг шийдэж чаддаггүй тул браузер `/assets/images/...` руу
+ * хүсэлт явуулж, dev сервер дээр
+ *   ENOENT: no such file or directory, scandir '<төсөл>/images'
+ * гэсэн алдаа давтагдан гардаг.
+ *
+ * BusinessMap.web.tsx дэх бүх marker нь `divIcon`-оор зурагддаг бөгөөд
+ * layers control огт ашигладаггүй тул эдгээр зураг хэрэггүй. Дуудлагыг
+ * нь салгаснаар алдаа арилах ба харагдах байдалд нөлөөлөхгүй.
+ */
+.leaflet-default-icon-path,
+.leaflet-control-layers-toggle,
+.leaflet-touch .leaflet-control-layers-toggle {
+  background-image: none;
+}

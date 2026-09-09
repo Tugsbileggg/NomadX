@@ -1,4 +1,5 @@
 import "leaflet/dist/leaflet.css"
+import "./leaflet-overrides.css"
 
 import { useEffect, useRef, useState } from "react"
 
