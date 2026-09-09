@@ -35,6 +35,7 @@ export type NotificationKind =
   | "booking_cancelled"
   | "booking_completed"
   | "invoice_issued"
+  | "invoice_paid"
   | "review_replied"
   | "business_status"
 
