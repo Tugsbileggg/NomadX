@@ -8,6 +8,8 @@ import {
   MAP_ZOOM_OVERVIEW,
   ME_DOT_COLOR,
   ME_DOT_SIZE,
+  MARKER_HALO,
+  MARKER_HALO_LIVE,
   MARKER_RING,
   MARKER_SIZE,
   TILE_ATTRIBUTION,
@@ -233,7 +235,7 @@ export function BusinessMap({
       // `prefers-reduced-motion` үед унтраана.
       const halo =
         m.kind === "artist"
-          ? `<span class="lumina-halo" style="background:${m.live ? colors.success : colors.primary}"></span>`
+          ? `<span class="lumina-halo" style="background:${m.live ? MARKER_HALO_LIVE : MARKER_HALO}"></span>`
           : ""
 
       // Сонгогдсон цэгийн нэр нь цэгийн дээр бөмбөлөг болж гарна.

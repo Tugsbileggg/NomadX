@@ -19,7 +19,7 @@ import type { BrandPalette } from "@/constants/theme"
 import { subscribeToArtists } from "@/lib/artist-live"
 import { distanceMeters, formatDistance } from "@/lib/distance"
 import { useMyLocation } from "@/lib/location-context"
-import { MAP_ZOOM_OVERVIEW, UB_CENTER } from "@/lib/map-style"
+import { MAP_ZOOM_OVERVIEW, MARKER_HALO, UB_CENTER } from "@/lib/map-style"
 import { fetchSearchBusinesses, toggleFavourite, type SearchBusiness } from "@/lib/search"
 import { useAppTheme } from "@/lib/theme-context"
 
@@ -251,6 +251,23 @@ export default function SearchScreen() {
             <Ionicons name="locate" size={20} color={colors.primary} />
           </Pressable>
 
+          {/* Хэлбэрийн ялгаа (дугуй = артист, дөрвөлжин = салон) нь
+              тайлбаргүйгээр уншигдахгүй — 18px цэг дээр хоёр хэлбэрийг
+              зэрэгцүүлж харьцуулах боломжгүй. Загварыг өөрчлөхийн оронд
+              түлхүүрийг нь зурагтай хамт харуулав. */}
+          <View style={styles.legend}>
+            <View style={styles.legendItem}>
+              <View style={styles.legendHalo}>
+                <View style={styles.legendArtist} />
+              </View>
+              <Text style={styles.legendText}>Артист</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View style={styles.legendSalon} />
+              <Text style={styles.legendText}>Салон</Text>
+            </View>
+          </View>
+
           {selected && (
             <View style={styles.sheet}>
               {/* Мэдээллийн мөр нь дэлгэрэнгүй рүү, товч нь захиалга руу
@@ -391,6 +408,45 @@ function makeStyles(colors: BrandPalette) {
 
     // Leaflet-ийн pane-ууд 400-800 z-index-тэй тул зургийн дээрх бүх зүйл
     // түүнээс дээгүүр байх ёстой.
+    legend: {
+      position: "absolute",
+      left: 16,
+      top: 16,
+      zIndex: 900,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 14,
+      borderRadius: 999,
+      backgroundColor: colors.surface,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      shadowColor: colors.ink,
+      shadowOpacity: 0.18,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 3,
+    },
+    legendItem: { flexDirection: "row", alignItems: "center", gap: 6 },
+    // Газрын зураг дээрх marker-ийн жижигсгэсэн хувилбар — хэлбэр нь
+    // BusinessMap-ийнхтэй таарахгүй бол түлхүүр нь утгагүй болно.
+    legendHalo: { padding: 3, borderRadius: 999, backgroundColor: MARKER_HALO },
+    legendArtist: {
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      backgroundColor: colors.primary,
+      borderWidth: 2,
+      borderColor: colors.surface,
+    },
+    legendSalon: {
+      width: 12,
+      height: 12,
+      borderRadius: 3,
+      backgroundColor: colors.primary,
+      borderWidth: 2,
+      borderColor: colors.surface,
+    },
+    legendText: { fontSize: 11, fontWeight: "600", color: colors.body },
     locateButton: {
       position: "absolute",
       right: 16,

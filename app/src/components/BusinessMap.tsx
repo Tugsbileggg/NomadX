@@ -13,6 +13,8 @@ import {
   MAP_ZOOM_OVERVIEW,
   ME_DOT_COLOR,
   ME_DOT_SIZE,
+  MARKER_HALO,
+  MARKER_HALO_LIVE,
   MARKER_RING,
   MARKER_SIZE,
   TILE_ATTRIBUTION,
@@ -297,9 +299,9 @@ function makeStyles(colors: BrandPalette) {
   halo: {
     padding: 5,
     borderRadius: 999,
-    backgroundColor: colors.primaryContainer,
+    backgroundColor: MARKER_HALO,
   },
-  haloLive: { backgroundColor: colors.successSoft },
+  haloLive: { backgroundColor: MARKER_HALO_LIVE },
   // Амьд артист: цагираг нь ногоон болж, ижил өнгийн гэрэлтэлт нэмэгдэнэ.
   pinLive: {
     borderColor: colors.success,
