@@ -84,11 +84,31 @@ export function BusinessCard({
   )
 }
 
-/** Ковер байхгүй бол лого, тэр ч байхгүй бол эхний үсэг. */
-export function BusinessThumb({ business }: { business: SearchBusiness }) {
+/**
+ * Бизнесийн зураг — байрандаа тохирсныг нь сонгоно.
+ *
+ * `cover` нь өргөн туузанд (16:9-ээр авдаг), `logo` нь дөрвөлжин нүдэнд
+ * (1:1) зориулагдсан. Артистын хувьд `logo` нь ПРОФАЙЛ ЗУРАГ
+ * (profile-edit.tsx-ийн "Профайл зураг солих"), `cover` нь ажлын
+ * орчны зураг — тиймээс жижиг дөрвөлжинд cover-ийг эхэлж сонговол
+ * артистын нүүрний оронд өрөөний зураг гарч ирнэ.
+ *
+ * Анхдагч нь `cover`: жагсаалтын карт өргөн тууз ашигладаг.
+ */
+export function BusinessThumb({
+  business,
+  prefer = "cover",
+}: {
+  business: SearchBusiness
+  prefer?: "cover" | "logo"
+}) {
   const { colors } = useAppTheme()
   const styles = useMemo(() => makeStyles(colors), [colors])
-  const url = publicAssetUrl(business.coverPath) ?? publicAssetUrl(business.logoPath)
+  const [first, second] =
+    prefer === "logo"
+      ? [business.logoPath, business.coverPath]
+      : [business.coverPath, business.logoPath]
+  const url = publicAssetUrl(first) ?? publicAssetUrl(second)
   const initial = (business.name ?? "L").trim().charAt(0).toUpperCase()
 
   if (url) {

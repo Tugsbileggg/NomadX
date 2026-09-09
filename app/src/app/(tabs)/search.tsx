@@ -274,7 +274,10 @@ export default function SearchScreen() {
                   тусад нь ордог — Pressable-ууд давхарлахгүй. */}
               <Pressable style={styles.sheetTop} onPress={() => openBusiness(selected.id)}>
                 <View style={styles.sheetThumb}>
-                  <BusinessThumb business={selected} />
+                  {/* 56×56 дөрвөлжин — таних тэмдгийн байр. Артистын
+                      хувьд `logo` нь профайл зураг тул түүнийг эхэлж
+                      авна, эс тэгвэл ажлын өрөөний зураг гарч ирнэ. */}
+                  <BusinessThumb business={selected} prefer="logo" />
                 </View>
 
                 <View style={styles.sheetBody}>
