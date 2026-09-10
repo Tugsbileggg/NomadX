@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { AccountMenu } from "@/components/business/AccountMenu";
 import { PanelBell } from "@/components/notifications/PanelBell";
+import { publicAssetUrl } from "@/lib/storage/store-file";
 import { createClient } from "@/lib/supabase/server";
 
 export type BizNavItem = { href: string; label: string; icon: LucideIcon };
@@ -94,7 +95,11 @@ export async function BusinessShell({
               className="relative flex size-10 items-center justify-center rounded-full text-primary hover:bg-white"
             />
             {avatar ?? (
-              <AccountMenu name={account?.name ?? "Хэрэглэгч"} subtitle={account?.subtitle} />
+              <AccountMenu
+                name={account?.name ?? "Хэрэглэгч"}
+                subtitle={account?.subtitle}
+                avatarUrl={account?.avatarUrl}
+              />
             )}
           </div>
         </header>
@@ -105,8 +110,12 @@ export async function BusinessShell({
   );
 }
 
-/** Header аватарын цэсэнд харуулах нэр/и-мэйл — салоны нэр, байхгүй бол и-мэйл. */
-async function fetchAccount(): Promise<{ name: string; subtitle?: string } | null> {
+/** Header аватарын цэсэнд харуулах нэр/и-мэйл/лого — салоны мэдээлэл, байхгүй бол и-мэйл. */
+async function fetchAccount(): Promise<{
+  name: string;
+  subtitle?: string;
+  avatarUrl?: string | null;
+} | null> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -115,11 +124,12 @@ async function fetchAccount(): Promise<{ name: string; subtitle?: string } | nul
 
   const { data: business } = await supabase
     .from("businesses")
-    .select("name")
+    .select("name, logo_path")
     .eq("owner_id", user.id)
     .maybeSingle();
 
-  if (business?.name) return { name: business.name, subtitle: user.email ?? undefined };
+  const avatarUrl = publicAssetUrl(supabase, business?.logo_path ?? null);
+  if (business?.name) return { name: business.name, subtitle: user.email ?? undefined, avatarUrl };
   return user.email ? { name: user.email } : null;
 }
 
