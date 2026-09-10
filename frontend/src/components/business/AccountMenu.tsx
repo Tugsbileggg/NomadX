@@ -7,12 +7,20 @@ import { signOut } from "@/lib/auth/actions";
 
 /**
  * Header-ийн аватар товч — дарахад тухайн салоны нэр (+ и-мэйл) болон
- * "Гарах" товчийг агуулсан цэс fade+scale-ээр унана.
+ * "Гарах" товчийг агуулсан цэс fade+scale-ээр унана. Лого зураг байвал
+ * түүнийг, үгүй бол нэрний эхний үсгүүдийг харуулна.
  */
-export function AccountMenu({ name, subtitle }: { name: string; subtitle?: string | null }) {
+export function AccountMenu({
+  name,
+  subtitle,
+  avatarUrl,
+}: {
+  name: string;
+  subtitle?: string | null;
+  avatarUrl?: string | null;
+}) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const badge = initials(name);
 
   useEffect(() => {
     if (!open) return;
@@ -39,11 +47,11 @@ export function AccountMenu({ name, subtitle }: { name: string; subtitle?: strin
         aria-expanded={open}
         aria-label="Хэрэглэгчийн цэс"
         className={cn(
-          "flex size-9 items-center justify-center rounded-full bg-linear-to-br from-primary-container to-primary-accent text-xs font-semibold text-primary-dark ring-2 ring-white transition hover:brightness-95 focus:outline-none focus-visible:ring-primary",
+          "size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-white transition hover:brightness-95 focus:outline-none focus-visible:ring-primary",
           open && "ring-primary/50",
         )}
       >
-        {badge}
+        <Avatar name={name} avatarUrl={avatarUrl} className="size-9 text-xs" />
       </button>
 
       <div
@@ -57,9 +65,7 @@ export function AccountMenu({ name, subtitle }: { name: string; subtitle?: strin
         )}
       >
         <div className="flex items-center gap-3 px-3 py-3">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-primary-container to-primary-accent text-sm font-semibold text-primary-dark">
-            {badge}
-          </span>
+          <Avatar name={name} avatarUrl={avatarUrl} className="size-11 shrink-0 text-sm" />
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-ink">{name}</p>
             {subtitle && <p className="truncate text-xs text-muted">{subtitle}</p>}
@@ -81,6 +87,34 @@ export function AccountMenu({ name, subtitle }: { name: string; subtitle?: strin
         </form>
       </div>
     </div>
+  );
+}
+
+function Avatar({
+  name,
+  avatarUrl,
+  className,
+}: {
+  name: string;
+  avatarUrl?: string | null;
+  className?: string;
+}) {
+  if (avatarUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- Supabase Storage URL, тогтмол remote domain-гүй.
+      <img src={avatarUrl} alt="" className={cn("rounded-full object-cover", className)} />
+    );
+  }
+
+  return (
+    <span
+      className={cn(
+        "flex items-center justify-center rounded-full bg-linear-to-br from-primary-container to-primary-accent font-semibold text-primary-dark",
+        className,
+      )}
+    >
+      {initials(name)}
+    </span>
   );
 }
 
