@@ -96,9 +96,19 @@ export function BookingList({ bookings }: { bookings: PanelBooking[] }) {
 function BookingCard({ booking }: { booking: PanelBooking }) {
   const status = STATUS_META[booking.status];
   const name = booking.customer?.name?.trim() || "Нэргүй хэрэглэгч";
+  // "Хүлээгдэж буй" = бизнес хараахан хариу өгөөгүй, шинээр ирсэн хүсэлт —
+  // жагсаалтад дасангуй хэрэглэгч алгасахгүйн тулд бусдаас нь ялгаж будна.
+  const isNew = booking.status === "pending";
 
   return (
-    <article className="rounded-2xl border border-surface-variant bg-surface p-6 shadow-hairline">
+    <article
+      className={cn(
+        "rounded-2xl p-6 shadow-hairline",
+        isNew
+          ? "border-2 border-warning bg-warning-soft/40"
+          : "border border-surface-variant bg-surface",
+      )}
+    >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <Monogram name={name} />
